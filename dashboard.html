@@ -2,63 +2,93 @@
 <html>
 <head>
     <title>Dashboard - School System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .nav {
+            text-align: center;
+            padding: 10px;
+            background: #333;
+        }
+        .nav a {
+            color: white;
+            margin: 0 15px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .nav a.current {
+            text-decoration: underline;
+        }
+        .cards-container {
+            width: 50%;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-around;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 40%;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .card p {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: white;
+            margin-top: 50px;
+        }
+    </style>
 </head>
-<body style="font-family: Arial; background-color: #f4f4f4;">
+<body>
 
-    <!-- Navigation Menu -->
-    <div style="text-align: center; padding: 10px; background: #333; color: white;">
-        <a href="dashboard.html" style="color: white; margin: 10px;">Dashboard</a>
-        <a href="students.html" style="color: white; margin: 10px;">Students</a>
-        <a href="teachers.html" style="color: white; margin: 10px;">Teachers</a>
+    <!-- Navigation Bar -->
+    <div class="nav">
+        <a href="dashboard.html" class="current">Dashboard</a>
+        <a href="students.html">Students</a>
+        <a href="teachers.html">Teachers</a>
     </div>
 
-    <!-- Page Title -->
-    <h1 style="text-align: center;">School Dashboard</h1>
-
-    <!-- Counts Container -->
-    <div style="width: 50%; margin: auto; display: flex; justify-content: space-around; margin-top: 50px;">
-
-        <div style="background: white; padding: 30px; border-radius: 10px; width: 40%; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <!-- Dashboard Cards -->
+    <div class="cards-container">
+        <div class="card">
             <h2>Total Students</h2>
-            <p id="studentCount" style="font-size: 24px; font-weight: bold;">0</p>
+            <p id="studentCount">0</p>
             <a href="students.html">Go to Students</a>
         </div>
-
-        <div style="background: white; padding: 30px; border-radius: 10px; width: 40%; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <div class="card">
             <h2>Total Teachers</h2>
-            <p id="teacherCount" style="font-size: 24px; font-weight: bold;">0</p>
+            <p id="teacherCount">0</p>
             <a href="teachers.html">Go to Teachers</a>
         </div>
-
     </div>
 
-    <!-- JavaScript to count rows dynamically -->
+    <!-- Footer -->
+    <footer>
+        School Management System by Abiola Ridwan Olamilekan
+    </footer>
+
+    <!-- JavaScript for counting rows -->
     <script>
         function updateCounts() {
-            // Count Students
-            fetch('students.html')
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const studentTable = doc.getElementById('studentTable');
-                    const studentCount = studentTable ? studentTable.rows.length - 1 : 0; // exclude header row
-                    document.getElementById('studentCount').innerText = studentCount;
-                });
-
-            // Count Teachers
-            fetch('teachers.html')
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const teacherTable = doc.getElementById('teacherTable');
-                    const teacherCount = teacherTable ? teacherTable.rows.length - 1 : 0; // exclude header row
-                    document.getElementById('teacherCount').innerText = teacherCount;
-                });
+            var studentTable = document.getElementById("studentTable");
+            var teacherTable = document.getElementById("teacherTable");
+            var studentCount = studentTable ? studentTable.rows.length - 1 : 0;
+            var teacherCount = teacherTable ? teacherTable.rows.length - 1 : 0;
+            document.getElementById("studentCount").innerText = studentCount;
+            document.getElementById("teacherCount").innerText = teacherCount;
         }
-
-        updateCounts();
+        window.onload = updateCounts;
     </script>
 
 </body>
