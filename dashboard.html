@@ -1,36 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>Dashboard - School System</title>
 </head>
-<body style="font-family: Arial; background-color: #f4f4f4;"> <div style="text-align: center; padding: 10px; background: #333; color: white;">
-    <a href="dashboard.html" style="color: white; margin: 10px;">Dashboard</a>
-    <a href="students.html" style="color: white; margin: 10px;">Students</a>
-    <a href="teachers.html" style="color: white; margin: 10px;">Teachers</a>
-</div>
+<body style="font-family: Arial; background-color: #f4f4f4;">
 
+    <!-- Navigation Menu -->
+    <div style="text-align: center; padding: 10px; background: #333; color: white;">
+        <a href="dashboard.html" style="color: white; margin: 10px;">Dashboard</a>
+        <a href="students.html" style="color: white; margin: 10px;">Students</a>
+        <a href="teachers.html" style="color: white; margin: 10px;">Teachers</a>
+    </div>
+
+    <!-- Page Title -->
     <h1 style="text-align: center;">School Dashboard</h1>
 
-    <div style="width: 80%; margin: auto;">
+    <!-- Counts Container -->
+    <div style="width: 50%; margin: auto; display: flex; justify-content: space-around; margin-top: 50px;">
 
-        <a href="students.html" style="text-decoration: none; color: inherit;">
-    <div style="background: white; padding: 20px; margin: 20px; border-radius: 10px; cursor: pointer;">
-        <h3>Total Students</h3>
-        <p>120</p>
-    </div>
-        </a>
-
-        <div style="background: white; padding: 20px; margin: 20px; border-radius: 10px;">
-            <h3>Total Teachers</h3>
-            <p>15</p>
+        <div style="background: white; padding: 30px; border-radius: 10px; width: 40%; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            <h2>Total Students</h2>
+            <p id="studentCount" style="font-size: 24px; font-weight: bold;">0</p>
+            <a href="students.html">Go to Students</a>
         </div>
 
-        <div style="background: white; padding: 20px; margin: 20px; border-radius: 10px;">
-            <h3>Classes</h3>
-            <p>10</p>
+        <div style="background: white; padding: 30px; border-radius: 10px; width: 40%; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            <h2>Total Teachers</h2>
+            <p id="teacherCount" style="font-size: 24px; font-weight: bold;">0</p>
+            <a href="teachers.html">Go to Teachers</a>
         </div>
 
     </div>
+
+    <!-- JavaScript to count rows dynamically -->
+    <script>
+        function updateCounts() {
+            // Count Students
+            fetch('students.html')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const studentTable = doc.getElementById('studentTable');
+                    const studentCount = studentTable ? studentTable.rows.length - 1 : 0; // exclude header row
+                    document.getElementById('studentCount').innerText = studentCount;
+                });
+
+            // Count Teachers
+            fetch('teachers.html')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const teacherTable = doc.getElementById('teacherTable');
+                    const teacherCount = teacherTable ? teacherTable.rows.length - 1 : 0; // exclude header row
+                    document.getElementById('teacherCount').innerText = teacherCount;
+                });
+        }
+
+        updateCounts();
+    </script>
 
 </body>
 </html>
