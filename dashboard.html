@@ -1,48 +1,83 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard - School System</title>
+    <title>Dashboard - School Management System</title>
     <style>
-        body { font-family: Arial; background-color: #f4f4f4; margin:0; padding:0; }
-        .nav { text-align:center; padding:10px; background:#333; }
-        .nav a { color:white; margin:0 15px; text-decoration:none; font-weight:bold; }
-        .nav a.current { text-decoration:underline; }
-        .cards-container { width:50%; margin:50px auto; display:flex; justify-content:space-around; }
-        .card { background:white; padding:30px; border-radius:10px; width:40%; text-align:center; box-shadow:0 0 10px rgba(0,0,0,0.1); }
-        .card p { font-size:24px; font-weight:bold; }
-        .welcome { text-align:center; margin-top:20px; font-size:18px; }
-        .logout-btn { display:block; margin:20px auto; padding:10px 20px; background:red; color:white; border:none; border-radius:5px; cursor:pointer; }
-        footer { text-align:center; padding:20px; background:#333; color:white; margin-top:50px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .nav {
+            text-align: center;
+            padding: 10px;
+            background: #333;
+        }
+        .nav a {
+            color: white;
+            margin: 0 15px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .nav a.current {
+            text-decoration: underline;
+        }
+        .cards-container {
+            width: 60%;
+            margin: 50px auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 40%;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card p {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: white;
+            margin-top: 50px;
+        }
+        button.logout {
+            background: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
 <script>
-if(!localStorage.getItem("loggedInUser")) {
-    window.location.href = "index.html";
-}
+    // Check if logged in
+    const loggedUser = localStorage.getItem("loggedInUser");
+    const loggedRole = localStorage.getItem("loggedInRole");
+
+    if(!loggedUser || !loggedRole){
+        window.location.href = "index.html";
+    }
 </script>
 
+<!-- Navigation Bar -->
 <div class="nav">
     <a href="dashboard.html" class="current">Dashboard</a>
     <a href="students.html">Students</a>
     <a href="teachers.html">Teachers</a>
+    <button class="logout" onclick="logout()">Logout</button>
 </div>
 
-<div class="welcome" id="welcomeUser"></div>
-<button class="logout-btn" onclick="logout()">Logout</button>
-
-<div class="cards-container">
-    <div class="card">
-        <h2>Total Students</h2>
-        <p id="studentCount">0</p>
-        <a href="students.html">Go to Students</a>
-    </div>
-    <div class="card">
-        <h2>Total Teachers</h2>
-        <p id="teacherCount">0</p>
-        <a href="teachers.html">Go to Teachers</a>
-    </div>
+<div id="content" class="cards-container">
+    <!-- Dashboard content will appear here dynamically -->
 </div>
 
 <footer>
@@ -50,27 +85,51 @@ if(!localStorage.getItem("loggedInUser")) {
 </footer>
 
 <script>
-const user = localStorage.getItem("loggedInUser");
-document.getElementById("welcomeUser").innerText = "Welcome, " + user;
-
 function logout(){
     localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("loggedInRole");
     window.location.href = "index.html";
 }
 
-// Ensure arrays exist
-if(!localStorage.getItem("students")) localStorage.setItem("students", JSON.stringify([]));
-if(!localStorage.getItem("teachers")) localStorage.setItem("teachers", JSON.stringify([]));
+// Load dashboard content
+function loadDashboard(){
+    const content = document.getElementById("content");
 
-// Update counts
-function updateCounts() {
-    const students = JSON.parse(localStorage.getItem("students"));
-    const teachers = JSON.parse(localStorage.getItem("teachers"));
-    document.getElementById("studentCount").innerText = students.length;
-    document.getElementById("teacherCount").innerText = teachers.length;
+    const students = JSON.parse(localStorage.getItem("students")) || [];
+    const teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+
+    if(loggedRole === "student"){
+        // Show only this student's info
+        const student = students.find(s => s.username === loggedUser);
+        content.innerHTML = `
+            <div class="card">
+                <h2>Welcome, ${student.name}</h2>
+                <p>Class: ${student.class}</p>
+            </div>
+            <div class="card">
+                <h2>Results</h2>
+                <p>Math: ${student.results.math}</p>
+                <p>English: ${student.results.english}</p>
+            </div>
+        `;
+    } else {
+        // Admin/Teacher view
+        content.innerHTML = `
+            <div class="card">
+                <h2>Total Students</h2>
+                <p>${students.length}</p>
+                <a href="students.html">Go to Students</a>
+            </div>
+            <div class="card">
+                <h2>Total Teachers</h2>
+                <p>${teachers.length}</p>
+                <a href="teachers.html">Go to Teachers</a>
+            </div>
+        `;
+    }
 }
 
-window.onload = updateCounts;
+window.onload = loadDashboard;
 </script>
 
 </body>
