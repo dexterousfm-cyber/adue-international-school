@@ -1,18 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>School Management System</title>
-</head>
-<body style="text-align: center; margin-top: 100px; font-family: Arial;">
+<script>
+const users = [
+    { username: 'admin', password: '1234' },
+    { username: 'teacher1', password: 'teach123' },
+    { username: 'student1', password: 'stud123' }
+];
 
-    <h1>Welcome to My School System</h1>
-    <p>This is my first project</p>
+function login() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const errorMsg = document.getElementById('error');
 
-    <br><br>
+    // Find user
+    const foundUser = users.find(u => u.username === user && u.password === pass);
 
-    <a href="login.html">
-        <button>Go to Login</button>
-    </a>
+    if (foundUser) {
+        // Save login session
+        localStorage.setItem("loggedInUser", user);
 
-</body>
-</html>
+        // Redirect to dashboard
+        window.location.href = "dashboard.html";
+    } else {
+        errorMsg.textContent = "Wrong username or password!";
+    }
+}
+</script>
