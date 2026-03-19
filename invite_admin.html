@@ -3,48 +3,42 @@
 <head>
     <title>Invite Admin - ADUE Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body { font-family: Arial; text-align:center; padding:50px; background:#f4f4f4; }
-        input { padding:10px; margin:10px; width:250px; font-size:16px; }
-        button { padding:10px 25px; font-size:16px; cursor:pointer; margin-top:10px; }
-        p { font-weight:bold; }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
-<body>
+<body style="text-align:center; padding:50px; font-family:Arial;">
+    <h1>Invite New Admin</h1>
+    <input type="email" id="adminEmail" placeholder="Enter new admin email"><br><br>
+    <button onclick="sendInvite()">Send Invite</button><br><br>
+    <p id="status"></p>
 
-<h1>Invite New Admin</h1>
+    <script>
+    // Initialize EmailJS with your public key
+    emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
 
-<input type="email" id="adminEmail" placeholder="Enter new admin email"><br>
-<button onclick="generateInvite()">Generate Invite Link</button><br>
-
-<p id="inviteLink"></p>
-<button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
-
-<script>
-// Check logged-in user
-let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
-if(!loggedIn || loggedIn.role !== "admin"){
-    alert("Access denied!");
-    window.location.href = "dashboard.html";
-}
-
-function generateInvite(){
-    let email = document.getElementById("adminEmail").value.trim();
-    if(!email){
-        alert("Please enter an email!");
-        return;
+    // Check logged-in user
+    let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
+    if(!loggedIn || loggedIn.role !== "admin"){
+        alert("Access denied!");
+        window.location.href = "dashboard.html";
     }
 
-    // Save invite in localStorage (optional)
-    let invites = JSON.parse(localStorage.getItem("adminInvites")) || [];
-    invites.push(email);
-    localStorage.setItem("adminInvites", JSON.stringify(invites));
+    function sendInvite(){
+        let email = document.getElementById("adminEmail").value.trim();
+        if(!email){ alert("Please enter an email!"); return; }
 
-    // Create a simple registration link
-    let link = `${window.location.origin}/register_admin.html?email=${encodeURIComponent(email)}`;
-    document.getElementById("inviteLink").innerHTML = `Invite link: <a href="${link}" target="_blank">${link}</a>`;
-}
-</script>
+        // Generate registration link
+        let link = `${window.location.origin}/register_admin.html?email=${encodeURIComponent(email)}`;
 
+        // Send email via EmailJS
+        emailjs.send("service_m1r9p09", "YOUR_TEMPLATE_ID", {  // Replace YOUR_TEMPLATE_ID
+            to_email: email,
+            invite_link: link
+        }).then(function(response){
+            document.getElementById("status").innerText = "Invite sent successfully to " + email;
+        }, function(error){
+            document.getElementById("status").innerText = "Failed to send invite: " + JSON.stringify(error);
+        });
+    }
+    </script>
 </body>
 </html>
