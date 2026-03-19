@@ -1,96 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Registration - School System</title>
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 350px;
-            text-align: center;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 10px 20px;
-            background: green;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        h2 { margin-bottom: 20px; }
-        a { display: block; margin-top: 15px; color: blue; text-decoration: none; }
-    </style>
+    <title>Register Student - ADUE Portal</title>
 </head>
 <body>
 
-<div class="container">
-    <h2>Student Registration</h2>
-    <input type="text" id="name" placeholder="Full Name" required><br>
-    <input type="text" id="class" placeholder="Class" required><br>
-    <input type="text" id="username" placeholder="Username" required><br>
-    <input type="password" id="password" placeholder="Password" required><br>
-    <button onclick="registerStudent()">Register</button>
-    <a href="index.html">Back to Login</a>
-</div>
+<h1>Register Student (Admin Only)</h1>
+
+<input type="text" id="name" placeholder="Student Name"><br>
+<input type="email" id="email" placeholder="Student Email"><br>
+<input type="password" id="password" placeholder="Student Password"><br>
+<input type="text" id="class" placeholder="Class"><br>
+<button onclick="registerStudent()">Register Student</button>
 
 <script>
-function registerStudent() {
-    const name = document.getElementById("name").value.trim();
-    const cls = document.getElementById("class").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+if(!loggedInUser || loggedInUser.role !== "admin"){
+    alert("Only admins can register students!");
+    window.location.href = "dashboard.html";
+}
 
-    if(!name || !cls || !username || !password){
-        alert("Please fill all fields!");
+function registerStudent(){
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const className = document.getElementById("class").value;
+
+    if(!name || !email || !password || !className){
+        alert("Please fill all fields");
         return;
     }
 
-    // Get existing students
-    let students = JSON.parse(localStorage.getItem("students")) || [];
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push({name, email, password, role:"student", class: className});
+    localStorage.setItem("users", JSON.stringify(users));
 
-    // Check if username exists
-    const exists = students.some(s => s.username === username);
-    if(exists){
-        alert("Username already exists! Choose another.");
-        return;
-    }
-
-    // Add new student
-    students.push({
-        username: username,
-        password: password,
-        name: name,
-        class: cls,
-        results: { math: 0, english: 0 } // default empty results
-    });
-
-    localStorage.setItem("students", JSON.stringify(students));
-    alert("Registration successful! You can now login.");
-    
-    // Clear fields
+    alert("Student registered successfully!");
     document.getElementById("name").value = "";
-    document.getElementById("class").value = "";
-    document.getElementById("username").value = "";
+    document.getElementById("email").value = "";
     document.getElementById("password").value = "";
+    document.getElementById("class").value = "";
 }
 </script>
+
+<a href="dashboard.html">Back to Dashboard</a>
 
 </body>
 </html>
