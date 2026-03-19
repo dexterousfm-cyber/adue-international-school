@@ -1,18 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>School Management System</title>
-</head>
-<body style="text-align: center; margin-top: 100px; font-family: Arial;">
+# School Management System
 
-    <h1>Welcome to My School System</h1>
-    <p>This is my first project</p>
+A simple school management system to manage students and teachers.  
+Features include login, add/view students & teachers, dashboard with totals, and logout functionality.
 
-    <br><br>
+## Users
 
-    <a href="login.html">
-        <button>Go to Login</button>
-    </a>
+- **admin** / 1234
+- **teacher1** / teach123
+- **student1** / stud123
 
-</body>
-</html>
+## Pages
+
+- `index.html` → Login
+- `dashboard.html` → Dashboard
+- `students.html` → Manage Students
+- `teachers.html` → Manage Teachers
