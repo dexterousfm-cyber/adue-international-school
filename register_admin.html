@@ -11,58 +11,53 @@
 </head>
 <body>
 
-<h1>Admin Registration</h1>
+<h1>Register as Admin</h1>
 
-<input type="text" id="name" placeholder="Full Name"><br>
-<input type="email" id="email" placeholder="Email"><br>
-<input type="password" id="password" placeholder="Set Password"><br>
+<input type="email" id="email" placeholder="Email" readonly><br>
+<input type="password" id="password" placeholder="Set your password"><br>
 <button onclick="registerAdmin()">Register</button>
 
 <script>
-// Get invite code from URL
-const params = new URLSearchParams(window.location.search);
-const code = params.get("code");
+// Get email from invite link
+const urlParams = new URLSearchParams(window.location.search);
+const invitedEmail = urlParams.get('email');
 
-// Retrieve admin invites
-let invites = JSON.parse(localStorage.getItem("adminInvites")) || [];
-let invite = invites.find(i => i.code === code);
-
-if(!invite){
-    alert("Invalid or expired invite link!");
-    window.location.href="login.html";
+if(!invitedEmail){
+    alert("Invalid invite link!");
+    window.location.href = "dashboard.html";
+} else {
+    document.getElementById("email").value = invitedEmail;
 }
 
-// Pre-fill name and email
-document.getElementById("name").value = invite.name;
-document.getElementById("email").value = invite.email;
-
 function registerAdmin(){
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value.trim();
 
-    if(!name || !email || !password){
-        alert("Please fill in all fields");
+    if(!password){
+        alert("Please set your password!");
         return;
     }
 
+    // Get existing users
     let users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Check duplicate email
+    // Check if email already exists
     if(users.find(u => u.email.toLowerCase() === email.toLowerCase())){
-        alert("A user with this email already exists");
+        alert("An account with this email already exists!");
         return;
     }
 
     // Add new admin
-    users.push({name, email, password, role:"admin"});
+    users.push({
+        email: email,
+        password: password,
+        role: "admin",
+        name: "" // optional: admin name can be added later
+    });
+
     localStorage.setItem("users", JSON.stringify(users));
 
-    // Remove used invite
-    invites = invites.filter(i => i.code !== code);
-    localStorage.setItem("adminInvites", JSON.stringify(invites));
-
-    alert("Admin registered successfully! You can now log in.");
+    alert("Registration successful! You can now login.");
     window.location.href = "login.html";
 }
 </script>
