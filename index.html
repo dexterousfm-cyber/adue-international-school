@@ -11,12 +11,12 @@
             align-items: center;
             height: 100vh;
         }
-        .login-container {
+        .container {
             background: white;
             padding: 30px;
             border-radius: 10px;
+            width: 350px;
             text-align: center;
-            width: 300px;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
         input {
@@ -35,34 +35,57 @@
             cursor: pointer;
         }
         h2 { margin-bottom: 20px; }
+        a { display: block; margin-top: 15px; color: blue; text-decoration: none; }
     </style>
 </head>
 <body>
 
-<div class="login-container">
+<div class="container">
     <h2>Login</h2>
     <input type="text" id="username" placeholder="Username"><br>
     <input type="password" id="password" placeholder="Password"><br>
     <button onclick="login()">Login</button>
+    <a href="register_student.html">Student Registration</a>
 </div>
 
 <script>
-const users = [
-    { username: 'admin', password: '1234' },
-    { username: 'teacher1', password: 'teach123' },
-    { username: 'student1', password: 'stud123' }
-];
-
 function login() {
     const u = document.getElementById("username").value.trim();
     const p = document.getElementById("password").value.trim();
 
-    const found = users.find(x => x.username === u && x.password === p);
+    if(!u || !p){
+        alert("Please enter both username and password");
+        return;
+    }
 
-    if(found) {
+    // Default admin account
+    const adminUser = { username: 'admin', password: '1234' };
+
+    // Get students and teachers from Local Storage
+    const students = JSON.parse(localStorage.getItem("students")) || [];
+    const teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+
+    let role = "";
+    let foundUser = null;
+
+    if(u === adminUser.username && p === adminUser.password){
+        role = "admin";
+        foundUser = adminUser;
+    } else {
+        // Check teachers
+        foundUser = teachers.find(t => t.username === u && t.password === p);
+        if(foundUser) role = "teacher";
+        else {
+            // Check students
+            foundUser = students.find(s => s.username === u && s.password === p);
+            if(foundUser) role = "student";
+        }
+    }
+
+    if(foundUser && role){
+        // Save login info
         localStorage.setItem("loggedInUser", u);
-        if(!localStorage.getItem("students")) localStorage.setItem("students", JSON.stringify([]));
-        if(!localStorage.getItem("teachers")) localStorage.setItem("teachers", JSON.stringify([]));
+        localStorage.setItem("loggedInRole", role);
         window.location.href = "dashboard.html";
     } else {
         alert("Invalid username or password");
