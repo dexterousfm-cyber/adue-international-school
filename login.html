@@ -1,24 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login - School System</title>
+    <title>ADUE Portal Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; text-align:center; padding-top:50px;}
+        input { padding:10px; margin:10px; width:200px;}
+        button { padding:10px 20px;}
+    </style>
 </head>
-<body style="font-family: Arial; background-color: #f4f4f4;">
+<body>
 
-    <div style="width: 300px; margin: 100px auto; padding: 20px; background: white; border-radius: 10px; text-align: center;">
+<h1>ADUE International School - Login</h1>
 
-        <h2>School Login</h2>
+<input type="email" id="email" placeholder="Email"><br>
+<input type="password" id="password" placeholder="Password"><br>
+<button onclick="login()">Login</button>
 
-        <input type="text" placeholder="Email" style="width: 90%; padding: 10px; margin: 10px;"><br>
-        <input type="password" placeholder="Password" style="width: 90%; padding: 10px; margin: 10px;"><br>
+<script>
+    function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-        <a href="dashboard.html">
-    <button style="padding: 10px 20px; background: blue; color: white; border: none; border-radius: 5px;">
-        Login
-    </button>
-</a>
+        // Example hardcoded users
+        const users = [
+            {email: "admin@adue.edu", password: "admin123", role:"admin"},
+            {email: "student1@adue.edu", password: "student123", role:"student"},
+            {email: "teacher1@adue.edu", password: "teacher123", role:"teacher"}
+        ];
 
-    </div>
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if(user){
+            // Store logged-in user info
+            localStorage.setItem("loggedInUser", JSON.stringify(user));
+            window.location.href = "dashboard.html";
+        } else {
+            alert("Invalid email or password");
+        }
+    }
+</script>
 
 </body>
 </html>
