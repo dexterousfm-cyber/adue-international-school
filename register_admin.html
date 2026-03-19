@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Admin - ADUE Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial; text-align:center; padding:50px; background:#f4f4f4; }
+        input { padding:10px; margin:10px; width:250px; font-size:16px; }
+        button { padding:10px 25px; font-size:16px; cursor:pointer; margin-top:10px; }
+    </style>
+</head>
+<body>
+
+<h1>Admin Registration</h1>
+
+<input type="text" id="name" placeholder="Full Name"><br>
+<input type="email" id="email" placeholder="Email"><br>
+<input type="password" id="password" placeholder="Set Password"><br>
+<button onclick="registerAdmin()">Register</button>
+
+<script>
+// Get invite code from URL
+const params = new URLSearchParams(window.location.search);
+const code = params.get("code");
+
+// Retrieve admin invites
+let invites = JSON.parse(localStorage.getItem("adminInvites")) || [];
+let invite = invites.find(i => i.code === code);
+
+if(!invite){
+    alert("Invalid or expired invite link!");
+    window.location.href="login.html";
+}
+
+// Pre-fill name and email
+document.getElementById("name").value = invite.name;
+document.getElementById("email").value = invite.email;
+
+function registerAdmin(){
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if(!name || !email || !password){
+        alert("Please fill in all fields");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // Check duplicate email
+    if(users.find(u => u.email.toLowerCase() === email.toLowerCase())){
+        alert("A user with this email already exists");
+        return;
+    }
+
+    // Add new admin
+    users.push({name, email, password, role:"admin"});
+    localStorage.setItem("users", JSON.stringify(users));
+
+    // Remove used invite
+    invites = invites.filter(i => i.code !== code);
+    localStorage.setItem("adminInvites", JSON.stringify(invites));
+
+    alert("Admin registered successfully! You can now log in.");
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>
