@@ -13,9 +13,7 @@
 </head>
 <body>
 
-<div class="nav" id="navBar">
-    <!-- Navigation links will be inserted by JS -->
-</div>
+<div class="nav" id="navBar"></div>
 
 <h1>Dashboard</h1>
 
@@ -45,7 +43,7 @@ if(loggedIn.role === "admin"){
         <a href="#" onclick="logout()">Logout</a>
     `;
 
-    // Count users
+    // Count users dynamically
     let totalStudents = users.filter(u => u.role === "student").length;
     let totalTeachers = users.filter(u => u.role === "teacher").length;
     let totalAdmins = users.filter(u => u.role === "admin").length;
