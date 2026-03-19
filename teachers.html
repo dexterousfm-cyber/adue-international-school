@@ -1,50 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Teachers</title>
+    <title>Teachers - School System</title>
     <style>
-        body {
-            font-family: Arial;
-            background: #f4f4f4;
-            margin: 0;
-        }
-        .nav {
-            text-align: center;
-            padding: 10px;
-            background: #333;
-        }
-        .nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .nav a.current {
-            text-decoration: underline;
-        }
-        .container {
-            width: 300px;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        button {
-            padding: 10px;
-            background: red;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+        body { font-family: Arial; background: #f4f4f4; margin:0; }
+        .nav { text-align: center; padding: 10px; background: #333; }
+        .nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
+        .nav a.current { text-decoration: underline; }
+        .container { width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; text-align: center; }
+        input { width: 90%; padding: 10px; margin: 10px 0; }
+        button { padding: 10px 20px; background: green; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .logout-btn { display:block; margin: 20px auto; padding: 10px; background:red; color:white; border:none; border-radius:5px; cursor:pointer; }
     </style>
 </head>
-
 <body>
 
 <script>
-if (!localStorage.getItem("loggedInUser")) {
+if(!localStorage.getItem("loggedInUser")){
     window.location.href = "index.html";
 }
 </script>
@@ -57,21 +29,33 @@ if (!localStorage.getItem("loggedInUser")) {
 
 <div class="container">
     <h3 id="welcomeUser"></h3>
-
-    <h2>Teachers Page</h2>
-    <p>No teachers added yet</p>
-
-    <a href="add-teacher.html">Add Teacher</a>
-    <br><br>
-
-    <button onclick="logout()">Logout</button>
+    <h2>Add New Teacher</h2>
+    <input type="text" id="teacherName" placeholder="Teacher Name" required><br>
+    <input type="text" id="teacherSubject" placeholder="Subject" required><br>
+    <button onclick="addTeacher()">Add Teacher</button>
+    <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
 <script>
 const user = localStorage.getItem("loggedInUser");
-document.getElementById("welcomeUser").textContent = "Welcome, " + user;
+document.getElementById("welcomeUser").innerText = "Welcome, " + user;
 
-function logout() {
+// Add teacher function
+function addTeacher(){
+    const name = document.getElementById("teacherName").value.trim();
+    const subject = document.getElementById("teacherSubject").value.trim();
+    if(!name || !subject) return alert("Fill all fields!");
+
+    let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+    teachers.push({name:name, subject:subject});
+    localStorage.setItem("teachers", JSON.stringify(teachers));
+    alert("Teacher added successfully!");
+    document.getElementById("teacherName").value="";
+    document.getElementById("teacherSubject").value="";
+}
+
+// Logout
+function logout(){
     localStorage.removeItem("loggedInUser");
     window.location.href = "index.html";
 }
