@@ -2,6 +2,11 @@
 <html>
 <head>
     <title>ADUE Portal Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align:center; padding-top:50px; background:#f4f4f4; }
+        input { padding:10px; margin:10px; width:250px; font-size:16px; }
+        button { padding:10px 25px; font-size:16px; cursor:pointer; }
+    </style>
 </head>
 <body>
 
@@ -12,12 +17,33 @@
 <button onclick="login()">Login</button>
 
 <script>
+// Force-create admin if not exists
+let users = JSON.parse(localStorage.getItem("users")) || [];
+if(!users.find(u => u.role === "admin")){
+    users.push({
+        name: "Admin User",
+        email: "dexterousfm@gmail.com",
+        password: "Ayomide@123",
+        role: "admin"
+    });
+    localStorage.setItem("users", JSON.stringify(users));
+    console.log("Admin account created!");
+}
+
+// Clear previous session
+localStorage.removeItem("loggedInUser");
+
 function login() {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
 
+    if(!email || !password){
+        alert("Please enter both email and password");
+        return;
+    }
+
     let users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
 
     if(user){
         localStorage.setItem("loggedInUser", JSON.stringify(user));
