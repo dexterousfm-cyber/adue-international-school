@@ -4,50 +4,25 @@
     <title>Students - ADUE Portal</title>
 </head>
 <body>
+<h1>Students</h1>
+<button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+
+<div id="studentList"></div>
 
 <script>
-const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-if(!loggedInUser) window.location.href = "login.html";
+let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
+if(!loggedIn || loggedIn.role !== "admin"){ alert("Access denied!"); window.location.href="login.html"; }
 
-if(loggedInUser.role === "teacher"){
-    alert("Teachers cannot view this page!");
-    window.location.href = "dashboard.html";
-}
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let students = users.filter(u=>u.role==="student");
 
-const users = JSON.parse(localStorage.getItem("users")) || [];
-const students = users.filter(u => u.role === "student");
-
-const table = document.createElement("table");
-table.border = "1";
-table.style.margin = "20px auto";
-
-const header = table.insertRow();
-header.innerHTML = "<th>Name</th><th>Email</th><th>Class</th>";
-
-if(loggedInUser.role === "admin"){
-    students.forEach(s => {
-        const row = table.insertRow();
-        row.innerHTML = `<td>${s.name}</td><td>${s.email}</td><td>${s.class}</td>`;
-    });
-} else {
-    const s = students.find(st => st.email === loggedInUser.email);
-    if(s){
-        const row = table.insertRow();
-        row.innerHTML = `<td>${s.name}</td><td>${s.email}</td><td>${s.class}</td>`;
-    }
-}
-
-document.body.appendChild(table);
-
-function logout(){
-    localStorage.removeItem("loggedInUser");
-    window.location.href = "login.html";
-}
+let div = document.getElementById("studentList");
+students.forEach(s=>{
+    let p = document.createElement("p");
+    p.innerText = `${s.name} | ${s.email}`;
+    div.appendChild(p);
+});
 </script>
-
-<br>
-<a href="dashboard.html">Back to Dashboard</a> | 
-<a href="#" onclick="logout()">Logout</a>
 
 </body>
 </html>
