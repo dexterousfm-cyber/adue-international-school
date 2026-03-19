@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADUE Portal - Login</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADUE Portal - Login</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>ADUE Portal Login</h1>
+<div class="container">
+    <h1>ADUE Portal Login</h1>
+    
+    <form id="loginForm">
+        <label for="role">Role:</label>
+        <select id="role" required>
+            <option value="">Select Role</option>
+            <option value="admin">Admin</option>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+        </select>
 
-        <form id="loginForm">
-            <label for="role">Login As:</label>
-            <select id="role" required>
-                <option value="">Select Role</option>
-                <option value="admin">Admin</option>
-                <option value="teacher">Teacher</option>
-                <option value="student">Student</option>
-            </select>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter email" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" placeholder="Enter your email" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter password" required>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Enter your password" required>
+        <button type="submit">Login</button>
+    </form>
 
-            <button type="submit">Login</button>
-        </form>
+    <p>Teacher? <a href="register_teacher.html">Register here</a></p>
 
-        <p>Teacher not registered? <a href="register_teacher.html">Register here</a></p>
-    </div>
+    <h2>Upcoming Webinar</h2>
+    <p>Join our live webinar to learn about ADUE Portal features: <a href="https://yourwebinarlink.com" target="_blank">Click here to join</a></p>
+</div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
