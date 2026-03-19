@@ -1,70 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Teachers - School Management System</title>
+    <title>Teachers - Adue International School</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .nav {
-            text-align: center;
-            padding: 10px;
-            background: #333;
-        }
-        .nav a {
-            color: white;
-            margin: 0 15px;
-            font-weight: bold;
-            text-decoration: none;
-        }
-        .nav a.current {
-            text-decoration: underline;
-        }
-        table {
-            width: 60%;
-            margin: 30px auto;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-        input {
-            width: 90%;
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 5px 10px;
-            margin: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            background: green;
-            color: white;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin:0; padding:0; }
+        .nav { text-align:center; padding:10px; background:#333; }
+        .nav a { color:white; margin:0 15px; font-weight:bold; text-decoration:none; }
+        .nav a.current { text-decoration:underline; }
+        table { width:60%; margin:30px auto; border-collapse:collapse; background:white; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+        th, td { border:1px solid #ccc; padding:10px; text-align:center; }
+        input { width:90%; padding:5px; border-radius:5px; border:1px solid #ccc; }
+        button { padding:5px 10px; margin:5px; cursor:pointer; border-radius:5px; border:none; background:green; color:white; }
     </style>
 </head>
 <body>
 
 <script>
-    // Check login
-    const loggedUser = localStorage.getItem("loggedInUser");
-    const loggedRole = localStorage.getItem("loggedInRole");
-
-    if(!loggedUser || !loggedRole){
-        window.location.href = "index.html";
-    }
+const loggedUser = localStorage.getItem("loggedInUser");
+const loggedRole = localStorage.getItem("loggedInRole");
+if(!loggedUser || !loggedRole){ window.location.href="index.html"; }
 </script>
 
-<!-- Navigation Bar -->
 <div class="nav">
     <a href="dashboard.html">Dashboard</a>
     <a href="students.html">Students</a>
@@ -72,7 +28,7 @@
     <button style="background:red;" onclick="logout()">Logout</button>
 </div>
 
-<div id="adminSection" style="width: 60%; margin: 20px auto; display: none;">
+<div id="adminSection" style="width:60%; margin:20px auto; display:none;">
     <h3>Add New Teacher</h3>
     <input type="text" id="tName" placeholder="Full Name">
     <input type="text" id="tSubject" placeholder="Subject">
@@ -82,82 +38,55 @@
 </div>
 
 <table id="teacherTable">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Subject</th>
-            <th>Username</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Teachers will appear here -->
-    </tbody>
+    <thead><tr><th>Name</th><th>Subject</th><th>Username</th></tr></thead>
+    <tbody></tbody>
 </table>
 
 <script>
-function logout(){
-    localStorage.removeItem("loggedInUser");
-    localStorage.removeItem("loggedInRole");
-    window.location.href = "index.html";
-}
+function logout(){ localStorage.removeItem("loggedInUser"); localStorage.removeItem("loggedInRole"); window.location.href="index.html"; }
 
-// Load teachers
 function loadTeachers(){
     const teachers = JSON.parse(localStorage.getItem("teachers")) || [];
-    const tbody = document.querySelector("#teacherTable tbody");
-    tbody.innerHTML = "";
-
-    if(loggedRole === "admin"){
-        document.getElementById("adminSection").style.display = "block";
-        teachers.forEach(t => {
-            const row = document.createElement("tr");
-            row.innerHTML = `<td>${t.name}</td><td>${t.subject}</td><td>${t.username}</td>`;
+    const tbody=document.querySelector("#teacherTable tbody");
+    tbody.innerHTML="";
+    if(loggedRole==="admin"){
+        document.getElementById("adminSection").style.display="block";
+        teachers.forEach(t=>{
+            const row=document.createElement("tr");
+            row.innerHTML=`<td>${t.name}</td><td>${t.subject}</td><td>${t.username}</td>`;
             tbody.appendChild(row);
         });
     } else {
-        // Teacher view: show only self
-        const teacher = teachers.find(t => t.username === loggedUser);
+        const teacher = teachers.find(t=>t.username===loggedUser);
         if(teacher){
-            const row = document.createElement("tr");
-            row.innerHTML = `<td>${teacher.name}</td><td>${teacher.subject}</td><td>${teacher.username}</td>`;
+            const row=document.createElement("tr");
+            row.innerHTML=`<td>${teacher.name}</td><td>${teacher.subject}</td><td>${teacher.username}</td>`;
             tbody.appendChild(row);
         }
     }
 }
 
-// Add a new teacher (admin only)
 function addTeacher(){
-    const name = document.getElementById("tName").value.trim();
-    const subject = document.getElementById("tSubject").value.trim();
-    const username = document.getElementById("tUsername").value.trim();
-    const password = document.getElementById("tPassword").value.trim();
+    const name=document.getElementById("tName").value.trim();
+    const subject=document.getElementById("tSubject").value.trim();
+    const username=document.getElementById("tUsername").value.trim();
+    const password=document.getElementById("tPassword").value.trim();
+    if(!name||!subject||!username||!password){ alert("Fill all fields!"); return; }
 
-    if(!name || !subject || !username || !password){
-        alert("Please fill all fields!");
-        return;
-    }
+    let teachers=JSON.parse(localStorage.getItem("teachers"))||[];
+    if(teachers.some(t=>t.username===username)){ alert("Username exists!"); return; }
 
-    let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
-    const exists = teachers.some(t => t.username === username);
-    if(exists){
-        alert("Username already exists! Choose another.");
-        return;
-    }
-
-    teachers.push({name, subject, username, password});
+    teachers.push({name,subject,username,password});
     localStorage.setItem("teachers", JSON.stringify(teachers));
     alert("Teacher added successfully!");
-
-    // Clear fields
-    document.getElementById("tName").value = "";
-    document.getElementById("tSubject").value = "";
-    document.getElementById("tUsername").value = "";
-    document.getElementById("tPassword").value = "";
-
+    document.getElementById("tName").value="";
+    document.getElementById("tSubject").value="";
+    document.getElementById("tUsername").value="";
+    document.getElementById("tPassword").value="";
     loadTeachers();
 }
 
-window.onload = loadTeachers;
+window.onload=loadTeachers;
 </script>
 
 </body>
