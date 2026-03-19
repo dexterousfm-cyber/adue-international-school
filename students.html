@@ -7,11 +7,8 @@
 
 <script>
 const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-if(!loggedInUser){
-    window.location.href = "login.html";
-}
+if(!loggedInUser) window.location.href = "login.html";
 
-// Only admin and students can view
 if(loggedInUser.role === "teacher"){
     alert("Teachers cannot view this page!");
     window.location.href = "dashboard.html";
@@ -27,15 +24,12 @@ table.style.margin = "20px auto";
 const header = table.insertRow();
 header.innerHTML = "<th>Name</th><th>Email</th><th>Class</th>";
 
-// Admin sees all students
 if(loggedInUser.role === "admin"){
     students.forEach(s => {
         const row = table.insertRow();
         row.innerHTML = `<td>${s.name}</td><td>${s.email}</td><td>${s.class}</td>`;
     });
-}
-// Student sees only their own info
-else if(loggedInUser.role === "student"){
+} else {
     const s = students.find(st => st.email === loggedInUser.email);
     if(s){
         const row = table.insertRow();
