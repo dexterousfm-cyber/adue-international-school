@@ -2,12 +2,11 @@
 <html>
 <head>
     <title>Invite Admin - ADUE Portal</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <style>
         body { font-family: Arial; text-align:center; padding:50px; background:#f4f4f4; }
-        input { padding:10px; margin:10px; width:250px; font-size:16px; }
-        button { padding:10px 25px; font-size:16px; cursor:pointer; margin-top:10px; }
+        input, button { padding:10px; margin:10px; font-size:16px; width:250px; }
+        button { cursor:pointer; }
         p { font-weight:bold; }
     </style>
 </head>
@@ -21,33 +20,33 @@
 <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
 
 <script>
-    // Initialize EmailJS with your Public Key
-    emailjs.init("Cdc-P4Ew1nxdkEXN0"); 
+    // Initialize EmailJS with your public key
+    emailjs.init("Cdc-P4Ew1nxdkEXN0");
 
-    // Check if logged-in user is admin
+    // Ensure only admins can access this page
     let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
     if(!loggedIn || loggedIn.role !== "admin"){
-        alert("Access denied!");
+        alert("Access denied! Only admins can send invites.");
         window.location.href = "dashboard.html";
     }
 
     function sendInvite(){
         let email = document.getElementById("adminEmail").value.trim();
-        if(!email){ 
-            alert("Please enter an email!"); 
-            return; 
+        if(!email){
+            alert("Please enter an email!");
+            return;
         }
 
-        // Generate registration link
+        // Generate registration link dynamically
         let link = `${window.location.origin}/register_admin.html?email=${encodeURIComponent(email)}`;
 
-        // Send email via EmailJS
+        // Send the email using EmailJS
         emailjs.send(
-            "service_m1r9p09",       // Gmail Service ID
-            "template_yweh6yp",      // Your new Template ID
+            "service_m1r9p09",     // Your Gmail service ID
+            "template_yweh6yp",    // Your Admin Invite template ID
             {
-                to_email: email,
-                invite_link: link
+                to_email: email,     // Recipient email
+                invite_link: link    // Registration link
             }
         ).then(function(response){
             document.getElementById("status").innerText = "Invite sent successfully to " + email;
