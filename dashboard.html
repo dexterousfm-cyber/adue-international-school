@@ -50,21 +50,19 @@ if(!localStorage.getItem("loggedInUser")) {
 </footer>
 
 <script>
-// Show logged-in user
 const user = localStorage.getItem("loggedInUser");
 document.getElementById("welcomeUser").innerText = "Welcome, " + user;
 
-// Logout
 function logout(){
     localStorage.removeItem("loggedInUser");
     window.location.href = "index.html";
 }
 
-// Initialize arrays if empty
+// Ensure arrays exist
 if(!localStorage.getItem("students")) localStorage.setItem("students", JSON.stringify([]));
 if(!localStorage.getItem("teachers")) localStorage.setItem("teachers", JSON.stringify([]));
 
-// Update counts from Local Storage
+// Update counts
 function updateCounts() {
     const students = JSON.parse(localStorage.getItem("students"));
     const teachers = JSON.parse(localStorage.getItem("teachers"));
