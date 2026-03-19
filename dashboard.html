@@ -3,22 +3,22 @@
 <head>
     <title>Dashboard - School System</title>
     <style>
-        body { font-family: Arial; background-color: #f4f4f4; margin: 0; padding: 0; }
-        .nav { text-align: center; padding: 10px; background: #333; }
-        .nav a { color: white; margin: 0 15px; font-weight: bold; text-decoration: none; }
-        .nav a.current { text-decoration: underline; }
-        .cards-container { width: 50%; margin: 50px auto; display: flex; justify-content: space-around; }
-        .card { background: white; padding: 30px; border-radius: 10px; width: 40%; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .card p { font-size: 24px; font-weight: bold; }
-        .welcome { text-align: center; margin-top: 20px; font-size: 18px; }
-        .logout-btn { display: block; margin: 20px auto; padding: 10px 20px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        footer { text-align: center; padding: 20px; background: #333; color: white; margin-top: 50px; }
+        body { font-family: Arial; background-color: #f4f4f4; margin:0; padding:0; }
+        .nav { text-align:center; padding:10px; background:#333; }
+        .nav a { color:white; margin:0 15px; text-decoration:none; font-weight:bold; }
+        .nav a.current { text-decoration:underline; }
+        .cards-container { width:50%; margin:50px auto; display:flex; justify-content:space-around; }
+        .card { background:white; padding:30px; border-radius:10px; width:40%; text-align:center; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+        .card p { font-size:24px; font-weight:bold; }
+        .welcome { text-align:center; margin-top:20px; font-size:18px; }
+        .logout-btn { display:block; margin:20px auto; padding:10px 20px; background:red; color:white; border:none; border-radius:5px; cursor:pointer; }
+        footer { text-align:center; padding:20px; background:#333; color:white; margin-top:50px; }
     </style>
 </head>
 <body>
 
 <script>
-if (!localStorage.getItem("loggedInUser")) {
+if(!localStorage.getItem("loggedInUser")) {
     window.location.href = "index.html";
 }
 </script>
@@ -29,11 +29,9 @@ if (!localStorage.getItem("loggedInUser")) {
     <a href="teachers.html">Teachers</a>
 </div>
 
-<!-- Welcome message -->
 <div class="welcome" id="welcomeUser"></div>
 <button class="logout-btn" onclick="logout()">Logout</button>
 
-<!-- Dashboard Cards -->
 <div class="cards-container">
     <div class="card">
         <h2>Total Students</h2>
@@ -56,16 +54,20 @@ if (!localStorage.getItem("loggedInUser")) {
 const user = localStorage.getItem("loggedInUser");
 document.getElementById("welcomeUser").innerText = "Welcome, " + user;
 
-// Logout function
-function logout() {
+// Logout
+function logout(){
     localStorage.removeItem("loggedInUser");
     window.location.href = "index.html";
 }
 
-// Count students & teachers from Local Storage
+// Initialize arrays if empty
+if(!localStorage.getItem("students")) localStorage.setItem("students", JSON.stringify([]));
+if(!localStorage.getItem("teachers")) localStorage.setItem("teachers", JSON.stringify([]));
+
+// Update counts from Local Storage
 function updateCounts() {
-    const students = JSON.parse(localStorage.getItem("students")) || [];
-    const teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+    const students = JSON.parse(localStorage.getItem("students"));
+    const teachers = JSON.parse(localStorage.getItem("teachers"));
     document.getElementById("studentCount").innerText = students.length;
     document.getElementById("teacherCount").innerText = teachers.length;
 }
