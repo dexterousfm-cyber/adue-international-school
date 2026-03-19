@@ -7,11 +7,11 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <div class="container">
     <h1>ADUE Portal Login</h1>
-    
+
     <form id="loginForm">
-        <label for="role">Role:</label>
         <select id="role" required>
             <option value="">Select Role</option>
             <option value="admin">Admin</option>
@@ -19,19 +19,14 @@
             <option value="student">Student</option>
         </select>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" placeholder="Enter email" required>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter password" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
 
         <button type="submit">Login</button>
     </form>
 
     <p><strong>All accounts are created by the Admin</strong></p>
-<p><a href="#">Forgot Password?</a></p>
-    <h2>Upcoming Webinar</h2>
-    <p>Join our live webinar to learn about ADUE Portal features: <a href="https://yourwebinarlink.com" target="_blank">Click here to join</a></p>
+    <p><a href="#">Forgot Password?</a></p>
 </div>
 
 <script src="script.js"></script>
