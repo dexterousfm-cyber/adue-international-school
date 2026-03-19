@@ -1,42 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Registration</title>
+</head>
+<body>
+
 <h2>Teacher Registration</h2>
-<input type="text" id="teacherName" placeholder="Full Name"><br>
-<input type="email" id="teacherEmail" placeholder="Email"><br>
-<input type="password" id="teacherPassword" placeholder="Password"><br>
+
+<input type="text" id="teacherName" placeholder="Full Name"><br><br>
+<input type="email" id="teacherEmail" placeholder="Email"><br><br>
+<input type="password" id="teacherPassword" placeholder="Password"><br><br>
+
 <select id="teacherSubject">
     <option value="">Select Subject</option>
-    <option value="Math">Math</option>
-    <option value="English">English</option>
-    <option value="Science">Science</option>
-</select><br>
+    <option>Math</option>
+    <option>English</option>
+    <option>Science</option>
+</select><br><br>
+
 <button onclick="registerTeacher()">Register</button>
-<p id="teacherStatus"></p>
+
+<p id="status"></p>
 
 <script>
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
 function registerTeacher(){
-    let name = document.getElementById("teacherName").value.trim();
-    let email = document.getElementById("teacherEmail").value.trim();
-    let password = document.getElementById("teacherPassword").value.trim();
+    let name = document.getElementById("teacherName").value;
+    let email = document.getElementById("teacherEmail").value;
+    let password = document.getElementById("teacherPassword").value;
     let subject = document.getElementById("teacherSubject").value;
 
-    if(!name || !email || !password || !subject){
-        alert("All fields are required!");
-        return;
-    }
+    users.push({
+        name: name,
+        email: email,
+        password: password,
+        role: "teacher",
+        subject: subject
+    });
 
-    if(users.some(u => u.email === email)){
-        document.getElementById("teacherStatus").innerText = "Teacher with this email already exists!";
-        return;
-    }
-
-    // Directly approved
-    users.push({name, email, password, role:"teacher", subject});
     localStorage.setItem("users", JSON.stringify(users));
-    document.getElementById("teacherStatus").innerText = "Registration successful! You can now receive students.";
-    document.getElementById("teacherName").value = "";
-    document.getElementById("teacherEmail").value = "";
-    document.getElementById("teacherPassword").value = "";
-    document.getElementById("teacherSubject").value = "";
+
+    document.getElementById("status").innerText = "Teacher Registered!";
 }
 </script>
+
+</body>
+</html>
