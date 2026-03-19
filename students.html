@@ -1,68 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Students - School Management System</title>
+    <title>Students - Adue International School</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .nav {
-            text-align: center;
-            padding: 10px;
-            background: #333;
-        }
-        .nav a {
-            color: white;
-            margin: 0 15px;
-            font-weight: bold;
-            text-decoration: none;
-        }
-        .nav a.current {
-            text-decoration: underline;
-        }
-        table {
-            width: 80%;
-            margin: 30px auto;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-        input.result-input {
-            width: 60px;
-            text-align: center;
-        }
-        button {
-            padding: 5px 10px;
-            margin: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            background: green;
-            color: white;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin:0; padding:0; }
+        .nav { text-align: center; padding: 10px; background: #333; }
+        .nav a { color: white; margin: 0 15px; font-weight: bold; text-decoration: none; }
+        .nav a.current { text-decoration: underline; }
+        table { width: 80%; margin: 30px auto; border-collapse: collapse; background:white; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+        th, td { border:1px solid #ccc; padding:10px; text-align:center; }
+        input.result-input { width: 60px; text-align:center; }
+        button { padding:5px 10px; margin:5px; cursor:pointer; border-radius:5px; border:none; background:green; color:white; }
     </style>
 </head>
 <body>
 
 <script>
-    // Check login
-    const loggedUser = localStorage.getItem("loggedInUser");
-    const loggedRole = localStorage.getItem("loggedInRole");
-
-    if(!loggedUser || !loggedRole){
-        window.location.href = "index.html";
-    }
+const loggedUser = localStorage.getItem("loggedInUser");
+const loggedRole = localStorage.getItem("loggedInRole");
+if(!loggedUser || !loggedRole){ window.location.href = "index.html"; }
 </script>
 
-<!-- Navigation Bar -->
 <div class="nav">
     <a href="dashboard.html">Dashboard</a>
     <a href="students.html" class="current">Students</a>
@@ -72,76 +30,44 @@
 
 <table id="studentTable">
     <thead>
-        <tr>
-            <th>Name</th>
-            <th>Class</th>
-            <th>Math</th>
-            <th>English</th>
-            <th id="actionHeader">Action</th>
-        </tr>
+        <tr><th>Name</th><th>Class</th><th>Math</th><th>English</th><th id="actionHeader">Action</th></tr>
     </thead>
-    <tbody>
-        <!-- Students will be populated here -->
-    </tbody>
+    <tbody></tbody>
 </table>
 
 <script>
-function logout(){
-    localStorage.removeItem("loggedInUser");
-    localStorage.removeItem("loggedInRole");
-    window.location.href = "index.html";
-}
+function logout(){ localStorage.removeItem("loggedInUser"); localStorage.removeItem("loggedInRole"); window.location.href="index.html"; }
 
-// Load students
 function loadStudents(){
     const students = JSON.parse(localStorage.getItem("students")) || [];
     const tbody = document.querySelector("#studentTable tbody");
     tbody.innerHTML = "";
 
     if(loggedRole === "student"){
-        // Show only logged-in student's info
         const student = students.find(s => s.username === loggedUser);
-        tbody.innerHTML = `
-            <tr>
-                <td>${student.name}</td>
-                <td>${student.class}</td>
-                <td>${student.results.math}</td>
-                <td>${student.results.english}</td>
-                <td>Read-Only</td>
-            </tr>
-        `;
+        tbody.innerHTML = `<tr><td>${student.name}</td><td>${student.class}</td><td>${student.results.math}</td><td>${student.results.english}</td><td>Read-Only</td></tr>`;
         document.getElementById("actionHeader").style.display = "none";
     } else {
-        // Admin/teacher view - editable
-        students.forEach((s, index) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${s.name}</td>
-                <td>${s.class}</td>
-                <td><input type="number" min="0" max="100" class="result-input" value="${s.results.math}" id="math-${index}"></td>
-                <td><input type="number" min="0" max="100" class="result-input" value="${s.results.english}" id="english-${index}"></td>
-                <td><button onclick="saveResult(${index})">Save</button></td>
-            `;
+        students.forEach((s,i)=>{
+            const row=document.createElement("tr");
+            row.innerHTML=`<td>${s.name}</td><td>${s.class}</td><td><input type="number" min="0" max="100" class="result-input" value="${s.results.math}" id="math-${i}"></td><td><input type="number" min="0" max="100" class="result-input" value="${s.results.english}" id="english-${i}"></td><td><button onclick="saveResult(${i})">Save</button></td>`;
             tbody.appendChild(row);
         });
     }
 }
 
-// Save result for a student
-function saveResult(index){
+function saveResult(i){
     const students = JSON.parse(localStorage.getItem("students")) || [];
-    const math = parseInt(document.getElementById(`math-${index}`).value) || 0;
-    const english = parseInt(document.getElementById(`english-${index}`).value) || 0;
-
-    students[index].results.math = math;
-    students[index].results.english = english;
-
+    const math=parseInt(document.getElementById(`math-${i}`).value)||0;
+    const english=parseInt(document.getElementById(`english-${i}`).value)||0;
+    students[i].results.math=math;
+    students[i].results.english=english;
     localStorage.setItem("students", JSON.stringify(students));
-    alert(`Results for ${students[index].name} updated successfully!`);
+    alert(`Results for ${students[i].name} updated!`);
     loadStudents();
 }
 
-window.onload = loadStudents;
+window.onload=loadStudents;
 </script>
 
 </body>
