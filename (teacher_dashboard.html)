@@ -1,69 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Dashboard</title>
+</head>
+<body>
+
 <h1>Teacher Dashboard</h1>
-<button onclick="logout()">Logout</button>
+
+<h3>Add Student</h3>
+
+<input type="text" id="studentName" placeholder="Student Name"><br><br>
+<input type="email" id="studentEmail" placeholder="Student Email"><br><br>
+<input type="password" id="studentPassword" placeholder="Student Password"><br><br>
+
+<select id="studentClass">
+    <option>JSS1</option>
+    <option>JSS2</option>
+    <option>JSS3</option>
+    <option>SS1</option>
+    <option>SS2</option>
+    <option>SS3</option>
+</select><br><br>
+
+<input type="text" id="studentSubject" placeholder="Subject"><br><br>
+
+<button onclick="addStudent()">Add Student</button>
+
+<p id="status"></p>
+
+<hr>
 
 <h3>My Students</h3>
-<table id="studentTable">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Subject</th>
-      <th>Result</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-<p id="status"></p>
+<div id="students"></div>
 
 <script>
 let users = JSON.parse(localStorage.getItem("users")) || [];
 let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
 
-if(!loggedIn || loggedIn.role !== "teacher"){
-  alert("Access denied!");
-  window.location.href = "index.html";
+// Add student
+function addStudent(){
+    let name = document.getElementById("studentName").value;
+    let email = document.getElementById("studentEmail").value;
+    let password = document.getElementById("studentPassword").value;
+    let studentClass = document.getElementById("studentClass").value;
+    let subject = document.getElementById("studentSubject").value;
+
+    users.push({
+        name,
+        email,
+        password,
+        role: "student",
+        class: studentClass,
+        subject: subject,
+        teacherEmail: loggedIn.email
+    });
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    document.getElementById("status").innerText = "Student added!";
+    renderStudents();
 }
 
-function logout(){
-  localStorage.removeItem("loggedInUser");
-  window.location.href = "index.html";
-}
-
-// Show students assigned to this teacher
+// Show students
 function renderStudents(){
-  let tbody = document.getElementById("studentTable").getElementsByTagName("tbody")[0];
-  tbody.innerHTML = "";
-  let students = users.filter(u => u.role === "student" && u.teacherEmail === loggedIn.email);
+    let div = document.getElementById("students");
+    div.innerHTML = "";
 
-  if(students.length === 0){
-    tbody.innerHTML = "<tr><td colspan='5'>No students assigned yet</td></tr>";
-    return;
-  }
+    let myStudents = users.filter(u => u.role === "student" && u.teacherEmail === loggedIn.email);
 
-  students.forEach((s, idx) => {
-    let row = tbody.insertRow();
-    row.insertCell(0).innerText = s.name;
-    row.insertCell(1).innerText = s.email;
-    row.insertCell(2).innerText = s.subject;
-    row.insertCell(3).innerHTML = s.result ? s.result : `<input type='text' id='result_${idx}' placeholder='Enter result'>`;
-    row.insertCell(4).innerHTML = `<button onclick="saveResult(${idx})">Save</button>`;
-  });
+    myStudents.forEach((s, i) => {
+        div.innerHTML += `
+        <p>
+        ${s.name} - ${s.class} - ${s.subject}
+        <input type="text" id="result_${i}" placeholder="Result">
+        <button onclick="saveResult(${i})">Save</button>
+        </p>`;
+    });
 }
 
-// Save student result
-function saveResult(idx){
-  let students = users.filter(u => u.role === "student" && u.teacherEmail === loggedIn.email);
-  let value = document.getElementById(`result_${idx}`).value.trim();
-  if(!value){ alert("Enter a result"); return; }
+// Save result
+function saveResult(i){
+    let myStudents = users.filter(u => u.role === "student" && u.teacherEmail === loggedIn.email);
+    let value = document.getElementById("result_"+i).value;
 
-  let student = students[idx];
-  student.result = value;
-  users = users.map(u => u.email === student.email ? student : u);
-  localStorage.setItem("users", JSON.stringify(users));
-  document.getElementById("status").innerText = `Result saved for ${student.name}`;
-  renderStudents();
+    let student = myStudents[i];
+    student.result = value;
+
+    users = users.map(u => u.email === student.email ? student : u);
+    localStorage.setItem("users", JSON.stringify(users));
+
+    renderStudents();
 }
 
 renderStudents();
 </script>
+
+</body>
+</html>
