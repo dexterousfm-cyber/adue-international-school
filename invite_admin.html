@@ -4,10 +4,10 @@
     <title>Invite Admin - ADUE Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <style>
-        body { font-family: Arial; text-align:center; padding:50px; background:#f4f4f4; }
-        input, button { padding:10px; margin:10px; font-size:16px; width:250px; }
+        body { font-family: Arial, sans-serif; background:#f4f4f4; text-align:center; padding:50px; }
+        input, button { padding:10px; margin:10px; font-size:16px; width:300px; }
         button { cursor:pointer; }
-        p { font-weight:bold; }
+        p { font-weight:bold; color:green; }
     </style>
 </head>
 <body>
@@ -23,7 +23,7 @@
     // Initialize EmailJS with your public key
     emailjs.init("Cdc-P4Ew1nxdkEXN0");
 
-    // Ensure only admins can access this page
+    // Ensure only admins can access
     let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
     if(!loggedIn || loggedIn.role !== "admin"){
         alert("Access denied! Only admins can send invites.");
@@ -42,11 +42,12 @@
 
         // Send the email using EmailJS
         emailjs.send(
-            "service_m1r9p09",     // Your Gmail service ID
-            "template_yweh6yp",    // Your Admin Invite template ID
+            "service_m1r9p09",    // Gmail service ID
+            "template_839q9a6",   // Template ID
             {
-                to_email: email,     // Recipient email
-                invite_link: link    // Registration link
+                to_email: email,  // Recipient
+                invite_link: link, // Registration link
+                to_name: email.split("@")[0] // Optional: first part of email as name
             }
         ).then(function(response){
             document.getElementById("status").innerText = "Invite sent successfully to " + email;
