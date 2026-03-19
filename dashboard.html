@@ -3,57 +3,53 @@
 <head>
     <title>Dashboard - ADUE Portal</title>
     <style>
-        body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0;}
-        .nav { text-align:center; background:#333; padding:10px;}
-        .nav a { color:white; margin:0 10px; text-decoration:none; font-weight:bold;}
-        .nav a.current { text-decoration:underline;}
-        .cards-container { display:flex; justify-content:center; margin-top:50px; }
-        .card { background:white; padding:30px; margin:10px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); width:200px; text-align:center;}
+        body { font-family: Arial, sans-serif; background:#f4f4f4; text-align:center; padding:20px;}
+        .card { display:inline-block; background:white; padding:20px; margin:10px; border-radius:10px; width:200px; }
+        a { text-decoration:none; color:blue; }
     </style>
 </head>
 <body>
 
 <script>
-    // Protect page
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if(!loggedInUser){
-        window.location.href = "login.html";
-    }
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+if(!loggedInUser) window.location.href = "login.html";
+
+function logout(){
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+}
 </script>
 
-<div class="nav">
-    <a href="dashboard.html" class="current">Dashboard</a>
-    <a href="students.html">Students</a>
-    <a href="teachers.html">Teachers</a>
-    <a href="#" onclick="logout()">Logout</a>
+<h1>Welcome, <span id="username"></span></h1>
+
+<div class="card">
+    <h3>Students</h3>
+    <p>View Students</p>
+    <a href="students.html">Go</a>
 </div>
 
-<h1 style="text-align:center;">Welcome, <span id="username"></span></h1>
-
-<div class="cards-container">
-    <div class="card">
-        <h2>Total Students</h2>
-        <p id="studentCount">0</p>
-        <a href="students.html">Go to Students</a>
-    </div>
-    <div class="card">
-        <h2>Total Teachers</h2>
-        <p id="teacherCount">0</p>
-        <a href="teachers.html">Go to Teachers</a>
-    </div>
+<div class="card">
+    <h3>Teachers</h3>
+    <p>View Teachers</p>
+    <a href="teachers.html">Go</a>
 </div>
+
+<div class="card" id="registerStudentCard" style="display:none;">
+    <h3>Register Student</h3>
+    <p>Add new student</p>
+    <a href="register_student.html">Go</a>
+</div>
+
+<br><br>
+<button onclick="logout()">Logout</button>
 
 <script>
-    document.getElementById("username").innerText = loggedInUser.email;
+document.getElementById("username").innerText = loggedInUser.name;
 
-    // Fake count example
-    document.getElementById("studentCount").innerText = 10;
-    document.getElementById("teacherCount").innerText = 5;
-
-    function logout(){
-        localStorage.removeItem("loggedInUser");
-        window.location.href = "login.html";
-    }
+// Show "Register Student" only for admin
+if(loggedInUser.role === "admin"){
+    document.getElementById("registerStudentCard").style.display = "inline-block";
+}
 </script>
 
 </body>
