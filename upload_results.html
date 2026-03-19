@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Results - Teacher Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial; text-align:center; padding:50px; background:#f4f4f4; }
+        select, input { padding:10px; margin:10px; font-size:16px; }
+        button { padding:10px 25px; font-size:16px; cursor:pointer; margin-top:10px; }
+        table { margin:auto; border-collapse: collapse; margin-top:20px; }
+        th, td { border:1px solid #ccc; padding:10px; }
+        th { background:#333; color:white; }
+    </style>
+</head>
+<body>
+
+<h1>Upload Results</h1>
+
+<select id="studentSelect">
+    <option value="">Select Student</option>
+</select><br>
+<input type="text" id="subject" placeholder="Subject"><br>
+<input type="number" id="score" placeholder="Score"><br>
+<button onclick="addResult()">Add Result</button>
+
+<h2>My Students' Results</h2>
+<table>
+    <thead>
+        <tr><th>Student</th><th>Subject</th><th>Score</th></tr>
+    </thead>
+    <tbody id="resultsTable"></tbody>
+</table>
+
+<script>
+// Get logged-in teacher
+let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
+if(!loggedIn || loggedIn.role !== "teacher"){
+    alert("Access denied!");
+    window.location.href="login.html";
+}
+
+// Load students of this teacher
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let myStudents = users.filter(u => u.role === "student" && u.teacherEmail === loggedIn.email);
+let studentSelect = document.getElementById("studentSelect");
+myStudents.forEach(s => {
+    let option = document.createElement("option");
+    option.value = s.email;
+    option.text = s.name;
+    studentSelect.add(option);
+});
+
+// Load results
+let results = JSON.parse(localStorage.getItem("results")) || [];
+let resultsTable = document.getElementById("resultsTable");
+
+function refreshResults(){
+    resultsTable.innerHTML = "";
+    results.filter(r => r.teacherEmail === loggedIn.email)
+           .forEach(r => {
+               let row = resultsTable.insertRow();
+               row.insertCell(0).innerText = r.studentName;
+               row.insertCell(1).innerText = r.subject;
+               row.insertCell(2).innerText = r.score;
+           });
+}
+refreshResults();
+
+function addResult(){
+    let studentEmail = studentSelect.value;
+    let subject = document.getElementById("subject").value.trim();
+    let score = document.getElementById("score").value;
+
+    if(!studentEmail || !subject || !score){
+        alert("Fill in all fields!");
+        return;
+    }
+
+    let student = myStudents.find(s => s.email === studentEmail);
+
+    results.push({
+        studentName: student.name,
+        studentEmail: student.email,
+        teacherEmail: loggedIn.email,
+        subject,
+        score
+    });
+
+    localStorage.setItem("results", JSON.stringify(results));
+
+    alert("Result added!");
+    document.getElementById("subject").value = "";
+    document.getElementById("score").value = "";
+
+    refreshResults();
+}
+</script>
+
+</body>
+</html>
