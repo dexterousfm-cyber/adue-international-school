@@ -40,12 +40,10 @@ if(!localStorage.getItem("loggedInUser")){
 const user = localStorage.getItem("loggedInUser");
 document.getElementById("welcomeUser").innerText = "Welcome, " + user;
 
-// Add student function
 function addStudent(){
     const name = document.getElementById("studentName").value.trim();
     const cls = document.getElementById("studentClass").value.trim();
     if(!name || !cls) return alert("Fill all fields!");
-
     let students = JSON.parse(localStorage.getItem("students")) || [];
     students.push({name:name, class:cls});
     localStorage.setItem("students", JSON.stringify(students));
@@ -54,7 +52,6 @@ function addStudent(){
     document.getElementById("studentClass").value="";
 }
 
-// Logout
 function logout(){
     localStorage.removeItem("loggedInUser");
     window.location.href = "index.html";
