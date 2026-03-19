@@ -1,160 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Teacher Dashboard</title>
+    <title>Teacher Dashboard - ADUE Portal</title>
+    <style>
+        body{ font-family:Arial; max-width:800px; margin:30px auto; padding:20px; }
+        input, select{ padding:6px; margin:5px; }
+        button{ padding:8px; margin:5px; background:#4CAF50; color:white; border:none; cursor:pointer; }
+        table{ width:100%; border-collapse: collapse; margin-top:20px; }
+        th, td{ border:1px solid #ccc; padding:8px; text-align:left; }
+    </style>
 </head>
 <body>
 
-<h1>Teacher Dashboard</h1>
+<h2>Teacher Dashboard</h2>
+<button onclick="logout()">Logout</button>
 
 <h3>Add Student</h3>
-
-<input type="text" id="studentName" placeholder="Student Name"><br><br>
-<input type="email" id="studentEmail" placeholder="Student Email"><br><br>
-<input type="password" id="studentPassword" placeholder="Student Password"><br><br>
-
+<input type="text" id="studentName" placeholder="Student Name">
 <select id="studentClass">
-    <option>Year 7</option>
-    <option>Year 8</option>
-    <option>Year 9</option>
-    <option>Year 10</option>
-    <option>Year 11</option>
-    <option>Year 12</option>
-</select><br><br>
-
+<option>Year 7</option><option>Year 8</option><option>Year 9</option>
+<option>Year 10</option><option>Year 11</option><option>Year 12</option>
+</select>
 <button onclick="addStudent()">Add Student</button>
 
-<hr>
-
 <h3>My Students</h3>
-<div id="students"></div>
+<table id="studentsTable">
+<tr><th>Name</th><th>Class</th></tr>
+</table>
 
 <script>
-let users = JSON.parse(localStorage.getItem("users")) || [];
-let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
+let users=JSON.parse(localStorage.getItem("users"))||[];
+let loggedUser=JSON.parse(localStorage.getItem("loggedInUser"));
+if(!loggedUser||loggedUser.role!=="teacher"){ alert("Access denied"); window.location.href="index.html"; }
 
-// ADD STUDENT
 function addStudent(){
-    let name = document.getElementById("studentName").value;
-    let email = document.getElementById("studentEmail").value;
-    let password = document.getElementById("studentPassword").value;
-    let studentClass = document.getElementById("studentClass").value;
-
-    users.push({
-        name,
-        email,
-        password,
-        role: "student",
-        class: studentClass,
-        teacherEmail: loggedIn.email,
-        results: {}  // store results per term
-    });
-
-    localStorage.setItem("users", JSON.stringify(users));
-    renderStudents();
+    let name=document.getElementById("studentName").value.trim();
+    let studentClass=document.getElementById("studentClass").value;
+    if(!name){ alert("Fill student name"); return; }
+    let student={name,role:"student",class:studentClass};
+    users.push(student);
+    localStorage.setItem("users",JSON.stringify(users));
+    document.getElementById("studentName").value="";
+    loadStudents();
 }
 
-// GRADE FUNCTION
-function getGrade(score){
-    score = Number(score);
-    if(score >= 70) return "A";
-    if(score >= 60) return "B";
-    if(score >= 50) return "C";
-    if(score >= 45) return "D";
-    if(score >= 40) return "E";
-    return "F";
+function loadStudents(){
+    let table=document.getElementById("studentsTable");
+    table.innerHTML="<tr><th>Name</th><th>Class</th></tr>";
+    users.forEach(u=>{ if(u.role==="student") table.innerHTML+=`<tr><td>${u.name}</td><td>${u.class||"-"}</td></tr>` });
 }
 
-// SHOW STUDENTS
-function renderStudents(){
-    let div = document.getElementById("students");
-    div.innerHTML = "";
+function logout(){ localStorage.removeItem("loggedInUser"); window.location.href="index.html"; }
 
-    let myStudents = users.filter(u => u.role==="student" && u.teacherEmail===loggedIn.email);
-
-    myStudents.forEach((s,i)=>{
-        div.innerHTML += `
-        <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-            <b>${s.name}</b> (${s.class})<br><br>
-
-            <select id="term_${i}">
-                <option>First Term</option>
-                <option>Second Term</option>
-                <option>Third Term</option>
-            </select><br><br>
-
-            <input type="text" id="subject_${i}" placeholder="Subject">
-            <input type="number" id="score_${i}" placeholder="Score">
-
-            <button onclick="saveResult(${i})">Add Result</button>
-
-            <p>${showResults(s)}</p>
-        </div>
-        `;
-    });
-}
-
-// SAVE RESULT
-function saveResult(i){
-    let myStudents = users.filter(u => u.role==="student" && u.teacherEmail===loggedIn.email);
-
-    let subject = document.getElementById("subject_"+i).value;
-    let score = document.getElementById("score_"+i).value;
-    let term = document.getElementById("term_"+i).value;
-
-    if(!subject || !score){
-        alert("Fill everything");
-        return;
-    }
-
-    let student = myStudents[i];
-
-    if(!student.results[term]){
-        student.results[term] = {};
-    }
-
-    student.results[term][subject] = score;
-
-    users = users.map(u => u.email === student.email ? student : u);
-    localStorage.setItem("users", JSON.stringify(users));
-
-    renderStudents();
-}
-
-// DISPLAY RESULTS
-function showResults(student){
-    if(!student.results) return "No results";
-
-    let text = "";
-
-    for(let term in student.results){
-        text += "<b>" + term + "</b><br>";
-
-        let total = 0;
-        let count = 0;
-
-        for(let sub in student.results[term]){
-            let score = student.results[term][sub];
-            let grade = getGrade(score);
-
-            total += Number(score);
-            count++;
-
-            text += sub + ": " + score + " (" + grade + ")<br>";
-        }
-
-        if(count > 0){
-            let avg = (total / count).toFixed(2);
-            text += "Average: " + avg + "<br>";
-        }
-
-        text += "<br>";
-    }
-
-    return text || "No results yet";
-}
-
-renderStudents();
+loadStudents();
 </script>
 
 </body>
