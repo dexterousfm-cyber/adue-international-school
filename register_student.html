@@ -1,24 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration</title>
+</head>
+<body>
+
 <h2>Student Registration</h2>
 
-<input type="text" id="studentName" placeholder="Full Name"><br>
-<input type="email" id="studentEmail" placeholder="Email"><br>
+<input type="text" id="studentName" placeholder="Full Name"><br><br>
+
+<input type="email" id="studentEmail" placeholder="Email"><br><br>
 
 <select id="studentClass">
     <option value="">Select Class</option>
-    <option value="JSS1">JSS1</option>
-    <option value="JSS2">JSS2</option>
-    <option value="JSS3">JSS3</option>
-    <option value="SS1">SS1</option>
-    <option value="SS2">SS2</option>
-    <option value="SS3">SS3</option>
-</select><br>
+    <option>JSS1</option>
+    <option>JSS2</option>
+    <option>JSS3</option>
+    <option>SS1</option>
+    <option>SS2</option>
+    <option>SS3</option>
+</select><br><br>
 
 <select id="studentSubject">
     <option value="">Select Subject</option>
-    <option value="Math">Math</option>
-    <option value="English">English</option>
-    <option value="Science">Science</option>
-</select><br>
+    <option>Math</option>
+    <option>English</option>
+    <option>Science</option>
+</select><br><br>
 
 <button onclick="registerStudent()">Register</button>
+
 <p id="studentStatus"></p>
+
+<script>
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+function registerStudent(){
+    let name = document.getElementById("studentName").value;
+    let email = document.getElementById("studentEmail").value;
+    let studentClass = document.getElementById("studentClass").value;
+    let subject = document.getElementById("studentSubject").value;
+
+    if(!name || !email || !studentClass || !subject){
+        alert("Fill everything!");
+        return;
+    }
+
+    // find teacher
+    let teacher = users.find(u => u.role === "teacher" && u.subject === subject);
+
+    if(!teacher){
+        document.getElementById("studentStatus").innerText = "No teacher for this subject yet!";
+        return;
+    }
+
+    users.push({
+        name: name,
+        email: email,
+        role: "student",
+        class: studentClass,
+        subject: subject,
+        teacherEmail: teacher.email
+    });
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    document.getElementById("studentStatus").innerText =
+        "Registered successfully!";
+}
+</script>
+
+</body>
+</html>
