@@ -1,72 +1,45 @@
-<h1>ADUE Dashboard</h1>
-<button onclick="logout()">Logout</button>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
 
-<!-- Add Admin -->
-<div id="adminSection" class="card">
-<h3>Add New Admin</h3>
-<input type="text" id="newAdminName" placeholder="Full Name"><br>
-<input type="email" id="newAdminEmail" placeholder="Email"><br>
-<input type="password" id="newAdminPassword" placeholder="Password"><br>
-<button onclick="addAdmin()">Add Admin</button>
-<p id="adminStatus"></p>
-</div>
+<h1>Admin Dashboard</h1>
 
-<!-- View Teachers -->
-<div id="teacherSection" class="card">
 <h3>All Teachers</h3>
-<div id="teacherList"></div>
-</div>
+<div id="teachers"></div>
 
-<!-- View Students -->
-<div id="studentSection" class="card">
 <h3>All Students</h3>
-<div id="studentList"></div>
-</div>
+<div id="students"></div>
 
 <script>
 let users = JSON.parse(localStorage.getItem("users")) || [];
-let loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
-
-if(!loggedIn || loggedIn.role !== "admin"){ alert("Access denied!"); window.location.href="login.html"; }
-
-function logout(){ localStorage.removeItem("loggedInUser"); window.location.href="index.html"; }
-
-// Add Admin
-function addAdmin(){
-    let name = document.getElementById("newAdminName").value.trim();
-    let email = document.getElementById("newAdminEmail").value.trim();
-    let password = document.getElementById("newAdminPassword").value.trim();
-    if(!name || !email || !password){ alert("All fields required!"); return; }
-    if(users.some(u => u.email===email)){ document.getElementById("adminStatus").innerText="Admin exists!"; return; }
-    users.push({name,email,password,role:"admin"});
-    localStorage.setItem("users",JSON.stringify(users));
-    document.getElementById("adminStatus").innerText="Admin added!";
-    renderTeachers(); renderStudents();
-}
 
 // Show teachers
-function renderTeachers(){
-    let container = document.getElementById("teacherList");
-    container.innerHTML = "";
-    let teachers = users.filter(u=>u.role==="teacher");
-    if(teachers.length===0){ container.innerHTML="<p>No teachers yet</p>"; return; }
-    teachers.forEach(t=>{
-        container.innerHTML+=`<p>${t.name} (${t.email}) - Subject: ${t.subject}</p>`;
-    });
-}
+let teacherDiv = document.getElementById("teachers");
+let teachers = users.filter(u => u.role === "teacher");
+
+teachers.forEach(t => {
+    teacherDiv.innerHTML += `<p>${t.name} - ${t.subject}</p>`;
+});
 
 // Show students
-function renderStudents(){
-    let container = document.getElementById("studentList");
-    container.innerHTML = "";
-    let students = users.filter(u=>u.role==="student");
-    if(students.length===0){ container.innerHTML="<p>No students yet</p>"; return; }
-    students.forEach(s=>{
-        let teacher = users.find(t=>t.email===s.teacherEmail);
-        container.innerHTML+=`<p>${s.name} (${s.email}) - Subject: ${s.subject} - Teacher: ${teacher?teacher.name:"N/A"}</p>`;
-    });
-}
+let studentDiv = document.getElementById("students");
+let students = users.filter(u => u.role === "student");
 
-renderTeachers();
-renderStudents();
+students.forEach(s => {
+    let teacher = users.find(t => t.email === s.teacherEmail);
+
+    studentDiv.innerHTML += `
+    <p>
+    ${s.name} 
+    - ${s.class} 
+    - ${s.subject} 
+    - Teacher: ${teacher ? teacher.name : "None"}
+    </p>`;
+});
 </script>
+
+</body>
+</html>
