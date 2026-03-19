@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login - School Management System</title>
+    <title>Login - Adue International School</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,7 +41,7 @@
 <body>
 
 <div class="container">
-    <h2>Login</h2>
+    <h2>Login - Adue International School</h2>
     <input type="text" id="username" placeholder="Username"><br>
     <input type="password" id="password" placeholder="Password"><br>
     <button onclick="login()">Login</button>
@@ -58,10 +58,7 @@ function login() {
         return;
     }
 
-    // Default admin account
     const adminUser = { username: 'admin', password: '1234' };
-
-    // Get students and teachers from Local Storage
     const students = JSON.parse(localStorage.getItem("students")) || [];
     const teachers = JSON.parse(localStorage.getItem("teachers")) || [];
 
@@ -72,18 +69,15 @@ function login() {
         role = "admin";
         foundUser = adminUser;
     } else {
-        // Check teachers
         foundUser = teachers.find(t => t.username === u && t.password === p);
         if(foundUser) role = "teacher";
         else {
-            // Check students
             foundUser = students.find(s => s.username === u && s.password === p);
             if(foundUser) role = "student";
         }
     }
 
     if(foundUser && role){
-        // Save login info
         localStorage.setItem("loggedInUser", u);
         localStorage.setItem("loggedInRole", role);
         window.location.href = "dashboard.html";
