@@ -1,43 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title>ADUE Portal Login</title>
 </head>
 <body>
 
-<h2>Login</h2>
+<h1>ADUE Portal Login</h1>
 
-<input type="email" id="email" placeholder="Email"><br><br>
-<input type="password" id="password" placeholder="Password"><br><br>
-
+<!-- Login Form -->
+<input type="email" id="loginEmail" placeholder="Email"><br><br>
+<input type="password" id="loginPassword" placeholder="Password"><br><br>
 <button onclick="login()">Login</button>
 
 <p id="status"></p>
 
+<!-- Info for students/admin -->
+<p>
+    Don't have an account? Contact Admin to create one.
+</p>
+
+<!-- Teacher registration button -->
+<p>
+    Are you a teacher? <a href="register_teacher.html">Register here</a>
+</p>
+
 <script>
+// Get users from localStorage
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
+// Login function
 function login(){
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
+    let email = document.getElementById("loginEmail").value.trim();
+    let password = document.getElementById("loginPassword").value.trim();
 
-    let user = users.find(u => u.email === email && u.password === password);
-
-    if(!user){
-        document.getElementById("status").innerText = "Invalid login";
+    if(!email || !password){
+        alert("Fill all fields");
         return;
     }
 
+    // Find user
+    let user = users.find(u => u.email === email && u.password === password);
+
+    if(!user){
+        alert("Invalid credentials");
+        return;
+    }
+
+    // Save logged-in user
     localStorage.setItem("loggedInUser", JSON.stringify(user));
 
-    if(user.role === "teacher"){
+    // Redirect based on role
+    if(user.role === "admin"){
+        window.location.href = "admin_dashboard.html";
+    } else if(user.role === "teacher"){
         window.location.href = "teacher_dashboard.html";
-    } 
-    else if(user.role === "student"){
+    } else if(user.role === "student"){
         window.location.href = "student_dashboard.html";
-    } 
-    else {
-        window.location.href = "dashboard.html";
+    } else {
+        alert("Unknown role");
     }
 }
 </script>
