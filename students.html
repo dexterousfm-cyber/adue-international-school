@@ -1,78 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Students - Adue International School</title>
-    <meta name="description" content="Adue International School - View and manage students in ADUE Portal.">
-    <meta name="keywords" content="Adue International School, ADUE Portal, Students, Results">
-    <meta name="author" content="Abiola Ridwan Olamilekan">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students - ADUE Portal</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin:0; padding:0; }
-        .nav { text-align: center; padding: 10px; background: #333; }
-        .nav a { color: white; margin: 0 15px; font-weight: bold; text-decoration: none; }
-        .nav a.current { text-decoration: underline; }
-        table { width: 80%; margin: 30px auto; border-collapse: collapse; background:white; box-shadow:0 0 10px rgba(0,0,0,0.1); }
-        th, td { border:1px solid #ccc; padding:10px; text-align:center; }
-        input.result-input { width: 60px; text-align:center; }
-        button { padding:5px 10px; margin:5px; cursor:pointer; border-radius:5px; border:none; background:green; color:white; }
+        body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0;}
+        .nav { text-align:center; background:#333; padding:10px;}
+        .nav a { color:white; margin:0 10px; text-decoration:none; font-weight:bold;}
+        .nav a.current { text-decoration:underline;}
+        table { margin:20px auto; border-collapse:collapse; width:80%; background:white; }
+        th, td { border:1px solid #333; padding:10px; text-align:center; }
     </style>
 </head>
 <body>
 
 <script>
-const loggedUser = localStorage.getItem("loggedInUser");
-const loggedRole = localStorage.getItem("loggedInRole");
-if(!loggedUser || !loggedRole){ window.location.href = "index.html"; }
+    // Protect page
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if(!loggedInUser){
+        window.location.href = "login.html";
+    }
+
+    // Only students and admins can view
+    if(loggedInUser.role === "teacher"){
+        alert("Teachers cannot view this page!");
+        window.location.href = "dashboard.html";
+    }
 </script>
 
 <div class="nav">
     <a href="dashboard.html">Dashboard</a>
     <a href="students.html" class="current">Students</a>
     <a href="teachers.html">Teachers</a>
-    <button style="background:red;" onclick="logout()">Logout</button>
+    <a href="#" onclick="logout()">Logout</a>
 </div>
 
-<table id="studentTable">
-    <thead>
-        <tr><th>Name</th><th>Class</th><th>Math</th><th>English</th><th id="actionHeader">Action</th></tr>
-    </thead>
-    <tbody></tbody>
+<h1 style="text-align:center;">Students List</h1>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Class</th>
+    </tr>
+    <tr>
+        <td>John Doe</td>
+        <td>student1@adue.edu</td>
+        <td>Grade 10</td>
+    </tr>
+    <tr>
+        <td>Jane Smith</td>
+        <td>student2@adue.edu</td>
+        <td>Grade 9</td>
+    </tr>
 </table>
 
 <script>
-function logout(){ localStorage.removeItem("loggedInUser"); localStorage.removeItem("loggedInRole"); window.location.href="index.html"; }
-
-function loadStudents(){
-    const students = JSON.parse(localStorage.getItem("students")) || [];
-    const tbody = document.querySelector("#studentTable tbody");
-    tbody.innerHTML = "";
-
-    if(loggedRole === "student"){
-        const student = students.find(s => s.username === loggedUser);
-        tbody.innerHTML = `<tr><td>${student.name}</td><td>${student.class}</td><td>${student.results.math}</td><td>${student.results.english}</td><td>Read-Only</td></tr>`;
-        document.getElementById("actionHeader").style.display = "none";
-    } else {
-        students.forEach((s,i)=>{
-            const row=document.createElement("tr");
-            row.innerHTML=`<td>${s.name}</td><td>${s.class}</td><td><input type="number" min="0" max="100" class="result-input" value="${s.results.math}" id="math-${i}"></td><td><input type="number" min="0" max="100" class="result-input" value="${s.results.english}" id="english-${i}"></td><td><button onclick="saveResult(${i})">Save</button></td>`;
-            tbody.appendChild(row);
-        });
+    function logout(){
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
     }
-}
-
-function saveResult(i){
-    const students = JSON.parse(localStorage.getItem("students")) || [];
-    const math=parseInt(document.getElementById(`math-${i}`).value)||0;
-    const english=parseInt(document.getElementById(`english-${i}`).value)||0;
-    students[i].results.math=math;
-    students[i].results.english=english;
-    localStorage.setItem("students", JSON.stringify(students));
-    alert(`Results for ${students[i].name} updated!`);
-    loadStudents();
-}
-
-window.onload=loadStudents;
 </script>
 
 </body>
