@@ -7,14 +7,28 @@
 </head>
 <body>
 
-<!-- Login Form Container -->
-<div class="container">
+<!-- Top Header with School Logo and Name -->
+<div class="header">
+    <img src="logo.png" alt="School Logo" class="logo-header">
+    <h1>ADUE International School</h1>
+</div>
+
+<!-- Centered Login Box -->
+<div class="login-box">
+    <!-- Small logo inside the login box -->
+    <img src="logo.png" alt="Logo" class="logo-box">
+
     <form id="loginForm">
-        <input type="email" placeholder="Email" required>
-        <input type="password" placeholder="Password" required>
+        <input type="text" id="studentId" placeholder="Student/Staff ID" required>
+        <input type="password" id="password" placeholder="Password" required>
         <button type="submit">Login</button>
+
+        <!-- Links below inputs -->
+        <div class="links">
+            <a href="#">Forgot Password?</a>
+            <a href="#">Contact IT Support</a>
+        </div>
     </form>
-    <p><strong>All accounts are created by Admin</strong></p>
 </div>
 
 <script src="script.js"></script>
