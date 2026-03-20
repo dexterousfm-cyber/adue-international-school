@@ -1,15 +1,11 @@
-// Grab the form
 const loginForm = document.getElementById('loginForm');
 
 loginForm.addEventListener('submit', function(e) {
-    e.preventDefault(); // prevent page reload
+    e.preventDefault();
 
-    // Get input values
     const studentId = document.getElementById('studentId').value.trim();
     const password = document.getElementById('password').value.trim();
 
-    // Simple test login
-    // You can change these credentials for testing
     const testAccounts = [
         { id: 'student1', password: '1234' },
         { id: 'staff1', password: 'abcd' }
@@ -19,7 +15,6 @@ loginForm.addEventListener('submit', function(e) {
 
     if (matched) {
         alert('Login successful! Welcome ' + studentId);
-        // Redirect to dashboard (replace with your real page)
         window.location.href = 'student_dashboard.html';
     } else {
         alert('Invalid Student/Staff ID or password');
