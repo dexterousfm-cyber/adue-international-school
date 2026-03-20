@@ -1,8 +1,8 @@
-/* Use the uploaded design as the full background */
+/* Use your uploaded UI/UX design as full background */
 body {
-    background-image: url('login-design.png'); /* your UI/UX design */
-    background-size: cover;       /* cover the entire screen */
-    background-position: center;  /* center the design */
+    background-image: url('login-design.png'); /* exact file name */
+    background-size: cover;       /* cover entire screen */
+    background-position: center;  /* center design */
     background-repeat: no-repeat;
     margin: 0;
     font-family: Arial, sans-serif;
@@ -11,15 +11,15 @@ body {
 /* Login form container */
 .container {
     width: 350px;
-    margin: 100px auto;  /* center vertically and horizontally */
+    margin: 150px auto;  /* adjust vertical position to match design */
     padding: 30px;
-    background-color: rgba(255, 255, 255, 0.8); /* semi-transparent to see background */
+    background-color: rgba(255, 255, 255, 0.8); /* semi-transparent for readability */
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
-/* Form inputs */
+/* Input fields styling */
 input[type="email"], input[type="password"] {
     width: 90%;
     padding: 10px;
@@ -28,7 +28,7 @@ input[type="email"], input[type="password"] {
     border: 1px solid #ccc;
 }
 
-/* Login button */
+/* Login button styling */
 button {
     width: 95%;
     padding: 10px;
@@ -39,11 +39,12 @@ button {
     cursor: pointer;
     font-size: 16px;
 }
+
 button:hover {
-    background-color: #a00030;
+    background-color: #a00030; /* darker on hover */
 }
 
-/* Paragraph */
+/* Paragraph styling */
 p {
     font-size: 14px;
     color: #333;
