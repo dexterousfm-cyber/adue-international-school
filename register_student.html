@@ -2,50 +2,74 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Register Student</title>
+<title>Admin Dashboard</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="container">
-    <h2>Register Student</h2>
-    <form id="studentForm">
-        <input type="text" id="studentName" placeholder="Name" required>
-        <input type="email" id="studentEmail" placeholder="Email" required>
-        <input type="text" id="studentID" placeholder="Student ID" required>
-        <input type="text" id="studentClass" placeholder="Class" required>
-        <input type="text" id="studentYear" placeholder="Year" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <input type="file" id="profilePictureInput" accept="image/*">
-        <button type="submit">Register</button>
-    </form>
-</div>
+<h1>Welcome, <span id="adminName"></span></h1>
+<img id="adminPic" src="admin.png" width="100" style="border-radius:50%">
+
+<button onclick="window.location.href='register_teacher.html'">Register Teacher</button>
+<button onclick="window.location.href='register_student.html'">Register Student</button>
+
+<h2>Teachers List</h2>
+<table border="1" id="teachersTable">
+<tr><th>Picture</th><th>Name</th><th>Email</th><th>ID</th><th>Department</th><th>Edit</th></tr>
+</table>
+
+<h2>Students List</h2>
+<table border="1" id="studentsTable">
+<tr><th>Picture</th><th>Name</th><th>Email</th><th>ID</th><th>Class</th><th>Year</th><th>Edit</th></tr>
+</table>
 
 <script>
+let admins = JSON.parse(localStorage.getItem('admins')) || [];
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
+let currentAdminIndex = parseInt(localStorage.getItem("currentAdminIndex"));
 
-document.getElementById("studentForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const name = document.getElementById("studentName").value;
-    const email = document.getElementById("studentEmail").value;
-    const studentID = document.getElementById("studentID").value;
-    const studentClass = document.getElementById("studentClass").value;
-    const studentYear = document.getElementById("studentYear").value;
-    const password = document.getElementById("password").value;
-    const fileInput = document.getElementById("profilePictureInput");
+// Display admin info
+document.getElementById("adminName").innerText = admins[currentAdminIndex].name;
+document.getElementById("adminPic").src = admins[currentAdminIndex].profilePicture || 'admin.png';
 
-    if(fileInput.files.length>0){
-        const reader = new FileReader();
-        reader.onload = function(){ saveStudent(reader.result); }
-        reader.readAsDataURL(fileInput.files[0]);
-    } else { saveStudent(""); }
-
-    function saveStudent(profilePicture){
-        students.push({ name, email, studentID, studentClass, studentYear, password, result:"", profilePicture });
-        localStorage.setItem("students", JSON.stringify(students));
-        alert("Student Registered Successfully!");
-        document.getElementById("studentForm").reset();
-    }
+// Populate Teachers Table
+const teachersTable = document.getElementById("teachersTable");
+teachers.forEach((t,i)=>{
+    let row = teachersTable.insertRow();
+    row.innerHTML = `
+        <td><img src="${t.profilePicture || 'default.png'}" width="50" style="border-radius:50%"></td>
+        <td>${t.name}</td>
+        <td>${t.email}</td>
+        <td>${t.teacherID}</td>
+        <td>${t.department}</td>
+        <td><button onclick="editTeacher(${i})">Edit</button></td>
+    `;
 });
+
+// Populate Students Table
+const studentsTable = document.getElementById("studentsTable");
+students.forEach((s,i)=>{
+    let row = studentsTable.insertRow();
+    row.innerHTML = `
+        <td><img src="${s.profilePicture || 'default.png'}" width="50" style="border-radius:50%"></td>
+        <td>${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.studentID}</td>
+        <td>${s.studentClass}</td>
+        <td>${s.studentYear}</td>
+        <td><button onclick="editStudent(${i})">Edit</button></td>
+    `;
+});
+
+// Edit Functions
+function editTeacher(index){
+    localStorage.setItem("editTeacherIndex", index);
+    window.location.href = "edit_teacher.html";
+}
+function editStudent(index){
+    localStorage.setItem("editStudentIndex", index);
+    window.location.href = "edit_student.html";
+}
 </script>
 </body>
 </html>
