@@ -2,108 +2,500 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Teacher Dashboard</title>
-<link rel="stylesheet" href="styles.css">
+<title>ADUE - Teacher Portal</title>
 <style>
-/* Wine theme and clean design */
-body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; }
-.header { display:flex; justify-content:space-between; align-items:center; background:#800000; color:white; padding:15px 30px; }
-.header .logo img { width:120px; }
-.header .profile { display:flex; align-items:center; gap:10px; }
-.header .profile span { font-weight:bold; }
-.container { padding:30px; }
-button { padding:8px 16px; margin:5px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
-button.primary { background:#800000; color:white; }
-button.primary:hover { background:#a00000; }
-table { width:100%; border-collapse:collapse; margin-top:20px; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-th, td { padding:12px; text-align:center; border:1px solid #ddd; }
-th { background:#800000; color:white; }
-table tr:hover { background:#fff2f2; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f5f5f5; }
+
+/* Header - Wine */
+.header { 
+    display:flex; justify-content:space-between; align-items:center; 
+    padding:15px 30px; background:#800000; 
+    color:white; border-bottom:3px solid #fff;
+}
+.header h1 { font-size:22px; font-weight:600; }
+.header .profile { display:flex; align-items:center; gap:15px; }
+.header .profile img { width:45px; height:45px; border-radius:50%; border:2px solid white; }
+.header .profile button { 
+    padding:8px 20px; background:rgba(255,255,255,0.2); border:1px solid white; 
+    color:white; border-radius:5px; cursor:pointer; font-weight:600;
+}
+.header .profile button:hover { background:white; color:#800000; }
+
+/* Sidebar - Wine */
+.sidebar { 
+    position:fixed; left:0; top:73px; width:260px; height:calc(100vh - 73px); 
+    background:#600000; color:white; overflow-y:auto;
+}
+.sidebar-item { 
+    padding:18px 25px; cursor:pointer; transition:all 0.3s; 
+    border-left:4px solid transparent; display:flex; align-items:center; gap:12px;
+    font-weight:500;
+}
+.sidebar-item:hover, .sidebar-item.active { 
+    background:#800000; border-left-color:#fff; 
+}
+
+/* Main Content */
+.main-content { margin-left:260px; padding:30px; }
+.section { display:none; }
+.section.active { display:block; animation:fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+/* Info Box */
+.info-box { 
+    background:#fff5f5; border-left:4px solid #800000; padding:20px; 
+    margin-bottom:25px; border-radius:0 10px 10px 0;
+}
+.info-box h4 { color:#800000; margin-bottom:8px; font-size:18px; }
+.info-box p { color:#666; font-size:14px; line-height:1.6; }
+
+/* Stats */
+.stats-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-bottom:30px; }
+.stat-card { 
+    background:white; padding:25px; border-radius:10px; 
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    border-top:4px solid #800000; text-align:center;
+}
+.stat-card h3 { font-size:32px; color:#800000; margin-bottom:5px; }
+.stat-card p { color:#666; font-size:14px; }
+
+/* Action Bar */
+.action-bar { 
+    background:white; padding:20px; border-radius:10px; margin-bottom:20px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-left:4px solid #800000;
+}
+.action-bar h2 { color:#800000; font-size:20px; }
+
+/* Buttons */
+button { 
+    padding:10px 20px; border:none; border-radius:6px; cursor:pointer; 
+    font-weight:600; transition:all 0.3s;
+}
+.btn-primary { background:#800000; color:white; }
+.btn-primary:hover { background:#600000; }
+.btn-success { background:#28a745; color:white; }
+.btn-danger { background:#dc3545; color:white; }
+.btn-secondary { background:#6c757d; color:white; }
+
+/* Tables */
+.table-container { background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+table { width:100%; border-collapse:collapse; }
+th, td { padding:15px; text-align:left; border-bottom:1px solid #e0e0e0; }
+th { background:#800000; color:white; font-weight:600; text-transform:uppercase; font-size:13px; }
+tr:hover { background:#fff5f5; }
+.avatar-small { width:40px; height:40px; border-radius:50%; background:#ddd; border:2px solid #800000; }
+
+/* Badges */
+.badge { padding:5px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+.badge.admin { background:#800000; color:white; }
+.badge.teacher { background:#a00000; color:white; }
+.badge.me { background:#28a745; color:white; }
+
+/* Modals */
+.modal-overlay { 
+    display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+    background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;
+}
+.modal { background:white; border-radius:12px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; }
+.modal-header { 
+    padding:25px; background:#800000; color:white;
+    display:flex; justify-content:space-between; align-items:center;
+}
+.modal-header h3 { font-size:20px; }
+.close-btn { 
+    width:35px; height:35px; border-radius:50%; border:none; 
+    background:rgba(255,255,255,0.2); color:white; cursor:pointer; font-size:20px;
+}
+.close-btn:hover { background:rgba(255,255,255,0.3); }
+.modal-body { padding:25px; }
+.form-group { margin-bottom:20px; }
+.form-group label { display:block; margin-bottom:8px; color:#800000; font-weight:600; }
+.form-group input, .form-group select { 
+    width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:6px;
+}
+.form-group input:focus, .form-group select:focus { 
+    outline:none; border-color:#800000; 
+}
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+/* Search */
+.search-box { 
+    padding:10px 15px; border:2px solid #e0e0e0; border-radius:6px; 
+    width:300px; font-size:14px;
+}
+.search-box:focus { outline:none; border-color:#800000; }
+
+.registered-by { font-size:11px; color:#666; font-style:italic; }
 </style>
 </head>
 <body>
 
+<!-- Header -->
 <div class="header">
-    <div class="logo"><img src="logo-new.png" alt="Logo"></div>
+    <h1>ADUE International School - Teacher Portal</h1>
     <div class="profile">
-        <span>Welcome Teacher</span>
+        <img src="teacher.png" alt="Teacher" id="teacherImg">
+        <div>
+            <div style="font-weight:600;" id="teacherName">Teacher</div>
+            <div style="font-size:12px; opacity:0.9;" id="teacherDept">Department</div>
+        </div>
         <button onclick="logout()">Logout</button>
     </div>
 </div>
 
-<div class="container">
-    <button class="primary" onclick="registerStudent()">Register Student</button>
-    <button class="primary" onclick="renderStudentsTable()">View Students</button>
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-item active" onclick="showSection('dashboard')">📊 My Dashboard</div>
+    <div class="sidebar-item" onclick="showSection('allStudents')">👨‍🎓 All Students</div>
+    <div class="sidebar-item" onclick="showSection('myStudents')">👨‍🏫 My Students</div>
+    <div class="sidebar-item" onclick="showSection('registerStudent')">➕ Register Student</div>
+    <div class="sidebar-item" onclick="showSection('attendance')">📋 Attendance</div>
+    <div class="sidebar-item" onclick="showSection('grades')">📝 Grades</div>
+</div>
 
-    <table id="table"></table>
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="section active">
+        <div class="info-box">
+            <h4>Welcome, <span id="welcomeName">Teacher</span>!</h4>
+            <p>You can view <strong>ALL students</strong> in the school (registered by both Admin and Teachers), register new students yourself, and students can pick you as their subject teacher.</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalAllStudents">0</h3>
+                <p>All School Students</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="myStudentCount">0</h3>
+                <p>Students Assigned to Me</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="registeredByMe">0</h3>
+                <p>Students I Registered</p>
+            </div>
+        </div>
+        
+        <div class="table-container" style="padding:25px;">
+            <h3 style="margin-bottom:20px; color:#800000;">My Assigned Students</h3>
+            <table id="myStudentsTable">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Assigned Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ALL STUDENTS -->
+    <div id="allStudents" class="section">
+        <div class="action-bar">
+            <h2>All School Students <small style="color:#666; font-weight:normal;">(View Only)</small></h2>
+            <input type="text" class="search-box" id="searchAllStudents" placeholder="Search students..." onkeyup="searchAllStudents()">
+        </div>
+        <div class="table-container">
+            <table id="allStudentsTable">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Gender</th>
+                        <th>Registered By</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MY STUDENTS -->
+    <div id="myStudents" class="section">
+        <div class="action-bar">
+            <h2>My Assigned Students</h2>
+        </div>
+        <div class="table-container">
+            <table id="assignedStudentsTable">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Parent Contact</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- REGISTER STUDENT -->
+    <div id="registerStudent" class="section">
+        <div class="action-bar">
+            <h2>Register New Student</h2>
+        </div>
+        <div class="table-container" style="padding:30px;">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" id="regFirstName">
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" id="regLastName">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Student ID *</label>
+                    <input type="text" id="regID" placeholder="e.g., S005">
+                </div>
+                <div class="form-group">
+                    <label>Class *</label>
+                    <select id="regClass">
+                        <option>JSS 1</option><option>JSS 2</option><option>JSS 3</option>
+                        <option>SSS 1</option><option>SSS 2</option><option>SSS 3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select id="regGender"><option>Male</option><option>Female</option></select>
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="regDOB">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Parent Name *</label>
+                <input type="text" id="regParent">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Parent Phone *</label>
+                    <input type="tel" id="regParentPhone">
+                </div>
+                <div class="form-group">
+                    <label>Parent Email</label>
+                    <input type="email" id="regParentEmail">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Password *</label>
+                <input type="text" id="regPassword" value="student123">
+            </div>
+            <button class="btn-success" onclick="registerStudent()" style="width:100%; margin-top:20px;">Register Student</button>
+        </div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div id="attendance" class="section">
+        <div class="action-bar">
+            <h2>Mark Attendance</h2>
+            <div>
+                <select id="attendanceClass" style="padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                    <option>Select Class</option>
+                </select>
+                <input type="date" id="attendanceDate" value="" style="padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                <button class="btn-success" onclick="saveAttendance()">Save</button>
+            </div>
+        </div>
+        <div id="attendanceList"></div>
+    </div>
+
+    <!-- GRADES -->
+    <div id="grades" class="section">
+        <div class="action-bar">
+            <h2>Enter Grades</h2>
+            <select id="gradeClass" style="padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                <option>Select Class</option>
+            </select>
+        </div>
+        <div class="table-container">
+            <table id="gradesTable">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>CA (30)</th>
+                        <th>Exam (70)</th>
+                        <th>Total</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ASSIGN MODAL -->
+<div class="modal-overlay" id="assignModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Assign Student to Me</h3>
+            <button class="close-btn" onclick="closeModal('assignModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Student: <strong id="assignStudentName"></strong></p>
+            <p>Class: <span id="assignStudentClass"></span></p>
+            <input type="hidden" id="assignStudentId">
+            
+            <div class="form-group" style="margin-top:20px;">
+                <label>Subject You're Teaching Them</label>
+                <select id="assignSubject">
+                    <option>Mathematics</option>
+                    <option>English</option>
+                    <option>Physics</option>
+                    <option>Chemistry</option>
+                    <option>Biology</option>
+                    <option>History</option>
+                    <option>Geography</option>
+                </select>
+            </div>
+            
+            <div style="text-align:right; margin-top:20px;">
+                <button class="btn-secondary" onclick="closeModal('assignModal')">Cancel</button>
+                <button class="btn-success" onclick="confirmAssign()">Assign to Me</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-// ---------- LOAD DATA ----------
-let currentTeacherIndex = localStorage.getItem('currentTeacherIndex');
-let students = JSON.parse(localStorage.getItem('students')) || [];
-
-// ---------- RENDER STUDENTS ----------
-function renderStudentsTable() {
-    students = JSON.parse(localStorage.getItem('students')) || [];
-    let html = `<tr>
-        <th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit</th>
-    </tr>`;
-    students.forEach((s, i) => {
-        html += `<tr>
-            <td>${s.profilePicture || ''}</td>
-            <td>${s.name}</td>
-            <td>${s.email}</td>
-            <td>${s.studentID}</td>
-            <td>${s.studentClass || ''}</td>
-            <td>${s.studentYear || ''}</td>
-            <td><button onclick="editStudent(${i})">Edit</button></td>
-        </tr>`;
-    });
-    document.getElementById('table').innerHTML = html;
-}
-
-// ---------- REGISTER STUDENT ----------
-function registerStudent() {
-    let name = prompt("Name:");
-    let email = prompt("Email:");
-    let studentID = prompt("Student ID:");
-    let studentClass = prompt("Class:");
-    let studentYear = prompt("Year:");
-    let password = prompt("Password:");
-
-    students = JSON.parse(localStorage.getItem('students')) || [];
-    students.push({name, email, studentID, studentClass, studentYear, password});
-    localStorage.setItem('students', JSON.stringify(students));
-
-    renderStudentsTable();
-}
-
-// ---------- EDIT STUDENT ----------
-function editStudent(i) {
-    students = JSON.parse(localStorage.getItem('students')) || [];
-    let s = students[i];
-
-    let name = prompt("Name:", s.name);
-    let email = prompt("Email:", s.email);
-    let studentID = prompt("Student ID:", s.studentID);
-    let studentClass = prompt("Class:", s.studentClass);
-    let studentYear = prompt("Year:", s.studentYear);
-    let password = prompt("Password:", s.password);
-
-    students[i] = {name, email, studentID, studentClass, studentYear, password};
-    localStorage.setItem('students', JSON.stringify(students));
-    renderStudentsTable();
-}
-
-// ---------- LOGOUT ----------
-function logout() {
+// Auth check
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+if(!currentUser || currentUser.role !== 'teacher') {
     window.location.href = 'index.html';
 }
 
-// ---------- INITIAL LOAD ----------
-renderStudentsTable();
-</script>
+// Load data
+let students = JSON.parse(localStorage.getItem('students')) || [];
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let studentTeachers = JSON.parse(localStorage.getItem('studentTeachers')) || [];
 
-</body>
-</html>
+// Set teacher info
+document.getElementById('teacherName').textContent = currentUser.name;
+document.getElementById('teacherDept').textContent = (currentUser.department || 'Department') + ' | ' + (currentUser.subject || 'Subject');
+document.getElementById('welcomeName').textContent = currentUser.name;
+document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    if(id === 'dashboard') updateDashboard();
+    if(id === 'allStudents') renderAllStudents();
+    if(id === 'myStudents') renderMyStudents();
+}
+
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// KEY: Teacher sees ALL students with registration source
+function renderAllStudents() {
+    document.querySelector('#allStudentsTable tbody').innerHTML = students.map(s => {
+        const isMine = s.registeredBy === 'teacher' && s.registeredById === currentUser.id;
+        const badge = isMine ? '<span class="badge me">ME</span>' : 
+                      s.registeredBy === 'admin' ? '<span class="badge admin">ADMIN</span>' : 
+                      '<span class="badge teacher">TEACHER</span>';
+        
+        return `
+        <tr>
+            <td><div class="avatar-small"></div></td>
+            <td>${s.studentID}</td>
+            <td><strong>${s.firstName} ${s.lastName}</strong></td>
+            <td>${s.class}</td>
+            <td>${s.gender || '-'}</td>
+            <td>${badge}<br><small class="registered-by">${s.registeredByName || s.registeredBy}</small></td>
+            <td>
+                <button class="btn-primary" style="padding:5px 10px; font-size:12px;" onclick="viewStudent('${s.studentID}')">View</button>
+                <button class="btn-success" style="padding:5px 10px; font-size:12px;" onclick="openAssignModal('${s.studentID}')">+ Assign</button>
+            </td>
+        </tr>
+    `}).join('');
+}
+
+function renderMyStudents() {
+    const myAssignments = studentTeachers.filter(st => st.teacherId === currentUser.id);
+    
+    document.querySelector('#assignedStudentsTable tbody').innerHTML = myAssignments.map(st => {
+        const student = students.find(s => s.studentID === st.studentId);
+        if(!student) return '';
+        return `
+        <tr>
+            <td><strong>${student.firstName} ${student.lastName}</strong><br><small>${student.studentID}</small></td>
+            <td>${student.class}</td>
+            <td><span class="badge" style="background:#800000; color:white;">${st.subject}</span></td>
+            <td>${student.parentPhone || '-'}</td>
+            <td>
+                <button class="btn-primary" style="padding:5px 10px; font-size:12px;">View</button>
+                <button class="btn-danger" style="padding:5px 10px; font-size:12px;" onclick="removeAssignment('${st.studentId}')">Remove</button>
+            </td>
+        </tr>
+    `}).join('');
+}
+
+function openAssignModal(studentId) {
+    const student = students.find(s => s.studentID === studentId);
+    document.getElementById('assignStudentName').textContent = student.firstName + ' ' + student.lastName;
+    document.getElementById('assignStudentClass').textContent = student.class;
+    document.getElementById('assignStudentId').value = studentId;
+    openModal('assignModal');
+}
+
+function confirmAssign() {
+    const studentId = document.getElementById('assignStudentId').value;
+    const subject = document.getElementById('assignSubject').value;
+    
+    const existing = studentTeachers.find(st => st.studentId === studentId && st.teacherId === currentUser.id);
+    if(existing) {
+        alert('This student is already assigned to you!');
+        return;
+    }
+    
+    studentTeachers.push({
+        studentId: studentId,
+        teacherId: currentUser.id,
+        teacherName: currentUser.name,
+        subject: subject,
+        assignedDate: new Date().toISOString()
+    });
+    
+    localStorage.setItem('studentTeachers', JSON.stringify(studentTeachers));
+    closeModal('assignModal');
+    updateDashboard();
+    alert('Student assigned to you!');
+}
+
+function removeAssignment(studentId) {
+    if(confirm('Remove this student from your list?')) {
+        studentTeachers = studentTeachers.filter(st => !(st.studentId === studentId && st.teacherId === currentUser.id));
+        localStorage.setItem('studentTeachers', JSON.stringify(studentTeachers));
+        renderMyStudents();
+        updateDashboard();
+    }
+}
+
+// KEY: Teacher can register students
+function registerStudent() {
+    const student = {
+        studentID: document.getElementById('regID').value || 'S' + (students.length + 1).toString().padStart(3, '0'),
+        firstName: document.getElementById('regFirstName').value,
+        lastName: document.getElementById('regLastName').value,
+        name: document.getElementById('regFirstName').value + ' ' + document.getElementById('r
