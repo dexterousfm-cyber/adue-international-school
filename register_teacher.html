@@ -196,7 +196,7 @@ body {
 /* ==================== STATS CARDS ==================== */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
@@ -237,7 +237,6 @@ body {
     border-radius: 8px;
     padding: 2rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 2rem;
 }
 
 .form-section-title {
@@ -253,7 +252,7 @@ body {
 
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
 }
 
@@ -304,6 +303,11 @@ body {
 .form-group small {
     color: #888;
     font-size: 0.8rem;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
 }
 
 /* File Upload */
@@ -360,7 +364,15 @@ body {
     background: var(--primary-red);
     color: white;
     padding: 12px 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
     font-size: 1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
 }
 
 .btn-primary:hover {
@@ -373,235 +385,22 @@ body {
     background: #6c757d;
     color: white;
     padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
 }
 
 .btn-secondary:hover {
     background: #5a6268;
 }
 
-/* ==================== TEACHERS TABLE ==================== */
-.table-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    overflow: hidden;
-}
-
-.table-header {
-    padding: 1.25rem;
-    border-bottom: 1px solid var(--border-gray);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.table-title {
-    color: var(--primary-red);
-    font-size: 1.1rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.search-box {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #f8f9fa;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    border: 1px solid var(--border-gray);
-}
-
-.search-box input {
-    border: none;
-    background: transparent;
-    outline: none;
-    width: 200px;
-    font-size: 0.9rem;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-thead {
-    background: var(--primary-red);
-    color: white;
-}
-
-th {
-    padding: 1rem;
-    text-align: left;
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-gray);
-    font-size: 0.95rem;
-}
-
-tbody tr:hover {
-    background: rgba(139, 0, 0, 0.02);
-}
-
-.teacher-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.teacher-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--border-gray);
-    background: #f0f0f0;
-}
-
-.teacher-name {
-    font-weight: 600;
-    color: var(--text-dark);
-}
-
-.teacher-email {
-    font-size: 0.85rem;
-    color: #666;
-}
-
-.badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    display: inline-block;
-}
-
-.badge-admin {
-    background: rgba(139, 0, 0, 0.1);
-    color: var(--primary-red);
-}
-
-.badge-teacher {
-    background: rgba(40, 167, 69, 0.1);
-    color: var(--accent-green);
-}
-
-.action-btns {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-icon {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
-    font-size: 1rem;
-}
-
-.btn-view {
-    background: rgba(40, 167, 69, 0.1);
-    color: var(--accent-green);
-}
-
-.btn-view:hover {
-    background: var(--accent-green);
-    color: white;
-}
-
-.btn-edit {
-    background: rgba(255, 193, 7, 0.1);
-    color: #ffc107;
-}
-
-.btn-edit:hover {
-    background: #ffc107;
-    color: white;
-}
-
-.btn-delete {
-    background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
-}
-
-.btn-delete:hover {
-    background: #dc3545;
-    color: white;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: #666;
-}
-
-.empty-state i {
-    font-size: 3rem;
-    color: var(--border-gray);
-    font-style: normal;
-    display: block;
-    margin-bottom: 1rem;
-}
-
-/* ==================== RESPONSIVE ==================== */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        position: relative;
-        height: auto;
-    }
-    
-    .main-content {
-        margin-left: 0;
-    }
-    
-    .container {
-        flex-direction: column;
-    }
-    
-    .header-actions {
-        gap: 8px;
-    }
-    
-    .btn span {
-        display: none;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    table {
-        font-size: 0.85rem;
-    }
-    
-    th, td {
-        padding: 0.75rem 0.5rem;
-    }
-    
-    .teacher-email {
-        display: none;
-    }
-}
-
-/* Alert Messages */
+/* Alert */
 .alert {
     padding: 1rem;
     border-radius: 6px;
@@ -625,6 +424,40 @@ tbody tr:hover {
 
 .alert.show {
     display: flex;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .container {
+        flex-direction: column;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
 }
 </style>
 </head>
@@ -661,32 +494,32 @@ tbody tr:hover {
         <a href="students.html" class="nav-item">
             <i>👨‍🎓</i> Students
         </a>
-        <a href="register_teacher.html" class="nav-item active">
+        <a href="teachers.html" class="nav-item">
             <i>👨‍🏫</i> Teachers
         </a>
-        <a href="classes.html" class="nav-item">
+        <a href="#" class="nav-item" onclick="alert('Coming soon!')">
             <i>📚</i> Classes
         </a>
-        <a href="attendance.html" class="nav-item">
+        <a href="#" class="nav-item" onclick="alert('Coming soon!')">
             <i>📋</i> Attendance
         </a>
-        <a href="grades.html" class="nav-item">
+        <a href="#" class="nav-item" onclick="alert('Coming soon!')">
             <i>📈</i> Grades
         </a>
-        <a href="finance.html" class="nav-item">
+        <a href="#" class="nav-item" onclick="alert('Coming soon!')">
             <i>💰</i> Finance
         </a>
-        <a href="reports.html" class="nav-item">
+        <a href="#" class="nav-item" onclick="alert('Coming soon!')">
             <i>📄</i> Reports
         </a>
-        <a href="settings.html" class="nav-item">
+        <a href="#" class="nav-item" onclick="alert('Coming soon!')">
             <i>⚙️</i> Settings
         </a>
     </nav>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Alert Messages -->
+        <!-- Alert -->
         <div id="alertBox" class="alert">
             <span id="alertIcon"></span>
             <span id="alertMessage"></span>
@@ -815,11 +648,66 @@ tbody tr:hover {
                     
                     <div class="form-group full-width">
                         <label>Address</label>
-                        <textarea id="address" rows="3" placeholder="Enter residential address"></textarea>
+                        <textarea id="address" placeholder="Enter residential address"></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label>Emergency Contact Name</label>
                         <input type="text" id="emergencyName" placeholder="Next of kin name">
                     </div>
-               
+                    
+                    <div class="form-group">
+                        <label>Emergency Contact Phone</label>
+                        <input type="tel" id="emergencyPhone" placeholder="Emergency contact number">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>Profile Picture</label>
+                        <div class="file-upload" onclick="document.getElementById('profilePic').click()">
+                            <input type="file" id="profilePic" accept="image/*" onchange="handleFileSelect(this)">
+                            <label class="file-upload-label">
+                                <i>📷</i>
+                                <span>Click to upload teacher photo (optional)</span>
+                                <span class="file-name" id="fileName"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password <span class="required">*</span></label>
+                        <input type="password" id="password" placeholder="Create password" required minlength="6">
+                        <small>Minimum 6 characters</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Confirm Password <span class="required">*</span></label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" onclick="registerTeacher()">
+                        <span>✓</span>
+                        Register Teacher
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="resetForm()">
+                        <span>↺</span>
+                        Reset Form
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+// ==================== DATA ====================
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let currentAdmin = JSON.parse(localStorage.getItem('currentAdmin')) || { name: 'Admin' };
+let selectedFile = null;
+
+// Display admin name
+document.getElementById('adminName').innerText = `Welcome, ${currentAdmin.name || 'Admin'}`;
+
+// Set default joining date to today
+document.getElementB
