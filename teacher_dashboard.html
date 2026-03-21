@@ -5,114 +5,127 @@
 <title>Teacher Dashboard - ADUE Portal</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-.header { background-color:#722F37; padding:20px; color:white; display:flex; align-items:center; justify-content:space-between; }
-.header img { width:150px; height:150px; border-radius:50%; border:3px solid white; margin-right:20px; }
+/* Header */
+.header { background:#722F37; padding:20px; color:white; display:flex; align-items:center; justify-content:space-between; }
+.header img { width:120px; height:120px; border-radius:50%; border:3px solid white; margin-right:20px; }
 #welcome { color:white; font-size:24px; margin:0; }
-.logout-btn { background-color:white; color:#722F37; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; }
+.logout-btn { background:white; color:#722F37; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; }
 .logout-btn:hover { opacity:0.9; }
+
+/* Dashboard buttons */
+.dashboard-buttons { margin:20px 0; }
+.dashboard-buttons button { padding:10px 20px; margin-right:10px; border:none; background:#722F37; color:white; border-radius:6px; cursor:pointer; font-size:16px; }
+.dashboard-buttons button:hover { opacity:0.9; }
+
+/* Table styling */
 table { width:100%; border-collapse:collapse; margin-top:20px; }
 th, td { border:1px solid #ccc; padding:10px; text-align:center; }
 th { background:#eee; }
 img { border-radius:50%; }
-button { padding:5px 10px; border:none; background:#722F37; color:white; cursor:pointer; border-radius:5px; }
-button:hover { opacity:0.9; }
+button.edit-btn { padding:5px 10px; border:none; background:#722F37; color:white; cursor:pointer; border-radius:5px; margin:2px; }
+button.edit-btn:hover { opacity:0.9; }
 </style>
 </head>
 <body>
 
 <div class="header">
     <div style="display:flex; align-items:center;">
-        <img id="teacherLogo" src="default-teacher.png" alt="Teacher Logo">
+        <img id="teacherPic" src="default-teacher.png" alt="Teacher Picture">
         <div>
-            <h1 id="welcome">Welcome, </h1>
-            <div>Email: <span id="teacherEmailDisplay"></span></div>
+            <h1 id="welcome">Welcome, Teacher</h1>
+            <div id="teacherEmailDisplay"></div>
         </div>
     </div>
     <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
-<h2>Your Students</h2>
-<table border="1" width="100%" id="teacherStudentsTable">
+<div class="dashboard-buttons">
+    <button onclick="registerStudent()">Register Student</button>
+</div>
+
+<h2>All Students</h2>
+<table id="studentsTable">
 <thead>
 <tr>
-<th>Student Picture</th>
-<th>Name</th>
-<th>Email</th>
-<th>Student ID</th>
-<th>Class</th>
-<th>Year</th>
-<th>Actions</th>
+<th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Result</th><th>Actions</th>
 </tr>
 </thead>
 <tbody></tbody>
 </table>
 
 <script>
-// --- Get currently logged-in teacher ---
-let currentTeacherEmail = localStorage.getItem('currentTeacherEmail');
-if(!currentTeacherEmail){
-    alert("You are not logged in!");
-    window.location.href = "index.html";
-}
-
+// Get current teacher info
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
+let currentTeacherEmail = localStorage.getItem('currentTeacherEmail');
+let currentTeacher = teachers.find(t => t.email === currentTeacherEmail);
 
-// --- Find teacher object ---
-let teacher = teachers.find(t => t.email === currentTeacherEmail);
-if(!teacher){
-    alert("Teacher not found!");
-    window.location.href = "index.html";
+// Display teacher info
+if(currentTeacher){
+    document.getElementById('welcome').innerText = "Welcome, " + currentTeacher.name;
+    document.getElementById('teacherEmailDisplay').innerText = currentTeacher.email;
+    document.getElementById('teacherPic').src = currentTeacher.profilePicture || "default-teacher.png";
 }
 
-// --- Display teacher info at top ---
-document.getElementById('welcome').innerText = `Welcome, ${teacher.name}`;
-document.getElementById('teacherEmailDisplay').innerText = teacher.email;
-document.getElementById('teacherLogo').src = teacher.profilePicture || 'default-teacher.png';
+// Populate students table
+function renderStudents(){
+    let tbody = document.querySelector("#studentsTable tbody");
+    tbody.innerHTML = "";
+    students.forEach((s,index)=>{
+        tbody.innerHTML += `
+        <tr>
+            <td><img src="${s.profilePicture || 'default-student.png'}" width="70" height="70"></td>
+            <td>${s.name}</td>
+            <td>${s.email}</td>
+            <td>${s.studentID}</td>
+            <td>${s.studentClass}</td>
+            <td>${s.studentYear}</td>
+            <td>${s.result || ''}</td>
+            <td>
+                <button class="edit-btn" onclick="editResult(${index})">Edit Result</button>
+            </td>
+        </tr>`;
+    });
+}
+renderStudents();
 
-// --- Populate students table ---
-let tbody = document.querySelector('#teacherStudentsTable tbody');
-tbody.innerHTML = '';
+// Register student (teacher helps admin)
+function registerStudent(){
+    let name = prompt("Student Full Name:");
+    if(!name) return;
+    let email = prompt("Student Email:");
+    if(!email) return;
+    let studentID = prompt("Student ID:");
+    if(!studentID) return;
+    let studentClass = prompt("Class:");
+    if(!studentClass) return;
+    let studentYear = prompt("Year:");
+    if(!studentYear) return;
+    let password = prompt("Password:");
+    if(!password) return;
+    let picture = prompt("Profile Picture URL (optional):");
 
-students.forEach((s, index) => {
-    // Show only students assigned to this teacher (optional: remove filter if teacher sees all)
-    if(!s.teacherID || s.teacherID !== teacher.teacherID) return;
+    students.push({name,email,studentID,studentClass,studentYear,password,result:'',profilePicture: picture || null, subjects: []});
+    localStorage.setItem('students', JSON.stringify(students));
+    alert("Student registered successfully!");
+    renderStudents();
+}
 
-    tbody.innerHTML += `
-    <tr>
-        <td><img src="${s.profilePicture || 'default-student.png'}" width="70" height="70"></td>
-        <td>${s.name}</td>
-        <td>${s.email}</td>
-        <td>${s.studentID}</td>
-        <td>${s.studentClass}</td>
-        <td>${s.studentYear}</td>
-        <td><button onclick="editStudent(${index})">Edit</button></td>
-    </tr>`;
-});
+// Edit student result
+function editResult(index){
+    let newResult = prompt("Enter result for " + students[index].name, students[index].result || '');
+    if(newResult !== null){
+        students[index].result = newResult;
+        localStorage.setItem('students', JSON.stringify(students));
+        renderStudents();
+    }
+}
 
-// --- Functions ---
+// Logout
 function logout(){
     localStorage.removeItem('currentTeacherEmail');
-    window.location.href = "index.html";
-}
-
-// Edit student function
-function editStudent(index){
-    let s = students[index];
-    let newName = prompt("Edit Name:", s.name);
-    if(newName !== null && newName.trim() !== "") s.name = newName.trim();
-    let newEmail = prompt("Edit Email:", s.email);
-    if(newEmail !== null && newEmail.trim() !== "") s.email = newEmail.trim();
-    let newClass = prompt("Edit Class:", s.studentClass);
-    if(newClass !== null && newClass.trim() !== "") s.studentClass = newClass.trim();
-    let newYear = prompt("Edit Year:", s.studentYear);
-    if(newYear !== null && newYear.trim() !== "") s.studentYear = newYear.trim();
-
-    localStorage.setItem('students', JSON.stringify(students));
-    alert("Student details updated!");
-    location.reload();
+    window.location.href="index.html";
 }
 </script>
-
 </body>
 </html>
