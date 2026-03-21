@@ -5,12 +5,13 @@
 <title>ADUE Admin Dashboard</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-/* Header */
+/* Dashboard Header */
 .header {
-    background-color: #722F37; /* wine */
+    background-color: #722F37; /* Wine color */
     padding: 20px;
     text-align: center;
     color: white;
+    position: relative;
 }
 .header img {
     height: 50px;
@@ -23,85 +24,137 @@
     vertical-align: middle;
 }
 
-/* Dashboard wrapper */
-.dashboard-wrapper {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 20px;
-}
-
-/* Cards */
-.card {
-    background-color: #fff;
-    padding: 20px;
-    margin: 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    display: inline-block;
-    width: 40%;
-    text-align: center;
-    font-size: 20px;
+/* Logout Button */
+.logout-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: white;
+    color: #722F37;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     font-weight: bold;
 }
 
-/* Buttons */
-.dashboard-wrapper button {
-    display: block;
-    width: 200px;
-    padding: 12px;
-    margin: 15px auto;
-    background-color: #722F37;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
+/* Dashboard Cards */
+.dashboard-cards {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 30px auto;
+    max-width: 800px;
 }
-.dashboard-wrapper button:hover {
-    opacity: 0.9;
+.card {
+    background-color: #fff;
+    color: #722F37;
+    padding: 30px;
+    margin: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    flex: 1 1 250px;
+    text-align: center;
+}
+.card h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+.card p {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Optional: Teacher & Student List */
+.user-list {
+    max-width: 800px;
+    margin: 20px auto;
+}
+.user-list h3 {
+    color: #722F37;
+    margin-bottom: 10px;
+}
+.user-list ul {
+    list-style: none;
+    padding: 0;
+}
+.user-list li {
+    background-color: #fff;
+    margin-bottom: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
     <img src="logo-new.png" alt="Logo">
     <h1>ADUE Admin Dashboard</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
-<!-- DASHBOARD CONTENT -->
-<div class="dashboard-wrapper">
-    <!-- Stats cards -->
-    <div class="card" id="totalTeachers">Total Teachers: 0</div>
-    <div class="card" id="totalStudents">Total Students: 0</div>
+<div class="dashboard-cards">
+    <div class="card">
+        <h2>Total Teachers</h2>
+        <p id="totalTeachers">0</p>
+    </div>
+    <div class="card">
+        <h2>Total Students</h2>
+        <p id="totalStudents">0</p>
+    </div>
+</div>
 
-    <!-- Action buttons -->
-    <button onclick="location.href='register_teacher.html'">Register Teacher</button>
-    <button onclick="location.href='register_student.html'">Register Student</button>
-    <button onclick="location.href='view_teachers.html'">View Teachers</button>
-    <button onclick="location.href='view_students.html'">View Students</button>
-    <button onclick="logout()">Logout</button>
+<div class="user-list">
+    <h3>Registered Teachers</h3>
+    <ul id="teacherList">
+        <!-- Dynamically filled -->
+    </ul>
+
+    <h3>Registered Students</h3>
+    <ul id="studentList">
+        <!-- Dynamically filled -->
+    </ul>
 </div>
 
 <script>
-// Load totals from localStorage
-function updateDashboard() {
-    let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-    let students = JSON.parse(localStorage.getItem('students')) || [];
-
-    document.getElementById('totalTeachers').textContent = "Total Teachers: " + teachers.length;
-    document.getElementById('totalStudents').textContent = "Total Students: " + students.length;
+// Check if user is logged in
+const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+if(!currentUser || currentUser.role !== 'admin'){
+    window.location.href = "index.html";
 }
 
 // Logout function
 function logout() {
-    localStorage.removeItem('currentUser'); // Remove current login
-    window.location.href = 'index.html';
+    localStorage.removeItem('currentUser');
+    window.location.href = "index.html";
 }
 
-// Update dashboard on page load
-updateDashboard();
+// Fetch teachers and students from localStorage
+const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+const students = JSON.parse(localStorage.getItem('students')) || [];
+
+// Update totals
+document.getElementById('totalTeachers').textContent = teachers.length;
+document.getElementById('totalStudents').textContent = students.length;
+
+// Populate teacher list
+const teacherList = document.getElementById('teacherList');
+teachers.forEach(t => {
+    const li = document.createElement('li');
+    li.textContent = `${t.name} (${t.department}) - ID: ${t.teacherID}`;
+    teacherList.appendChild(li);
+});
+
+// Populate student list
+const studentList = document.getElementById('studentList');
+students.forEach(s => {
+    const li = document.createElement('li');
+    li.textContent = `${s.name} (${s.year} - ${s.class}) - ID: ${s.studentID}`;
+    studentList.appendChild(li);
+});
 </script>
 
 </body>
