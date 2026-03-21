@@ -85,32 +85,159 @@ table tr:hover { background:#fff2f2; }
   </div>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal" id="editModal">
-  <div class="modal-content">
-    <h3 id="editTitle">Edit</h3>
-    <input type="text" id="editName" placeholder="Name">
-    <input type="email" id="editEmail" placeholder="Email">
-    <input type="text" id="editID" placeholder="ID">
-    <input type="text" id="editDeptOrClass" placeholder="Department/Class">
-    <input type="text" id="editYear" placeholder="Year (for student)">
-    <input type="password" id="editPassword" placeholder="Password">
-    <input type="file" id="editPic">
-    <button onclick="saveEdit()">Save</button>
-    <button onclick="closeEditForm()">Cancel</button>
-  </div>
-</div>
-
 <script>
-// ---------------- Data ----------------
+// ---------------- STORAGE ----------------
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
-let editingIndex = null;
-let editingType = null;
 
-// ---------------- Render Tables ----------------
+// ---------------- RENDER TABLES ----------------
 function renderTeachersTable(){
     const table = document.getElementById('teachersTable');
+    let html = `<tr>
+        <th>Picture</th><th>Name</th><th>Email</th><th>Teacher ID</th><th>Department</th><th>Edit</th>
+    </tr>`;
+    teachers.forEach((t,i)=>{
+        html += `<tr>
+            <td><img src="${t.profilePicture}" class="avatar-small"></td>
+            <td>${t.name}</td>
+            <td>${t.email}</td>
+            <td>${t.teacherID}</td>
+            <td>${t.department}</td>
+            <td><button onclick="editTeacher(${i})">Edit</button></td>
+        </tr>`;
+    });
+    table.innerHTML = html;
+}
+
+function renderStudentsTable(){
+    const table = document.getElementById('studentsTable');
+    let html = `<tr>
+        <th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit</th>
+    </tr>`;
+    students.forEach((s,i)=>{
+        html += `<tr>
+            <td><img src="${s.profilePicture}" class="avatar-small"></td>
+            <td>${s.name}</td>
+            <td>${s.email}</td>
+            <td>${s.studentID}</td>
+            <td>${s.studentClass}</td>
+            <td>${s.studentYear}</td>
+            <td><button onclick="editStudent(${i})">Edit</button></td>
+        </tr>`;
+    });
+    table.innerHTML = html;
+}
+
+// ---------------- SHOW/HIDE TABLES ----------------
+function showTable(table){
+    document.getElementById('teachersTable').style.display = (table==='teachers')?'':'none';
+    document.getElementById('studentsTable').style.display = (table==='students')?'':'none';
+}
+
+// ---------------- LOGOUT ----------------
+function logout() {
+    window.location.href = 'index.html'; // admin login page
+}
+
+// ---------------- EDIT FUNCTIONS ----------------
+function editTeacher(i){
+    const t = teachers[i];
+    let newName = prompt('Edit Name:', t.name);
+    let newEmail = prompt('Edit Email:', t.email);
+    let newID = prompt('Edit Teacher ID:', t.teacherID);
+    let newDept = prompt('Edit Department:', t.department);
+    let newPassword = prompt('Edit Password:', t.password); // admin sees password here
+    if(newName && newEmail){
+        teachers[i] = {...t,name:newName,email:newEmail,teacherID:newID,department:newDept,password:newPassword};
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+        renderTeachersTable();
+    }
+}
+
+function editStudent(i){
+    const s = students[i];
+    let newName = prompt('Edit Name:', s.name);
+    let newEmail = prompt('Edit Email:', s.email);
+    let newID = prompt('Edit Student ID:', s.studentID);
+    let newClass = prompt('Edit Class:', s.studentClass);
+    let newYear = prompt('Edit Year:', s.studentYear);
+    let newPassword = prompt('Edit Password:', s.password); // admin sees password here
+    if(newName && newEmail){
+        students[i] = {...s,name:newName,email:newEmail,studentID:newID,studentClass:newClass,studentYear:newYear,password:newPassword};
+        localStorage.setItem('students', JSON.stringify(students));
+        renderStudentsTable();
+    }
+}
+
+// ---------------- REGISTER TEACHER ----------------
+function openTeacherForm(){ document.getElementById('teacherModal').style.display='flex'; }
+function closeTeacherForm(){ document.getElementById('teacherModal').style.display='none'; }
+function registerTeacher(){
+    let name = document.getElementById('teacherNameInput').value;
+    let email = document.getElementById('teacherEmailInput').value;
+    let id = document.getElementById('teacherIDInput').value;
+    let dept = document.getElementById('teacherDeptInput').value;
+    let password = document.getElementById('teacherPasswordInput').value;
+    let file = document.getElementById('teacherPicInput').files[0];
+
+    if(!name || !email || !password){ alert('Name, Email, and Password are required'); return; }
+
+    let reader = new FileReader();
+    reader.onload = function(e){
+        let pic = e.target.result;
+        teachers.push({profilePicture:pic,name,email,teacherID:id,department:dept,password});
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+        renderTeachersTable();
+        closeTeacherForm();
+    }
+    if(file) reader.readAsDataURL(file);
+    else {
+        teachers.push({profilePicture:'teacher.png',name,email,teacherID:id,department:dept,password});
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+        renderTeachersTable();
+        closeTeacherForm();
+    }
+}
+
+// ---------------- REGISTER STUDENT ----------------
+function openStudentForm(){ document.getElementById('studentModal').style.display='flex'; }
+function closeStudentForm(){ document.getElementById('studentModal').style.display='none'; }
+function registerStudent(){
+    let name = document.getElementById('studentNameInput').value;
+    let email = document.getElementById('studentEmailInput').value;
+    let id = document.getElementById('studentIDInput').value;
+    let studentClass = document.getElementById('studentClassInput').value;
+    let year = document.getElementById('studentYearInput').value;
+    let password = document.getElementById('studentPasswordInput').value;
+    let file = document.getElementById('studentPicInput').files[0];
+
+    if(!name || !email || !password){ alert('Name, Email, and Password are required'); return; }
+
+    let reader = new FileReader();
+    reader.onload = function(e){
+        let pic = e.target.result;
+        students.push({profilePicture:pic,name,email,studentID:id,studentClass,studentYear:year,password});
+        localStorage.setItem('students', JSON.stringify(students));
+        renderStudentsTable();
+        closeStudentForm();
+    }
+    if(file) reader.readAsDataURL(file);
+    else {
+        students.push({profilePicture:'student.png',name,email,studentID:id,studentClass,studentYear:year,password});
+        localStorage.setItem('students', JSON.stringify(students));
+        renderStudentsTable();
+        closeStudentForm();
+    }
+}
+
+// ---------------- INITIAL LOAD ----------------
+renderTeachersTable();
+renderStudentsTable();
+showTable('teachers');
+</script>
+
+</body>
+</html>    const table = document.getElementById('teachersTable');
     let html = `<tr>
         <th>Picture</th><th>Name</th><th>Email</th><th>Teacher ID</th><th>Department</th><th>Edit</th>
     </tr>`;
