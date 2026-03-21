@@ -39,7 +39,6 @@ table tr:hover { background:#fff2f2; }
 </div>
 
 <div class="container">
-
     <!-- Action Buttons -->
     <div class="actions">
         <button class="primary" onclick="openTeacherForm()">Register Teacher</button>
@@ -51,7 +50,6 @@ table tr:hover { background:#fff2f2; }
     <!-- Tables -->
     <table id="teachersTable"></table>
     <table id="studentsTable" style="display:none;"></table>
-
 </div>
 
 <!-- Teacher Modal -->
@@ -63,7 +61,6 @@ table tr:hover { background:#fff2f2; }
     <input type="text" id="teacherIDInput" placeholder="Teacher ID">
     <input type="text" id="teacherDeptInput" placeholder="Department">
     <input type="password" id="teacherPasswordInput" placeholder="Password">
-    <label><input type="checkbox" onclick="togglePassword('teacher')"> Show Password</label>
     <input type="file" id="teacherPicInput">
     <button onclick="registerTeacher()">Register</button>
     <button onclick="closeTeacherForm()">Cancel</button>
@@ -80,28 +77,40 @@ table tr:hover { background:#fff2f2; }
     <input type="text" id="studentClassInput" placeholder="Class">
     <input type="text" id="studentYearInput" placeholder="Year">
     <input type="password" id="studentPasswordInput" placeholder="Password">
-    <label><input type="checkbox" onclick="togglePassword('student')"> Show Password</label>
     <input type="file" id="studentPicInput">
     <button onclick="registerStudent()">Register</button>
     <button onclick="closeStudentForm()">Cancel</button>
   </div>
 </div>
 
-<script>
-// Load data from localStorage or initialize arrays
-let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-let students = JSON.parse(localStorage.getItem('students')) || [];
+<!-- Edit Modal (shared for teacher/student) -->
+<div class="modal" id="editModal">
+  <div class="modal-content">
+    <h3>Edit Entry</h3>
+    <input type="text" id="editName" placeholder="Name">
+    <input type="email" id="editEmail" placeholder="Email">
+    <input type="text" id="editID" placeholder="ID">
+    <input type="text" id="editDeptClass" placeholder="Department/Class">
+    <input type="password" id="editPassword" placeholder="Password">
+    <button type="button" onclick="togglePassword('editPassword')">Show/Hide Password</button>
+    <input type="file" id="editPicInput">
+    <button onclick="saveEdit()">Save</button>
+    <button onclick="closeEditForm()">Cancel</button>
+  </div>
+</div>
 
-// ------------------- RENDER -------------------
+<script>
+// Data arrays
+let teachers = [];
+let students = [];
+let editIndex = null;
+let editType = null;
+
+// Render Tables
 function renderTeachersTable(){
     const table = document.getElementById('teachersTable');
     let html = `<tr>
-        <th>Picture</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Teacher ID</th>
-        <th>Department</th>
-        <th>Edit</th>
+        <th>Picture</th><th>Name</th><th>Email</th><th>Teacher ID</th><th>Department</th><th>Edit</th>
     </tr>`;
     teachers.forEach((t,i)=>{
         html += `<tr>
@@ -110,7 +119,7 @@ function renderTeachersTable(){
             <td>${t.email}</td>
             <td>${t.teacherID}</td>
             <td>${t.department}</td>
-            <td><button onclick="editTeacher(${i})">Edit</button></td>
+            <td><button onclick="openEditForm('teacher',${i})">Edit</button></td>
         </tr>`;
     });
     table.innerHTML = html;
@@ -119,14 +128,7 @@ function renderTeachersTable(){
 function renderStudentsTable(){
     const table = document.getElementById('studentsTable');
     let html = `<tr>
-        <th>Picture</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Student ID</th>
-        <th>Class</th>
-        <th>Year</th>
-        <th>Password</th>
-        <th>Edit</th>
+        <th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit</th>
     </tr>`;
     students.forEach((s,i)=>{
         html += `<tr>
@@ -136,100 +138,120 @@ function renderStudentsTable(){
             <td>${s.studentID}</td>
             <td>${s.studentClass}</td>
             <td>${s.studentYear}</td>
-            <td>${s.password}</td>
-            <td><button onclick="editStudent(${i})">Edit</button></td>
+            <td><button onclick="openEditForm('student',${i})">Edit</button></td>
         </tr>`;
     });
     table.innerHTML = html;
 }
 
-// ------------------- SHOW TABLE -------------------
+// Show/Hide Tables
 function showTable(table){
     document.getElementById('teachersTable').style.display = (table==='teachers')?'':'none';
     document.getElementById('studentsTable').style.display = (table==='students')?'':'none';
 }
 
-// ------------------- TOGGLE PASSWORD -------------------
-function togglePassword(type){
-    let input = (type==='teacher') ? document.getElementById('teacherPasswordInput') : document.getElementById('studentPasswordInput');
-    input.type = (input.type === 'password') ? 'text' : 'password';
+// Logout
+function logout(){ window.location.href = 'index.html'; }
+
+// Toggle password visibility
+function togglePassword(id){
+    const input = document.getElementById(id);
+    input.type = (input.type==='password')?'text':'password';
 }
 
-// ------------------- EDIT PLACEHOLDERS -------------------
-function editTeacher(i){ alert('Edit Teacher: '+teachers[i].name); }
-function editStudent(i){ alert('Edit Student: '+students[i].name); }
-
-// ------------------- LOGOUT -------------------
-function logout() {
-    window.location.href = 'index.html'; // redirect to login page
-}
-
-// ------------------- TEACHER FORM -------------------
+// Register Teacher
 function openTeacherForm(){ document.getElementById('teacherModal').style.display='flex'; }
 function closeTeacherForm(){ document.getElementById('teacherModal').style.display='none'; }
 function registerTeacher(){
-    let name = document.getElementById('teacherNameInput').value;
-    let email = document.getElementById('teacherEmailInput').value;
-    let id = document.getElementById('teacherIDInput').value;
-    let dept = document.getElementById('teacherDeptInput').value;
-    let password = document.getElementById('teacherPasswordInput').value;
-    let file = document.getElementById('teacherPicInput').files[0];
-
-    if(!name || !email || !password){ alert('Name, Email, and Password are required'); return; }
-
+    let name=document.getElementById('teacherNameInput').value;
+    let email=document.getElementById('teacherEmailInput').value;
+    let id=document.getElementById('teacherIDInput').value;
+    let dept=document.getElementById('teacherDeptInput').value;
+    let password=document.getElementById('teacherPasswordInput').value;
+    let file=document.getElementById('teacherPicInput').files[0];
+    if(!name||!email||!password){ alert('Name, Email, and Password are required'); return; }
     let reader = new FileReader();
     reader.onload = function(e){
         let pic = e.target.result;
         teachers.push({profilePicture:pic,name,email,teacherID:id,department:dept,password});
-        localStorage.setItem('teachers', JSON.stringify(teachers));
         renderTeachersTable();
         closeTeacherForm();
     }
     if(file) reader.readAsDataURL(file);
-    else {
-        teachers.push({profilePicture:'teacher.png',name,email,teacherID:id,department:dept,password});
-        localStorage.setItem('teachers', JSON.stringify(teachers));
-        renderTeachersTable();
-        closeTeacherForm();
-    }
+    else { teachers.push({profilePicture:'teacher.png',name,email,teacherID:id,department:dept,password}); renderTeachersTable(); closeTeacherForm(); }
 }
 
-// ------------------- STUDENT FORM -------------------
+// Register Student
 function openStudentForm(){ document.getElementById('studentModal').style.display='flex'; }
 function closeStudentForm(){ document.getElementById('studentModal').style.display='none'; }
 function registerStudent(){
-    let name = document.getElementById('studentNameInput').value;
-    let email = document.getElementById('studentEmailInput').value;
-    let id = document.getElementById('studentIDInput').value;
-    let studentClass = document.getElementById('studentClassInput').value;
-    let year = document.getElementById('studentYearInput').value;
-    let password = document.getElementById('studentPasswordInput').value;
-    let file = document.getElementById('studentPicInput').files[0];
-
-    if(!name || !email || !password){ alert('Name, Email, and Password are required'); return; }
-
-    let reader = new FileReader();
-    reader.onload = function(e){
-        let pic = e.target.result;
+    let name=document.getElementById('studentNameInput').value;
+    let email=document.getElementById('studentEmailInput').value;
+    let id=document.getElementById('studentIDInput').value;
+    let studentClass=document.getElementById('studentClassInput').value;
+    let year=document.getElementById('studentYearInput').value;
+    let password=document.getElementById('studentPasswordInput').value;
+    let file=document.getElementById('studentPicInput').files[0];
+    if(!name||!email||!password){ alert('Name, Email, and Password are required'); return; }
+    let reader=new FileReader();
+    reader.onload=function(e){
+        let pic=e.target.result;
         students.push({profilePicture:pic,name,email,studentID:id,studentClass,studentYear:year,password});
-        localStorage.setItem('students', JSON.stringify(students));
         renderStudentsTable();
         closeStudentForm();
     }
     if(file) reader.readAsDataURL(file);
-    else {
-        students.push({profilePicture:'student.png',name,email,studentID:id,studentClass,studentYear:year,password});
-        localStorage.setItem('students', JSON.stringify(students));
+    else { students.push({profilePicture:'student.png',name,email,studentID:id,studentClass,studentYear:year,password}); renderStudentsTable(); closeStudentForm(); }
+}
+
+// ----------------- EDIT -----------------
+function openEditForm(type,index){
+    editType = type;
+    editIndex = index;
+    const modal=document.getElementById('editModal');
+    modal.style.display='flex';
+    let entry = (type==='teacher')?teachers[index]:students[index];
+    document.getElementById('editName').value = entry.name;
+    document.getElementById('editEmail').value = entry.email;
+    document.getElementById('editID').value = (type==='teacher')?entry.teacherID:entry.studentID;
+    document.getElementById('editDeptClass').value = (type==='teacher')?entry.department:entry.studentClass;
+    document.getElementById('editPassword').value = entry.password;
+}
+function closeEditForm(){ document.getElementById('editModal').style.display='none'; }
+function saveEdit(){
+    let name=document.getElementById('editName').value;
+    let email=document.getElementById('editEmail').value;
+    let id=document.getElementById('editID').value;
+    let deptClass=document.getElementById('editDeptClass').value;
+    let password=document.getElementById('editPassword').value;
+    let file=document.getElementById('editPicInput').files[0];
+    let picInput = '';
+    if(file){ 
+        let reader=new FileReader();
+        reader.onload=function(e){
+            let pic=e.target.result;
+            updateEntry(pic);
+        }
+        reader.readAsDataURL(file);
+    } else updateEntry();
+    
+    function updateEntry(pic=null){
+        let entry = (editType==='teacher')?teachers[editIndex]:students[editIndex];
+        entry.name = name; entry.email=email; entry.password=password;
+        if(editType==='teacher'){ entry.teacherID=id; entry.department=deptClass; }
+        else{ entry.studentID=id; entry.studentClass=deptClass; entry.studentYear=document.getElementById('editYear')?.value||entry.studentYear; }
+        if(pic) entry.profilePicture=pic;
+        renderTeachersTable();
         renderStudentsTable();
-        closeStudentForm();
+        closeEditForm();
     }
 }
 
-// ------------------- INITIAL LOAD -------------------
+// Initial load
 renderTeachersTable();
 renderStudentsTable();
 showTable('teachers');
-</script>
 
+</script>
 </body>
 </html>
