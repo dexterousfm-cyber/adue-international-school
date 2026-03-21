@@ -5,19 +5,14 @@
 <title>Teacher Dashboard - ADUE Portal</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-/* Header */
 .header { background:#722F37; padding:20px; color:white; display:flex; align-items:center; justify-content:space-between; }
 .header img { width:120px; height:120px; border-radius:50%; border:3px solid white; margin-right:20px; }
 #welcome { color:white; font-size:24px; margin:0; }
 .logout-btn { background:white; color:#722F37; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; }
 .logout-btn:hover { opacity:0.9; }
-
-/* Dashboard buttons */
 .dashboard-buttons { margin:20px 0; }
 .dashboard-buttons button { padding:10px 20px; margin-right:10px; border:none; background:#722F37; color:white; border-radius:6px; cursor:pointer; font-size:16px; }
 .dashboard-buttons button:hover { opacity:0.9; }
-
-/* Table styling */
 table { width:100%; border-collapse:collapse; margin-top:20px; }
 th, td { border:1px solid #ccc; padding:10px; text-align:center; }
 th { background:#eee; }
@@ -54,26 +49,22 @@ button.edit-btn:hover { opacity:0.9; }
 </table>
 
 <script>
-// Get current teacher info
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
 let currentTeacherEmail = localStorage.getItem('currentTeacherEmail');
 let currentTeacher = teachers.find(t => t.email === currentTeacherEmail);
 
-// Display teacher info
 if(currentTeacher){
     document.getElementById('welcome').innerText = "Welcome, " + currentTeacher.name;
     document.getElementById('teacherEmailDisplay').innerText = currentTeacher.email;
     document.getElementById('teacherPic').src = currentTeacher.profilePicture || "default-teacher.png";
 }
 
-// Populate students table
 function renderStudents(){
     let tbody = document.querySelector("#studentsTable tbody");
     tbody.innerHTML = "";
     students.forEach((s,index)=>{
-        tbody.innerHTML += `
-        <tr>
+        tbody.innerHTML += `<tr>
             <td><img src="${s.profilePicture || 'default-student.png'}" width="70" height="70"></td>
             <td>${s.name}</td>
             <td>${s.email}</td>
@@ -81,15 +72,12 @@ function renderStudents(){
             <td>${s.studentClass}</td>
             <td>${s.studentYear}</td>
             <td>${s.result || ''}</td>
-            <td>
-                <button class="edit-btn" onclick="editResult(${index})">Edit Result</button>
-            </td>
+            <td><button class="edit-btn" onclick="editResult(${index})">Edit Result</button></td>
         </tr>`;
     });
 }
 renderStudents();
 
-// Register student (teacher helps admin)
 function registerStudent(){
     let name = prompt("Student Full Name:");
     if(!name) return;
@@ -111,7 +99,6 @@ function registerStudent(){
     renderStudents();
 }
 
-// Edit student result
 function editResult(index){
     let newResult = prompt("Enter result for " + students[index].name, students[index].result || '');
     if(newResult !== null){
@@ -121,7 +108,6 @@ function editResult(index){
     }
 }
 
-// Logout
 function logout(){
     localStorage.removeItem('currentTeacherEmail');
     window.location.href="index.html";
