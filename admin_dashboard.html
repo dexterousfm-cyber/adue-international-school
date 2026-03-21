@@ -2,133 +2,168 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ADUE Admin Dashboard</title>
+<title>Admin Dashboard - ADUE Portal</title>
 <link rel="stylesheet" href="styles.css">
+
 <style>
-/* Header styling */
+/* Header */
 .header {
-    background-color: #722F37; /* wine color */
-    padding: 20px;
-    text-align: center;
+    background-color: #722F37;
+    padding: 15px 25px;
     color: white;
 }
-.header img {
-    height: 50px;
-    vertical-align: middle;
-    margin-right: 15px;
-}
-.header h1 {
-    display: inline;
-    font-size: 24px;
-    vertical-align: middle;
+
+/* Header flex */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Dashboard cards container */
-.dashboard-stats {
+/* Logo + title */
+.header-left img {
+    height: 45px;
+    margin-right: 10px;
+}
+.header-left h1 {
+    display: inline;
+    font-size: 22px;
+}
+
+/* Logout button */
+.logout-btn {
+    background: white;
+    color: #722F37;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.logout-btn:hover {
+    opacity: 0.85;
+}
+
+/* Dashboard */
+.dashboard {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* Cards */
+.cards {
     display: flex;
-    justify-content: space-around;
-    margin: 30px 10px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
-/* Individual stat card */
-.stat-card {
-    background-color: #fff; /* white card */
+.card {
+    flex: 1;
+    min-width: 220px;
+    background: white;
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 30px 20px;
     text-align: center;
-    width: 200px;
-    margin: 10px;
-    transition: transform 0.2s;
-}
-.stat-card:hover {
-    transform: translateY(-5px);
-}
-.stat-card h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #722F37; /* wine-colored titles */
-}
-.stat-card p {
-    font-size: 36px;
-    font-weight: bold;
-    color: #333; /* dark number color for contrast */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Quick action buttons */
-.dashboard-actions {
+.card h3 {
+    color: #722F37;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+/* Actions */
+.actions {
+    margin-top: 40px;
     display: flex;
-    justify-content: center;
     gap: 20px;
-    margin: 40px 0;
+    flex-wrap: wrap;
 }
-.dashboard-actions button {
-    padding: 12px 25px;
-    background-color: #722F37; /* wine color */
+
+.actions a {
+    flex: 1;
+    min-width: 220px;
+    text-align: center;
+    padding: 15px;
+    background-color: #722F37;
     color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 18px;
 }
-.dashboard-actions button:hover {
+
+.actions a:hover {
     opacity: 0.9;
 }
 </style>
 </head>
+
 <body>
 
-<!-- Header -->
+<!-- HEADER -->
 <div class="header">
-    <img src="logo-new.png" alt="Logo">
-    <h1>ADUE Admin Dashboard</h1>
-</div>
+    <div class="header-flex">
 
-<!-- Dashboard Stats -->
-<div class="dashboard-stats">
-    <div class="stat-card">
-        <h2>Total Teachers Registered</h2>
-        <p id="totalTeachers">0</p>
-    </div>
-    <div class="stat-card">
-        <h2>Total Students Registered</h2>
-        <p id="totalStudents">0</p>
+        <div class="header-left">
+            <img src="logo-new.png" alt="Logo">
+            <h1>ADUE Admin Dashboard</h1>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+
     </div>
 </div>
 
-<!-- Quick Links -->
-<div class="dashboard-actions">
-    <button onclick="location.href='register_teacher.html'">Register Teacher</button>
-    <button onclick="location.href='register_student.html'">Register Student</button>
+<!-- DASHBOARD -->
+<div class="dashboard">
+
+    <!-- SUMMARY -->
+    <div class="cards">
+        <div class="card">
+            <h3>Total Teachers</h3>
+            <p id="totalTeachers">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Students</h3>
+            <p id="totalStudents">0</p>
+        </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions">
+        <a href="register_teacher.html">Register Teacher</a>
+        <a href="register_student.html">Register Student</a>
+    </div>
+
 </div>
 
+<!-- SCRIPT -->
 <script>
-// Load saved totals from localStorage or initialize to 0
-let totalTeachers = localStorage.getItem('totalTeachers') ? parseInt(localStorage.getItem('totalTeachers')) : 0;
-let totalStudents = localStorage.getItem('totalStudents') ? parseInt(localStorage.getItem('totalStudents')) : 0;
-
-// Function to update dashboard numbers
-function updateDashboard() {
-    document.getElementById('totalTeachers').innerText = totalTeachers;
-    document.getElementById('totalStudents').innerText = totalStudents;
+// 🔐 Protect page (must login first)
+if (!localStorage.getItem('isAdminLoggedIn')) {
+    window.location.href = "index.html";
 }
 
-// Functions to increment totals when registering teacher/student
-function addTeacher() {
-    totalTeachers++;
-    localStorage.setItem('totalTeachers', totalTeachers);
-    updateDashboard();
-}
+// 📊 Load stored data
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let students = JSON.parse(localStorage.getItem('students')) || [];
 
-function addStudent() {
-    totalStudents++;
-    localStorage.setItem('totalStudents', totalStudents);
-    updateDashboard();
-}
+// 🔢 Update totals
+document.getElementById('totalTeachers').textContent = teachers.length;
+document.getElementById('totalStudents').textContent = students.length;
 
-// Initial render
-updateDashboard();
+// 🚪 Logout function
+function logout() {
+    localStorage.removeItem('isAdminLoggedIn');
+    window.location.href = "index.html";
+}
 </script>
 
 </body>
