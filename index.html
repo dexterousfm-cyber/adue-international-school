@@ -1,32 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADUE International School Portal</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="login-container">
-    <div class="login-logo">
-      <img src="login-logo.png" alt="ADUE Logo" />
-    </div>
-    <h2>Welcome to ADUE Portal</h2>
-    <form id="login-form">
-      <div class="input-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Enter your email" required />
-      </div>
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter your password" required />
-      </div>
-      <button type="submit" class="login-btn">Login</button>
-    </form>
-    <p class="login-note">Enter your credentials to access your dashboard.</p>
-  </div>
+<script>
+  // Login button
+  const loginForm = document.getElementById("loginForm");
 
-  <!-- Link to script.js -->
-  <script src="script.js"></script>
-</body>
-</html>
+  loginForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    // List of valid accounts
+    const users = [
+      { email: "admin@adue.com", password: "12345678", role: "admin" },
+      { email: "phemmyallen1@gmail.com", password: "12345678", role: "teacher" }
+    ];
+
+    // Find matching user
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+      // Redirect based on role
+      if (user.role === "admin") {
+        window.location.href = "admin_dashboard.html";
+      } else if (user.role === "teacher") {
+        window.location.href = "teacher_dashboard.html";
+      }
+    } else {
+      alert("Invalid login details");
+    }
+  });
+</script>
