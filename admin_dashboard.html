@@ -5,12 +5,12 @@
 <title>ADUE Admin Dashboard</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-/* Header */
+/* Header styling */
 .header {
-    background-color: #722F37;
+    background-color: #722F37; /* wine color */
     padding: 20px;
     text-align: center;
-    color: white;
+    color: white; /* ADUE Admin Dashboard text in white */
 }
 .header img {
     height: 50px;
@@ -23,85 +23,65 @@
     vertical-align: middle;
 }
 
-/* Register Buttons */
-.register-buttons {
-    text-align: center;
-    margin: 20px 0;
+/* Dashboard wrapper */
+.dashboard-wrapper {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
 }
-.register-buttons button {
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+}
+table, th, td {
+    border: 1px solid #ccc;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
     background-color: #722F37;
     color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    margin: 0 10px;
 }
-.register-buttons button:hover {
+td button {
+    background-color: #722F37;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+td button:hover {
     opacity: 0.9;
 }
 
-/* Dashboard Stats */
-.dashboard-stats {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin: 20px 0;
-}
-.stat-card {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    width: 180px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.stat-card h2 {
-    margin: 0;
-    color: #722F37;
-    font-size: 32px;
-}
-.stat-card p {
-    margin: 5px 0 0;
-    font-size: 16px;
-    color: #333;
-}
-
-/* Registered Users List */
-.registered-list {
-    max-width: 800px;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.registered-list h3 {
-    margin-top: 0;
-    color: #722F37;
-}
-.user-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #ccc;
-}
-.user-item:last-child {
-    border-bottom: none;
-}
-
-/* Logout Button */
-.logout-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #333;
+/* Add button */
+.add-btn {
+    background-color: #722F37;
     color: white;
-    border: none;
     padding: 10px 15px;
-    border-radius: 6px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    margin-bottom: 15px;
+}
+.add-btn:hover {
+    opacity: 0.9;
+}
+
+/* Logout */
+.logout-btn {
+    background-color: #ccc;
+    color: #000;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right;
 }
 .logout-btn:hover {
     opacity: 0.9;
@@ -114,68 +94,129 @@
 <div class="header">
     <img src="logo-new.png" alt="Logo">
     <h1>ADUE Admin Dashboard</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
-<!-- Logout Button -->
-<button class="logout-btn" onclick="logout()">Logout</button>
+<div class="dashboard-wrapper">
+    <!-- Teachers Section -->
+    <h2>Teachers</h2>
+    <button class="add-btn" onclick="window.location.href='register_teacher.html'">Register Teacher</button>
+    <table id="teachersTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Teacher ID</th>
+                <th>Department</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamic content -->
+        </tbody>
+    </table>
 
-<!-- Register Buttons -->
-<div class="register-buttons">
-    <button onclick="window.location.href='register_teacher.html'">Register Teacher</button>
-    <button onclick="window.location.href='register_student.html'">Register Student</button>
-</div>
-
-<!-- Dashboard Stats -->
-<div class="dashboard-stats">
-    <div class="stat-card">
-        <h2 id="totalTeachers">0</h2>
-        <p>Total Teachers</p>
-    </div>
-    <div class="stat-card">
-        <h2 id="totalStudents">0</h2>
-        <p>Total Students</p>
-    </div>
-</div>
-
-<!-- Registered Users List -->
-<div class="registered-list">
-    <h3>Teachers Registered</h3>
-    <div id="teacherList"></div>
-
-    <h3>Students Registered</h3>
-    <div id="studentList"></div>
+    <!-- Students Section -->
+    <h2>Students</h2>
+    <button class="add-btn" onclick="window.location.href='register_student.html'">Register Student</button>
+    <table id="studentsTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Student ID</th>
+                <th>Class</th>
+                <th>Year</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamic content -->
+        </tbody>
+    </table>
 </div>
 
 <script>
-// Fetch totals or initialize
+// Fetch teachers and students
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
 
-// Update totals
-document.getElementById('totalTeachers').innerText = teachers.length;
-document.getElementById('totalStudents').innerText = students.length;
+// Function to render teachers table
+function renderTeachers() {
+    const tbody = document.getElementById('teachersTable').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+    teachers.forEach((t, index) => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${t.name}</td>
+            <td>${t.email}</td>
+            <td>${t.teacherID}</td>
+            <td>${t.department}</td>
+            <td>
+                <button onclick="editTeacher(${index})">Edit</button>
+                <button onclick="deleteTeacher(${index})">Delete</button>
+            </td>
+        `;
+    });
+}
 
-// Populate lists
-const teacherListDiv = document.getElementById('teacherList');
-teachers.forEach(t => {
-    const div = document.createElement('div');
-    div.className = 'user-item';
-    div.innerHTML = `<span>${t.name} (${t.teacherID})</span>`;
-    teacherListDiv.appendChild(div);
-});
+// Function to render students table
+function renderStudents() {
+    const tbody = document.getElementById('studentsTable').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+    students.forEach((s, index) => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${s.name}</td>
+            <td>${s.email}</td>
+            <td>${s.studentID}</td>
+            <td>${s.class}</td>
+            <td>${s.year}</td>
+            <td>
+                <button onclick="editStudent(${index})">Edit</button>
+                <button onclick="deleteStudent(${index})">Delete</button>
+            </td>
+        `;
+    });
+}
 
-const studentListDiv = document.getElementById('studentList');
-students.forEach(s => {
-    const div = document.createElement('div');
-    div.className = 'user-item';
-    div.innerHTML = `<span>${s.name} (${s.studentID}) - Year: ${s.year}</span>`;
-    studentListDiv.appendChild(div);
-});
+// Delete functions
+function deleteTeacher(index) {
+    if(confirm("Are you sure you want to delete this teacher?")) {
+        teachers.splice(index, 1);
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+        renderTeachers();
+    }
+}
 
-// Logout function
+function deleteStudent(index) {
+    if(confirm("Are you sure you want to delete this student?")) {
+        students.splice(index, 1);
+        localStorage.setItem('students', JSON.stringify(students));
+        renderStudents();
+    }
+}
+
+// Edit placeholders (implement later)
+function editTeacher(index){
+    alert("Edit functionality can be implemented here.");
+}
+function editStudent(index){
+    alert("Edit functionality can be implemented here.");
+}
+
+// Logout
 function logout(){
     window.location.href = 'index.html';
 }
+
+// Initial render
+renderTeachers();
+renderStudents();
 </script>
 
 </body>
