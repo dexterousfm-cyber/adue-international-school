@@ -5,15 +5,19 @@
 <title>Admin Dashboard</title>
 <style>
 body { margin:0; font-family: Arial, sans-serif; background:#f5f5f5; }
+/* Header */
 .header { display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:#800000; color:white; }
 .header .logo img { width:120px; height:auto; object-fit:contain; }
 .header .profile { display:flex; align-items:center; gap:10px; }
 .header .profile img { width:40px; height:40px; border-radius:50%; border:1px solid white; object-fit:cover; }
 .header .profile span { font-weight:bold; }
+/* Container */
 .container { padding:30px; }
+/* Buttons */
 button { padding:8px 16px; margin:5px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
 button.primary { background:#800000; color:white; }
 button.primary:hover { background:#a00000; }
+/* Tables */
 table { width:100%; border-collapse:collapse; margin-top:20px; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.15); }
 th, td { padding:12px; text-align:center; border:1px solid #ddd; }
 th { background:#800000; color:white; }
@@ -45,23 +49,21 @@ table tr:hover { background:#fff2f2; }
 </div>
 
 <script>
-// Logout
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    alert('Logout clicked');
-});
-
 // Sample data
-let teachers = JSON.parse(localStorage.getItem('teachers')) || [
+let teachers = [
     {profilePicture:'teacher.png', name:'John Doe', email:'john@example.com', teacherID:'T001', department:'Math'}
 ];
-let students = JSON.parse(localStorage.getItem('students')) || [
+
+let students = [
     {profilePicture:'student.png', name:'Jane Smith', email:'jane@example.com', studentID:'S001', studentClass:'JSS1', studentYear:'2026'}
 ];
 
-// Render Teachers Table
+// Render tables
 function renderTeachersTable(){
     const table = document.getElementById('teachersTable');
-    let html = `<tr><th>Picture</th><th>Name</th><th>Email</th><th>Teacher ID</th><th>Department</th><th>Edit</th></tr>`;
+    let html = `<tr>
+        <th>Picture</th><th>Name</th><th>Email</th><th>Teacher ID</th><th>Department</th><th>Edit</th>
+    </tr>`;
     teachers.forEach((t,i)=>{
         html += `<tr>
             <td><img src="${t.profilePicture}" class="avatar-small"></td>
@@ -75,10 +77,11 @@ function renderTeachersTable(){
     table.innerHTML = html;
 }
 
-// Render Students Table
 function renderStudentsTable(){
     const table = document.getElementById('studentsTable');
-    let html = `<tr><th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit</th></tr>`;
+    let html = `<tr>
+        <th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit</th>
+    </tr>`;
     students.forEach((s,i)=>{
         html += `<tr>
             <td><img src="${s.profilePicture}" class="avatar-small"></td>
@@ -93,24 +96,29 @@ function renderStudentsTable(){
     table.innerHTML = html;
 }
 
-// Edit functions
-function editTeacher(i){ localStorage.setItem('editTeacherIndex',i); window.location.href='edit_teacher.html'; }
-function editStudent(i){ localStorage.setItem('editStudentIndex',i); window.location.href='edit_student.html'; }
+// Edit buttons
+function editTeacher(i){ alert('Edit Teacher '+i); }
+function editStudent(i){ alert('Edit Student '+i); }
 
-// Show/hide tables
+// Toggle tables
 function showTable(table){
     document.getElementById('teachersTable').style.display = (table==='teachers')?'':'none';
     document.getElementById('studentsTable').style.display = (table==='students')?'':'none';
 }
 
-// Initial render
+// Initial load
 renderTeachersTable();
 renderStudentsTable();
 showTable('teachers');
+
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    alert('Logout clicked');
+});
 </script>
 
 </body>
-</html>        teachersTable.style.display = '';
+</html></html>        teachersTable.style.display = '';
         studentsTable.style.display = 'none';
     } else {
         teachersTable.style.display = 'none';
