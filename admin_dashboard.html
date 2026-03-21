@@ -148,4 +148,42 @@ function showTable(table) {
 </script>
 
 </body>
+</html>    row.insertCell(2).innerText = t.email;
+    row.insertCell(3).innerText = t.teacherID;
+    row.insertCell(4).innerText = t.department;
+    row.insertCell(5).innerHTML = `<button class="action-btn" onclick="editTeacher(${i})">Edit</button>`;
+});
+
+function editTeacher(i){
+    localStorage.setItem('editTeacherIndex', i);
+    window.location.href='edit_teacher.html';
+}
+
+// Load Students
+let students = JSON.parse(localStorage.getItem('students')) || [];
+let studentsTable = document.getElementById('studentsTable');
+students.forEach((s,i)=>{
+    let row = studentsTable.insertRow();
+    row.insertCell(0).innerHTML = `<img src="${s.profilePicture}" class="avatar-small">`;
+    row.insertCell(1).innerText = s.name;
+    row.insertCell(2).innerText = s.email;
+    row.insertCell(3).innerText = s.studentID;
+    row.insertCell(4).innerText = s.studentClass;
+    row.insertCell(5).innerText = s.studentYear;
+    row.insertCell(6).innerHTML = `<button class="action-btn" onclick="editStudent(${i})">Edit</button>`;
+});
+
+function editStudent(i){
+    localStorage.setItem('editStudentIndex', i);
+    window.location.href='edit_student.html';
+}
+
+// Toggle Tables
+function showTable(table) {
+    document.getElementById('teachersTable').style.display = (table==='teachers') ? '' : 'none';
+    document.getElementById('studentsTable').style.display = (table==='students') ? '' : 'none';
+}
+</script>
+
+</body>
 </html>
