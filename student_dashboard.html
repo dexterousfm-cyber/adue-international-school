@@ -2,72 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Student Dashboard - ADUE Portal</title>
+<title>Student Dashboard</title>
 <link rel="stylesheet" href="styles.css">
-<style>
-.header { background:#722F37; padding:20px; color:white; display:flex; align-items:center; justify-content:space-between; }
-.header img { width:120px; height:120px; border-radius:50%; border:3px solid white; margin-right:20px; }
-#welcomeStudent { color:white; font-size:24px; margin:0; }
-.logout-btn { background:white; color:#722F37; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold; }
-.logout-btn:hover { opacity:0.9; }
-table { width:100%; border-collapse:collapse; margin-top:20px; }
-th, td { border:1px solid #ccc; padding:10px; text-align:center; }
-th { background:#eee; }
-img { border-radius:50%; }
-</style>
 </head>
 <body>
+<h1>Welcome, <span id="studentName"></span></h1>
+<img id="studentPic" src="default.png" width="100" style="border-radius:50%">
 
-<div class="header">
-    <div style="display:flex; align-items:center;">
-        <img id="studentPic" src="default-student.png" alt="Student Picture">
-        <div>
-            <h1 id="welcomeStudent">Welcome, Student</h1>
-            <div id="studentEmailDisplay"></div>
-        </div>
-    </div>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-</div>
+<h2>Update Profile Picture</h2>
+<input type="file" id="updatePictureInput" accept="image/*">
 
-<h2>Your Subjects and Results</h2>
-<table id="studentTable">
-<thead>
-<tr>
-<th>Subject</th><th>Result</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
+<h2>Select Subjects</h2>
+<select id="subjectsSelect" multiple>
+    <option>Math</option>
+    <option>English</option>
+    <option>Science</option>
+    <option>History</option>
+</select>
 
 <script>
 let students = JSON.parse(localStorage.getItem('students')) || [];
-let currentStudentEmail = localStorage.getItem('currentStudentEmail');
-let student = students.find(s => s.email === currentStudentEmail);
+let currentStudentIndex = parseInt(localStorage.getItem("currentStudentIndex"));
+let student = students[currentStudentIndex];
 
-if(student){
-    document.getElementById('welcomeStudent').innerText = "Welcome, " + student.name;
-    document.getElementById('studentEmailDisplay').innerText = student.email;
-    document.getElementById('studentPic').src = student.profilePicture || "default-student.png";
-}
+document.getElementById("studentName").innerText = student.name;
+document.getElementById("studentPic").src = student.profilePicture || 'default.png';
 
-function renderSubjects(){
-    let tbody = document.querySelector("#studentTable tbody");
-    tbody.innerHTML = "";
-    if(student.subjects && student.subjects.length){
-        student.subjects.forEach(sub=>{
-            tbody.innerHTML += `<tr><td>${sub}</td><td>${student.result || ''}</td></tr>`;
-        });
-    } else {
-        tbody.innerHTML = `<tr><td colspan="2">No subjects assigned yet.</td></tr>`;
+// Update picture
+document.getElementById("updatePictureInput").addEventListener("change", function(){
+    if(this.files.length>0){
+        const reader = new FileReader();
+        reader.onload = function(){
+            student.profilePicture = reader.result;
+            students[currentStudentIndex] = student;
+            localStorage.setItem("students", JSON.stringify(students));
+            document.getElementById("studentPic").src = reader.result;
+        }
+        reader.readAsDataURL(this.files[0]);
     }
-}
-renderSubjects();
-
-function logout(){
-    localStorage.removeItem('currentStudentEmail');
-    window.location.href="index.html";
-}
+});
 </script>
-
 </body>
 </html>
