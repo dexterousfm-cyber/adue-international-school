@@ -14,9 +14,10 @@ body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; 
 .actions { margin-bottom:20px; }
 .actions button { margin-right:15px; padding:10px 20px; background:#800000; color:white; border:none; border-radius:5px; cursor:pointer; }
 .actions button:hover { background:#a00000; }
-table { width:100%; border-collapse: collapse; background:white; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:30px; }
+
+table { width:100%; border-collapse: collapse; border-radius:8px; overflow:hidden; margin-bottom:30px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 th, td { padding:12px; text-align:left; border-bottom:1px solid #ddd; }
-th { background:#f4f4f4; }
+th { background:#800000; color:white; }
 td img { border-radius:50%; width:50px; }
 button.edit-btn { padding:5px 10px; background:#800000; color:white; border:none; border-radius:4px; cursor:pointer; }
 button.edit-btn:hover { background:#a00000; }
@@ -111,6 +112,15 @@ students.forEach((s,i)=>{
 function editTeacher(index){
     localStorage.setItem("editTeacherIndex", index);
     window.location.href="edit_teacher.html";
+}
+function editStudent(index){
+    localStorage.setItem("editStudentIndex", index);
+    window.location.href="edit_student.html";
+}
+</script>
+
+</body>
+</html>    window.location.href="edit_teacher.html";
 }
 function editStudent(index){
     localStorage.setItem("editStudentIndex", index);
