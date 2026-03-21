@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Students - ADUE International School</title>
+    <title>Register Student - ADUE International School</title>
     <style>
         * {
             margin: 0;
@@ -139,21 +139,114 @@
             background: #f8f9fa;
         }
 
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
+        .breadcrumb {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 14px;
         }
 
-        .section-title {
+        .breadcrumb a {
+            color: #8B0000;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            max-width: 900px;
+        }
+
+        .form-title {
             font-size: 24px;
             color: #333;
             font-weight: 600;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: #c62828;
+        }
+
+        .form-input, .form-select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #8B0000;
+            box-shadow: 0 0 0 3px rgba(139,0,0,0.1);
+        }
+
+        .photo-upload {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .photo-upload:hover {
+            border-color: #8B0000;
+            background: #fff5f5;
+        }
+
+        .photo-upload-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .photo-upload-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 14px 32px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -177,147 +270,13 @@
             box-shadow: 0 4px 12px rgba(139,0,0,0.3);
         }
 
-        .search-filter-bar {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 250px;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #8B0000;
-        }
-
-        .filter-select {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            background: white;
-            min-width: 150px;
-        }
-
-        .table-container {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #8B0000;
+        .btn-secondary {
+            background: #6c757d;
             color: white;
         }
 
-        th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .student-photo {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-student {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-icon {
-            width: 32px;
-            height: 32px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .btn-view {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .btn-edit {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .btn-delete {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .btn-icon:hover {
-            transform: scale(1.1);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
+        .btn-secondary:hover {
+            background: #545b62;
         }
 
         @media (max-width: 768px) {
@@ -329,6 +288,9 @@
             }
             .nav-link i {
                 margin-right: 0;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -410,135 +372,162 @@
         </header>
 
         <div class="content-area">
-            <div class="page-header">
-                <div class="section-title">All Students</div>
-                <a href="register_student.html" class="btn btn-primary">
-                    <span>+</span> Register New Student
-                </a>
+            <div class="breadcrumb">
+                <a href="index.html">Dashboard</a> / <a href="students.html">Students</a> / Register New Student
             </div>
 
-            <div class="search-filter-bar">
-                <input type="text" class="search-input" placeholder="🔍 Search students by name or ID..." id="searchInput" onkeyup="filterStudents()">
-                <select class="filter-select" id="classFilter" onchange="filterStudents()">
-                    <option value="">All Classes</option>
-                    <option value="JSS1">JSS 1</option>
-                    <option value="JSS2">JSS 2</option>
-                    <option value="JSS3">JSS 3</option>
-                    <option value="SSS1">SSS 1</option>
-                    <option value="SSS2">SSS 2</option>
-                    <option value="SSS3">SSS 3</option>
-                </select>
-                <select class="filter-select" id="genderFilter" onchange="filterStudents()">
-                    <option value="">All Genders</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
+            <div class="form-container">
+                <div class="form-title">📝 Register New Student</div>
+                
+                <form id="studentForm" onsubmit="registerStudent(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">First Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="firstName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Last Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="lastName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Student ID <small>(Auto-generated if empty)</small></label>
+                            <input type="text" class="form-input" name="studentId" placeholder="e.g., ADUE/2024/001">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Class <span class="required">*</span></label>
+                            <select class="form-select" name="class" required>
+                                <option value="">Select Class</option>
+                                <option value="JSS1">JSS 1</option>
+                                <option value="JSS2">JSS 2</option>
+                                <option value="JSS3">JSS 3</option>
+                                <option value="SSS1">SSS 1</option>
+                                <option value="SSS2">SSS 2</option>
+                                <option value="SSS3">SSS 3</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Gender <span class="required">*</span></label>
+                            <select class="form-select" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" class="form-input" name="dob">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" name="email" placeholder="student@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" name="phone" placeholder="+234...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Parent/Guardian Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="parentName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Parent Phone <span class="required">*</span></label>
+                            <input type="tel" class="form-input" name="parentPhone" required placeholder="+234...">
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label class="form-label">Home Address</label>
+                            <input type="text" class="form-input" name="address" placeholder="Full address">
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                                <div class="photo-upload-icon">📷</div>
+                                <div class="photo-upload-text">Click to upload student photo (optional)</div>
+                                <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoSelect(this)">
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Photo</th>
-                            <th>Student Name</th>
-                            <th>Student ID</th>
-                            <th>Class</th>
-                            <th>Gender</th>
-                            <th>Parent Contact</th>
-                            <th>Date Registered</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentsTableBody">
-                        <!-- Populated by JavaScript -->
-                    </tbody>
-                </table>
-                <div id="emptyState" class="empty-state" style="display: none;">
-                    <div class="empty-state-icon">👨‍🎓</div>
-                    <h3>No Students Found</h3>
-                    <p>Start by registering a new student</p>
-                </div>
+                    <div class="form-actions">
+                        <a href="students.html" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">✓ Register Student</button>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
 
     <script>
-        let students = JSON.parse(localStorage.getItem('adue_students')) || [];
-
-        function renderStudents() {
-            const tbody = document.getElementById('studentsTableBody');
-            const emptyState = document.getElementById('emptyState');
-            
-            tbody.innerHTML = '';
-            
-            if (students.length === 0) {
-                emptyState.style.display = 'block';
-                return;
-            }
-            
-            emptyState.style.display = 'none';
-            
-            students.forEach(student => {
-                const initials = student.firstName.charAt(0) + student.lastName.charAt(0);
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td><div class="student-photo">${initials}</div></td>
-                    <td><strong>${student.fullName}</strong></td>
-                    <td>${student.studentId}</td>
-                    <td><span class="badge badge-student">${student.class}</span></td>
-                    <td>${student.gender}</td>
-                    <td>${student.parentPhone || 'N/A'}</td>
-                    <td>${student.date}</td>
-                    <td class="action-btns">
-                        <button class="btn-icon btn-view" onclick="viewStudent(${student.id})" title="View">👁</button>
-                        <button class="btn-icon btn-edit" onclick="editStudent(${student.id})" title="Edit">✏</button>
-                        <button class="btn-icon btn-delete" onclick="deleteStudent(${student.id})" title="Delete">🗑</button>
-                    </td>
+        function handlePhotoSelect(input) {
+            if (input.files && input.files[0]) {
+                const uploadDiv = document.querySelector('.photo-upload');
+                uploadDiv.innerHTML = `
+                    <div class="photo-upload-icon">✅</div>
+                    <div class="photo-upload-text">Photo selected: ${input.files[0].name}</div>
                 `;
-            });
-        }
-
-        function filterStudents() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const classFilter = document.getElementById('classFilter').value;
-            const genderFilter = document.getElementById('genderFilter').value;
-            
-            const rows = document.querySelectorAll('#studentsTableBody tr');
-            let visibleCount = 0;
-            
-            rows.forEach(row => {
-                const name = row.cells[1].textContent.toLowerCase();
-                const id = row.cells[2].textContent.toLowerCase();
-                const cls = row.cells[3].textContent;
-                const gender = row.cells[4].textContent;
-                
-                const matchesSearch = name.includes(search) || id.includes(search);
-                const matchesClass = !classFilter || cls.includes(classFilter);
-                const matchesGender = !genderFilter || gender === genderFilter;
-                
-                const shouldShow = matchesSearch && matchesClass && matchesGender;
-                row.style.display = shouldShow ? '' : 'none';
-                if (shouldShow) visibleCount++;
-            });
-            
-            document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
-        }
-
-        function viewStudent(id) {
-            const student = students.find(s => s.id === id);
-            alert(`STUDENT DETAILS\n\nName: ${student.fullName}\nID: ${student.studentId}\nClass: ${student.class}\nGender: ${student.gender}\nEmail: ${student.email || 'N/A'}\nPhone: ${student.phone || 'N/A'}\nParent: ${student.parentName}\nParent Phone: ${student.parentPhone}\nAddress: ${student.address || 'N/A'}`);
-        }
-
-        function editStudent(id) {
-            alert('Edit functionality - Form will open with pre-populated data');
-        }
-
-        function deleteStudent(id) {
-            if (confirm('Are you sure you want to delete this student?')) {
-                students = students.filter(s => s.id !== id);
-                localStorage.setItem('adue_students', JSON.stringify(students));
-                renderStudents();
+                uploadDiv.style.borderColor = '#28a745';
+                uploadDiv.style.background = '#f0fff4';
             }
+        }
+
+        function registerStudent(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const students = JSON.parse(localStorage.getItem('adue_students')) || [];
+            const registrations = JSON.parse(localStorage.getItem('adue_registrations')) || [];
+            
+            const studentId = formData.get('studentId') || generateStudentId(students.length);
+            
+            const student = {
+                id: Date.now(),
+                studentId: studentId,
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                fullName: formData.get('firstName') + ' ' + formData.get('lastName'),
+                class: formData.get('class'),
+                gender: formData.get('gender'),
+                dob: formData.get('dob'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                parentName: formData.get('parentName'),
+                parentPhone: formData.get('parentPhone'),
+                address: formData.get('address'),
+                date: new Date().toLocaleDateString(),
+                registeredBy: 'Administrator'
+            };
+            
+            students.push(student);
+            localStorage.setItem('adue_students', JSON.stringify(students));
+            
+            // Add to recent registrations
+            registrations.unshift({
+                name: student.fullName,
+                id: student.studentId,
+                class: student.class,
+                type: 'Student',
+                by: 'Administrator',
+                date: student.date
+            });
+            if (registrations.length > 10) registrations.pop();
+            localStorage.setItem('adue_registrations', JSON.stringify(registrations));
+            
+            alert('Student registered successfully!');
+            window.location.href = 'students.html';
+        }
+
+        function generateStudentId(count) {
+            const year = new Date().getFullYear();
+            return `ADUE/STU/${year}/${String(count + 1).padStart(3, '0')}`;
         }
 
         function logout() {
@@ -546,10 +535,7 @@
                 alert('Logged out successfully!');
             }
         }
-
-        renderStudents();
     </script>
 
 </body>
-                  </html>
-              
+</html>
