@@ -59,37 +59,17 @@ table tr:hover { background:#fff2f2; }
     </div>
 
     <!-- Teachers Table -->
-    <table id="teachersTable">
-        <tr>
-            <th>Picture</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Teacher ID</th>
-            <th>Department</th>
-            <th>Edit</th>
-        </tr>
-    </table>
+    <table id="teachersTable"></table>
 
     <!-- Students Table -->
-    <table id="studentsTable" style="display:none;">
-        <tr>
-            <th>Picture</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Student ID</th>
-            <th>Class</th>
-            <th>Year</th>
-            <th>Edit</th>
-        </tr>
-    </table>
+    <table id="studentsTable" style="display:none;"></table>
 
 </div>
 
 <script>
-// Ensure DOM fully loaded
+// Logout button
 window.onload = function() {
-    const logoutBtn = document.getElementById('logoutBtn');
-    logoutBtn.addEventListener('click', function() {
+    document.getElementById('logoutBtn').addEventListener('click', function() {
         localStorage.removeItem('currentAdminIndex');
         localStorage.removeItem('currentTeacherIndex');
         localStorage.removeItem('currentStudentIndex');
@@ -102,15 +82,80 @@ window.onload = function() {
     document.getElementById('headerName').innerText = 'Welcome ' + admins[currentAdminIndex].name;
     document.getElementById('headerAvatar').src = admins[currentAdminIndex].profilePicture;
 
-    // Tables
-    const teachersTable = document.getElementById('teachersTable');
-    const studentsTable = document.getElementById('studentsTable');
+    // Render tables
+    renderTeachersTable();
+    renderStudentsTable();
 
-    // Load Teachers
+    // Show only teachers by default
+    showTable('teachers');
+}
+
+// Render functions
+function renderTeachersTable() {
+    const teachersTable = document.getElementById('teachersTable');
     let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-    teachersTable.innerHTML = `<tr>
+    let html = `<tr>
         <th>Picture</th><th>Name</th><th>Email</th><th>Teacher ID</th><th>Department</th><th>Edit</th>
     </tr>`;
+    teachers.forEach((t,i)=>{
+        html += `<tr>
+            <td><img src="${t.profilePicture}" class="avatar-small"></td>
+            <td>${t.name}</td>
+            <td>${t.email}</td>
+            <td>${t.teacherID}</td>
+            <td>${t.department}</td>
+            <td><button class="action-btn" onclick="editTeacher(${i})">Edit</button></td>
+        </tr>`;
+    });
+    teachersTable.innerHTML = html;
+}
+
+function renderStudentsTable() {
+    const studentsTable = document.getElementById('studentsTable');
+    let students = JSON.parse(localStorage.getItem('students')) || [];
+    let html = `<tr>
+        <th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit</th>
+    </tr>`;
+    students.forEach((s,i)=>{
+        html += `<tr>
+            <td><img src="${s.profilePicture}" class="avatar-small"></td>
+            <td>${s.name}</td>
+            <td>${s.email}</td>
+            <td>${s.studentID}</td>
+            <td>${s.studentClass}</td>
+            <td>${s.studentYear}</td>
+            <td><button class="action-btn" onclick="editStudent(${i})">Edit</button></td>
+        </tr>`;
+    });
+    studentsTable.innerHTML = html;
+}
+
+// Edit functions
+function editTeacher(i){
+    localStorage.setItem('editTeacherIndex', i);
+    window.location.href='edit_teacher.html';
+}
+function editStudent(i){
+    localStorage.setItem('editStudentIndex', i);
+    window.location.href='edit_student.html';
+}
+
+// Toggle tables
+function showTable(table) {
+    const teachersTable = document.getElementById('teachersTable');
+    const studentsTable = document.getElementById('studentsTable');
+    if(table==='teachers'){
+        teachersTable.style.display = '';
+        studentsTable.style.display = 'none';
+    } else {
+        teachersTable.style.display = 'none';
+        studentsTable.style.display = '';
+    }
+}
+</script>
+
+</body>
+</html>    </tr>`;
     teachers.forEach((t,i)=>{
         let row = teachersTable.insertRow();
         row.insertCell(0).innerHTML = `<img src="${t.profilePicture}" class="avatar-small">`;
