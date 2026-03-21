@@ -2,68 +2,207 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ADUE Portal Login</title>
+<title>ADUE Admin Dashboard</title>
 <link rel="stylesheet" href="styles.css">
+<style>
+/* Header styling */
+.header {
+    background-color: #722F37; /* wine color */
+    padding: 20px;
+    text-align: center;
+    color: white; /* ADUE Admin Dashboard in white */
+}
+.header img {
+    height: 50px;
+    vertical-align: middle;
+    margin-right: 15px;
+}
+.header h1 {
+    display: inline;
+    font-size: 24px;
+    vertical-align: middle;
+}
+
+/* Dashboard cards */
+.dashboard-cards {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px 10px;
+    flex-wrap: wrap;
+}
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin: 10px;
+}
+.card h2 {
+    color: #722F37;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.card p {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Lists */
+.list-wrapper {
+    max-width: 900px;
+    margin: 30px auto;
+}
+.list-wrapper h3 {
+    color: #722F37;
+    margin-bottom: 15px;
+}
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.list-item span {
+    font-size: 16px;
+}
+.list-item button {
+    background-color: #722F37;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.list-item button:hover {
+    opacity: 0.9;
+}
+
+/* Logout button */
+.logout-btn {
+    display: block;
+    width: 120px;
+    margin: 20px auto;
+    padding: 12px;
+    background-color: #722F37;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.logout-btn:hover {
+    opacity: 0.9;
+}
+</style>
 </head>
 <body>
 
-<!-- Top header -->
 <div class="header">
-    <div class="header-content">
-        <img src="logo-new.png" alt="Header Logo" class="logo-header">
-        <h1>ADUE International School</h1>
+    <img src="logo-new.png" alt="Logo">
+    <h1>ADUE Admin Dashboard</h1>
+</div>
+
+<!-- Dashboard cards -->
+<div class="dashboard-cards">
+    <div class="card">
+        <h2>Total Teachers</h2>
+        <p id="totalTeachers">0</p>
+    </div>
+    <div class="card">
+        <h2>Total Students</h2>
+        <p id="totalStudents">0</p>
     </div>
 </div>
 
-<!-- Centered login box -->
-<div class="login-wrapper">
-    <div class="login-box">
-        <!-- Logo on top of the box -->
-        <img src="login-logo.png" alt="Login Box Logo" class="logo-box">
-
-        <form id="loginForm">
-            <input type="text" id="userId" placeholder="ID" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-            <div class="links">
-                <a href="#">Forgot Password?</a>
-                <a href="#">Contact IT Support</a>
-            </div>
-        </form>
-    </div>
+<!-- Teachers list -->
+<div class="list-wrapper">
+    <h3>Registered Teachers</h3>
+    <div id="teacherList"></div>
 </div>
+
+<!-- Students list -->
+<div class="list-wrapper">
+    <h3>Registered Students</h3>
+    <div id="studentList"></div>
+</div>
+
+<button class="logout-btn" id="logoutBtn">Logout</button>
 
 <script>
-    // Hard-coded credentials
-    const credentials = [
-        { email: "admin@adue.com", password: "12345678", role: "admin", redirect: "admin_dashboard.html" },
-        { email: "phemmyallen1@gmail.com", password: "12345678", role: "teacher", redirect: "teacher_dashboard.html" }
-        // Add student accounts here if needed
-    ];
+// Fetch data from localStorage or initialize
+let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+let students = JSON.parse(localStorage.getItem("students")) || [];
 
-    const loginForm = document.getElementById("loginForm");
+// Display total counts
+function updateTotals() {
+    document.getElementById("totalTeachers").textContent = teachers.length;
+    document.getElementById("totalStudents").textContent = students.length;
+}
 
-    loginForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const userId = document.getElementById("userId").value.trim();
-        const password = document.getElementById("password").value.trim();
-
-        const user = credentials.find(c => c.email === userId && c.password === password);
-
-        if(user) {
-            // Save session to localStorage
-            localStorage.setItem("currentUser", JSON.stringify({
-                email: user.email,
-                role: user.role
-            }));
-
-            alert("Login successful!");
-            window.location.href = user.redirect;
-        } else {
-            alert("Invalid login credentials!");
-        }
+// Render teachers
+function renderTeachers() {
+    const teacherList = document.getElementById("teacherList");
+    teacherList.innerHTML = "";
+    teachers.forEach((teacher, index) => {
+        const div = document.createElement("div");
+        div.className = "list-item";
+        div.innerHTML = `
+            <span>${teacher.name} (${teacher.email}) - ${teacher.department}</span>
+            <button onclick="deleteTeacher(${index})">Delete</button>
+        `;
+        teacherList.appendChild(div);
     });
+}
+
+// Render students
+function renderStudents() {
+    const studentList = document.getElementById("studentList");
+    studentList.innerHTML = "";
+    students.forEach((student, index) => {
+        const div = document.createElement("div");
+        div.className = "list-item";
+        div.innerHTML = `
+            <span>${student.name} (${student.email}) - ${student.year} - ${student.class}</span>
+            <button onclick="deleteStudent(${index})">Delete</button>
+        `;
+        studentList.appendChild(div);
+    });
+}
+
+// Delete functions
+function deleteTeacher(index) {
+    if(confirm("Are you sure you want to delete this teacher?")) {
+        teachers.splice(index, 1);
+        localStorage.setItem("teachers", JSON.stringify(teachers));
+        renderTeachers();
+        updateTotals();
+    }
+}
+
+function deleteStudent(index) {
+    if(confirm("Are you sure you want to delete this student?")) {
+        students.splice(index, 1);
+        localStorage.setItem("students", JSON.stringify(students));
+        renderStudents();
+        updateTotals();
+    }
+}
+
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", function() {
+    alert("Logged out successfully!");
+    window.location.href = "index.html";
+});
+
+// Initial render
+updateTotals();
+renderTeachers();
+renderStudents();
 </script>
 
 </body>
