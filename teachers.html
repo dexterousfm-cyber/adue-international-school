@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachers - ADUE International School</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #8B0000 0%, #660000 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 15px 0;
+            flex: 1;
+        }
+
+        .nav-item {
+            margin: 5px 12px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-header {
+            background: linear-gradient(90deg, #8B0000 0%, #A00000 100%);
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        }
+
+        .search-filter-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #8B0000;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            min-width: 150px;
+        }
+
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #8B0000;
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .teacher-photo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-teacher {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-view {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .btn-edit {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            .sidebar-header h2, .nav-link span {
+                display: none;
+            }
+            .nav-link i {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>ADUE School</h2>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="students.html" class="nav-link">
+                    <i>👨‍🎓</i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teachers.html" class="nav-link active">
+                    <i>👨‍🏫</i>
+                    <span>Teachers</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="classes.html" class="nav-link">
+                    <i>📚</i>
+                    <span>Classes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="attendance.html" class="nav-link">
+                    <i>📋</i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="grades.html" class="nav-link">
+                    <i>📝</i>
+                    <span>Grades</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="finance.html" class="nav-link">
+                    <i>💰</i>
+                    <span>Finance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="reports.html" class="nav-link">
+                    <i>📈</i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <i>⚙️</i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-title">ADUE International School - Admin Portal</div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-name">Administrator</div>
+                    <div class="user-role">School Administrator</div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="page-header">
+                <div class="section-title">All Teachers</div>
+                <a href="register_teacher.html" class="btn btn-success">
+                    <span>+</span> Add New Teacher
+                </a>
+            </div>
+
+            <div class="search-filter-bar">
+                <input type="text" class="search-input" placeholder="🔍 Search teachers by name or ID..." id="searchInput" onkeyup="filterTeachers()">
+                <select class="filter-select" id="deptFilter" onchange="filterTeachers()">
+                    <option value="">All Departments</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="English">English</option>
+                    <option value="Science">Science</option>
+                    <option value="Arts">Arts</option>
+                    <option value="Commercial">Commercial</option>
+                    <option value="Languages">Languages</option>
+                </select>
+                <select class="filter-select" id="qualFilter" onchange="filterTeachers()">
+                    <option value="">All Qualifications</option>
+                    <option value="B.Ed">B.Ed</option>
+                    <option value="B.Sc">B.Sc</option>
+                    <option value="M.Ed">M.Ed</option>
+                    <option value="M.Sc">M.Sc</option>
+                    <option value="PhD">PhD</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Photo</th>
+                            <th>Teacher Name</th>
+                            <th>Teacher ID</th>
+                            <th>Department</th>
+                            <th>Subject</th>
+                            <th>Phone</th>
+                            <th>Qualification</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachersTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">👨‍🏫</div>
+                    <h3>No Teachers Found</h3>
+                    <p>Start by adding a new teacher</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let teachers = JSON.parse(localStorage.getItem('adue_teachers')) || [];
+
+        function renderTeachers() {
+            const tbody = document.getElementById('teachersTableBody');
+            const emptyState = document.getElementById('emptyState');
+            
+            tbody.innerHTML = '';
+            
+            if (teachers.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            teachers.forEach(teacher => {
+                const initials = teacher.firstName.charAt(0) + teacher.lastName.charAt(0);
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><div class="teacher-photo">${initials}</div></td>
+                    <td><strong>${teacher.fullName}</strong></td>
+                    <td>${teacher.teacherId}</td>
+                    <td><span class="badge badge-teacher">${teacher.department}</span></td>
+                    <td>${teacher.subject}</td>
+                    <td>${teacher.phone}</td>
+                    <td>${teacher.qualification}</td>
+                    <td class="action-btns">
+                        <button class="btn-icon btn-view" onclick="viewTeacher(${teacher.id})" title="View">👁</button>
+                        <button class="btn-icon btn-edit" onclick="editTeacher(${teacher.id})" title="Edit">✏</button>
+                        <button class="btn-icon btn-delete" onclick="deleteTeacher(${teacher.id})" title="Delete">🗑</button>
+                    </td>
+                `;
+            });
+        }
+
+        function filterTeachers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const deptFilter = document.getElementById('deptFilter').value;
+            const qualFilter = document.getElementById('qualFilter').value;
+            
+            const rows = document.querySelectorAll('#teachersTableBody tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase();
+                const id = row.cells[2].textContent.toLowerCase();
+                const dept = row.cells[3].textContent;
+                const qual = row.cells[6].textContent;
+                
+                const matchesSearch = name.includes(search) || id.includes(search);
+                const matchesDept = !deptFilter || dept.includes(deptFilter);
+                const matchesQual = !qualFilter || qual === qualFilter;
+                
+                const shouldShow = matchesSearch && matchesDept && matchesQual;
+                row.style.display = shouldShow ? '' : 'none';
+                if (shouldShow) visibleCount++;
+            });
+            
+            document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        function viewTeacher(id) {
+            const teacher = teachers.find(t => t.id === id);
+            alert(`TEACHER DETAILS\n\nName: ${teacher.fullName}\nID: ${teacher.teacherId}\nDepartment: ${teacher.department}\nSubject: ${teacher.subject}\nQualification: ${teacher.qualification}\nEmail: ${teacher.email}\nPhone: ${teacher.phone}\nEmployment Date: ${teacher.employmentDate || 'N/A'}\nAddress: ${teacher.address || 'N/A'}`);
+        }
+
+        function editTeacher(id) {
+            alert('Edit functionality - Form will open with pre-populated data');
+        }
+
+        function deleteTeacher(id) {
+            if (confirm('Are you sure you want to delete this teacher?')) {
+                teachers = teachers.filter(t => t.id !== id);
+                localStorage.setItem('adue_teachers', JSON.stringify(teachers));
+                renderTeachers();
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logged out successfully!');
+            }
+        }
+
+        renderTeachers();
+    </script>
+
+</body>
+                  </html>
+  
