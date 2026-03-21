@@ -2,159 +2,68 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ADUE Admin Dashboard</title>
+<title>ADUE Portal Login</title>
 <link rel="stylesheet" href="styles.css">
-<style>
-/* Dashboard Header */
-.header {
-    background-color: #722F37; /* Wine color */
-    padding: 20px;
-    text-align: center;
-    color: white;
-    position: relative;
-}
-.header img {
-    height: 50px;
-    vertical-align: middle;
-    margin-right: 15px;
-}
-.header h1 {
-    display: inline;
-    font-size: 24px;
-    vertical-align: middle;
-}
-
-/* Logout Button */
-.logout-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: white;
-    color: #722F37;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* Dashboard Cards */
-.dashboard-cards {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin: 30px auto;
-    max-width: 800px;
-}
-.card {
-    background-color: #fff;
-    color: #722F37;
-    padding: 30px;
-    margin: 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    flex: 1 1 250px;
-    text-align: center;
-}
-.card h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-}
-.card p {
-    font-size: 36px;
-    font-weight: bold;
-    margin: 0;
-}
-
-/* Optional: Teacher & Student List */
-.user-list {
-    max-width: 800px;
-    margin: 20px auto;
-}
-.user-list h3 {
-    color: #722F37;
-    margin-bottom: 10px;
-}
-.user-list ul {
-    list-style: none;
-    padding: 0;
-}
-.user-list li {
-    background-color: #fff;
-    margin-bottom: 8px;
-    padding: 12px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-</style>
 </head>
 <body>
 
+<!-- Top header -->
 <div class="header">
-    <img src="logo-new.png" alt="Logo">
-    <h1>ADUE Admin Dashboard</h1>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-</div>
-
-<div class="dashboard-cards">
-    <div class="card">
-        <h2>Total Teachers</h2>
-        <p id="totalTeachers">0</p>
-    </div>
-    <div class="card">
-        <h2>Total Students</h2>
-        <p id="totalStudents">0</p>
+    <div class="header-content">
+        <img src="logo-new.png" alt="Header Logo" class="logo-header">
+        <h1>ADUE International School</h1>
     </div>
 </div>
 
-<div class="user-list">
-    <h3>Registered Teachers</h3>
-    <ul id="teacherList">
-        <!-- Dynamically filled -->
-    </ul>
+<!-- Centered login box -->
+<div class="login-wrapper">
+    <div class="login-box">
+        <!-- Logo on top of the box -->
+        <img src="login-logo.png" alt="Login Box Logo" class="logo-box">
 
-    <h3>Registered Students</h3>
-    <ul id="studentList">
-        <!-- Dynamically filled -->
-    </ul>
+        <form id="loginForm">
+            <input type="text" id="userId" placeholder="ID" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+            <div class="links">
+                <a href="#">Forgot Password?</a>
+                <a href="#">Contact IT Support</a>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>
-// Check if user is logged in
-const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-if(!currentUser || currentUser.role !== 'admin'){
-    window.location.href = "index.html";
-}
+    // Hard-coded credentials
+    const credentials = [
+        { email: "admin@adue.com", password: "12345678", role: "admin", redirect: "admin_dashboard.html" },
+        { email: "phemmyallen1@gmail.com", password: "12345678", role: "teacher", redirect: "teacher_dashboard.html" }
+        // Add student accounts here if needed
+    ];
 
-// Logout function
-function logout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = "index.html";
-}
+    const loginForm = document.getElementById("loginForm");
 
-// Fetch teachers and students from localStorage
-const teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-const students = JSON.parse(localStorage.getItem('students')) || [];
+    loginForm.addEventListener("submit", function(e) {
+        e.preventDefault();
 
-// Update totals
-document.getElementById('totalTeachers').textContent = teachers.length;
-document.getElementById('totalStudents').textContent = students.length;
+        const userId = document.getElementById("userId").value.trim();
+        const password = document.getElementById("password").value.trim();
 
-// Populate teacher list
-const teacherList = document.getElementById('teacherList');
-teachers.forEach(t => {
-    const li = document.createElement('li');
-    li.textContent = `${t.name} (${t.department}) - ID: ${t.teacherID}`;
-    teacherList.appendChild(li);
-});
+        const user = credentials.find(c => c.email === userId && c.password === password);
 
-// Populate student list
-const studentList = document.getElementById('studentList');
-students.forEach(s => {
-    const li = document.createElement('li');
-    li.textContent = `${s.name} (${s.year} - ${s.class}) - ID: ${s.studentID}`;
-    studentList.appendChild(li);
-});
+        if(user) {
+            // Save session to localStorage
+            localStorage.setItem("currentUser", JSON.stringify({
+                email: user.email,
+                role: user.role
+            }));
+
+            alert("Login successful!");
+            window.location.href = user.redirect;
+        } else {
+            alert("Invalid login credentials!");
+        }
+    });
 </script>
 
 </body>
