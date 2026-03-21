@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Teacher - ADUE Portal</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h2>Edit Teacher</h2>
+
+<form id="editTeacherForm">
+    <label>Full Name:</label>
+    <input type="text" id="name" required><br>
+    <label>Email:</label>
+    <input type="email" id="email" required><br>
+    <label>Teacher ID:</label>
+    <input type="text" id="teacherID" required><br>
+    <label>Department:</label>
+    <input type="text" id="department" required><br>
+    <label>Profile Picture:</label>
+    <input type="file" id="profilePictureInput" accept="image/*"><br><br>
+    <button type="submit">Save Changes</button>
+</form>
+
+<!-- Delete button at bottom -->
+<button id="deleteBtn" style="margin-top:20px; background:#d9534f; color:white; padding:10px 20px;">Delete Teacher</button>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const index = urlParams.get('index');
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let teacher = teachers[index];
+
+// Populate form
+document.getElementById('name').value = teacher.name;
+document.getElementById('email').value = teacher.email;
+document.getElementById('teacherID').value = teacher.teacherID;
+document.getElementById('department').value = teacher.department;
+
+// Save changes
+document.getElementById('editTeacherForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    teacher.name = document.getElementById('name').value;
+    teacher.email = document.getElementById('email').value;
+    teacher.teacherID = document.getElementById('teacherID').value;
+    teacher.department = document.getElementById('department').value;
+
+    const file = document.getElementById('profilePictureInput').files[0];
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(){
+            teacher.profilePicture = reader.result;
+            teachers[index] = teacher;
+            localStorage.setItem('teachers', JSON.stringify(teachers));
+            alert("Teacher updated!");
+            window.location.href = 'admin_dashboard.html';
+        }
+        reader.readAsDataURL(file);
+    } else {
+        teachers[index] = teacher;
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+        alert("Teacher updated!");
+        window.location.href = 'admin_dashboard.html';
+    }
+});
+
+// Delete
+document.getElementById('deleteBtn').addEventListener('click', function(){
+    if(confirm("Are you sure you want to delete this teacher?")){
+        teachers.splice(index,1);
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+        alert("Teacher deleted!");
+        window.location.href = 'admin_dashboard.html';
+    }
+});
+</script>
+</body>
+</html>
