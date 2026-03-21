@@ -1,39 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>ADUE Portal Login</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADUE International School Portal</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<!-- Top header -->
-<div class="header">
-    <div class="header-content">
-        <img src="logo-new.png" alt="Header Logo" class="logo-header">
-        <h1>ADUE International School</h1>
+  <div class="login-container">
+    <div class="login-logo">
+      <img src="login-logo.png" alt="ADUE Logo" />
     </div>
-</div>
+    <h2>Welcome to ADUE Portal</h2>
+    <form id="login-form">
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required />
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+    <p class="login-note">Enter your credentials to access your dashboard.</p>
+  </div>
 
-<!-- Centered login box -->
-<div class="login-wrapper">
-    <div class="login-box">
-        <!-- Logo on top of login box -->
-        <img src="login-logo.png" alt="Login Box Logo" class="logo-box">
-
-        <form id="loginForm">
-            <input type="text" id="studentId" placeholder="Student/Staff ID" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-
-            <div class="links">
-                <a href="#">Forgot Password?</a>
-                <a href="#">Contact IT Support</a>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script src="script.js"></script>
+  <!-- Link to script.js -->
+  <script src="script.js"></script>
 </body>
 </html>
