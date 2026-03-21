@@ -4,20 +4,35 @@
 <meta charset="UTF-8">
 <title>Admin Dashboard</title>
 <link rel="stylesheet" href="styles.css">
+<style>
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
+.header { background:#800000; color:white; padding:15px; display:flex; align-items:center; }
+.header img { width:60px; margin-right:15px; }
+.dashboard-wrapper { padding:20px; }
+.admin-info { display:flex; align-items:center; background:white; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2); margin-bottom:20px; }
+.admin-info img { border-radius:50%; width:100px; margin-right:15px; }
+.actions { margin-bottom:20px; }
+.actions button { margin-right:15px; padding:10px 20px; background:#800000; color:white; border:none; border-radius:5px; cursor:pointer; }
+.actions button:hover { background:#a00000; }
+table { width:100%; border-collapse: collapse; background:white; border-radius:8px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:30px; }
+th, td { padding:12px; text-align:left; border-bottom:1px solid #ddd; }
+th { background:#f4f4f4; }
+td img { border-radius:50%; width:50px; }
+button.edit-btn { padding:5px 10px; background:#800000; color:white; border:none; border-radius:4px; cursor:pointer; }
+button.edit-btn:hover { background:#a00000; }
+</style>
 </head>
 <body>
 
 <div class="header">
-    <div class="header-content">
-        <img src="logo-new.png" class="logo-header" alt="School Logo">
-        <h1>ADUE International School</h1>
-    </div>
+    <img src="logo-new.png" alt="School Logo">
+    <h1>ADUE International School</h1>
 </div>
 
 <div class="dashboard-wrapper">
 
     <div class="admin-info">
-        <img id="adminPic" src="admin.png" width="100" style="border-radius:50%">
+        <img id="adminPic" src="admin.png" alt="Admin Picture">
         <h2>Welcome, <span id="adminName"></span></h2>
     </div>
 
@@ -27,7 +42,7 @@
     </div>
 
     <h2>Teachers List</h2>
-    <table id="teachersTable" border="1">
+    <table id="teachersTable">
         <tr>
             <th>Picture</th>
             <th>Name</th>
@@ -39,7 +54,7 @@
     </table>
 
     <h2>Students List</h2>
-    <table id="studentsTable" border="1">
+    <table id="studentsTable">
         <tr>
             <th>Picture</th>
             <th>Name</th>
@@ -54,56 +69,53 @@
 </div>
 
 <script>
-    // Load localStorage
-    let admins = JSON.parse(localStorage.getItem('admins')) || [];
-    let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-    let students = JSON.parse(localStorage.getItem('students')) || [];
-    let currentAdminIndex = parseInt(localStorage.getItem("currentAdminIndex")) || 0;
+let admins = JSON.parse(localStorage.getItem('admins')) || [];
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let students = JSON.parse(localStorage.getItem('students')) || [];
+let currentAdminIndex = parseInt(localStorage.getItem("currentAdminIndex")) || 0;
 
-    // Display admin info
-    const admin = admins[currentAdminIndex];
-    document.getElementById("adminName").innerText = admin.name;
-    document.getElementById("adminPic").src = admin.profilePicture || "admin.png";
+// Display admin info
+const admin = admins[currentAdminIndex];
+document.getElementById("adminName").innerText = admin.name;
+document.getElementById("adminPic").src = admin.profilePicture || "admin.png";
 
-    // Populate Teachers Table
-    const teachersTable = document.getElementById("teachersTable");
-    teachers.forEach((t,i)=>{
-        const row = teachersTable.insertRow();
-        row.innerHTML = `
-            <td><img src="${t.profilePicture || 'default.png'}" width="50" style="border-radius:50%"></td>
-            <td>${t.name}</td>
-            <td>${t.email}</td>
-            <td>${t.teacherID}</td>
-            <td>${t.department}</td>
-            <td><button onclick="editTeacher(${i})">Edit</button></td>
-        `;
-    });
+// Populate Teachers Table
+const teachersTable = document.getElementById("teachersTable");
+teachers.forEach((t,i)=>{
+    const row = teachersTable.insertRow();
+    row.innerHTML = `
+        <td><img src="${t.profilePicture || 'default.png'}"></td>
+        <td>${t.name}</td>
+        <td>${t.email}</td>
+        <td>${t.teacherID}</td>
+        <td>${t.department}</td>
+        <td><button class="edit-btn" onclick="editTeacher(${i})">Edit</button></td>
+    `;
+});
 
-    // Populate Students Table
-    const studentsTable = document.getElementById("studentsTable");
-    students.forEach((s,i)=>{
-        const row = studentsTable.insertRow();
-        row.innerHTML = `
-            <td><img src="${s.profilePicture || 'default.png'}" width="50" style="border-radius:50%"></td>
-            <td>${s.name}</td>
-            <td>${s.email}</td>
-            <td>${s.studentID}</td>
-            <td>${s.studentClass}</td>
-            <td>${s.studentYear}</td>
-            <td><button onclick="editStudent(${i})">Edit</button></td>
-        `;
-    });
+// Populate Students Table
+const studentsTable = document.getElementById("studentsTable");
+students.forEach((s,i)=>{
+    const row = studentsTable.insertRow();
+    row.innerHTML = `
+        <td><img src="${s.profilePicture || 'default.png'}"></td>
+        <td>${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.studentID}</td>
+        <td>${s.studentClass}</td>
+        <td>${s.studentYear}</td>
+        <td><button class="edit-btn" onclick="editStudent(${i})">Edit</button></td>
+    `;
+});
 
-    // Edit functions
-    function editTeacher(index){
-        localStorage.setItem("editTeacherIndex", index);
-        window.location.href = "edit_teacher.html";
-    }
-
-    function editStudent(index){
-        localStorage.setItem("editStudentIndex", index);
-        window.location.href = "edit_student.html";
-    }
+function editTeacher(index){
+    localStorage.setItem("editTeacherIndex", index);
+    window.location.href="edit_teacher.html";
+}
+function editStudent(index){
+    localStorage.setItem("editStudentIndex", index);
+    window.location.href="edit_student.html";
+}
 </script>
 
 </body>
