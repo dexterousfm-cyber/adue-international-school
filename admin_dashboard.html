@@ -6,11 +6,12 @@
 
 <style>
 body {
-    font-family: Arial;
-    background: #f5f5f5;
     margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
 }
 
+/* HEADER */
 .header {
     background: #800000;
     color: white;
@@ -18,9 +19,10 @@ body {
     text-align: center;
 }
 
-.container {
+/* BUTTON AREA */
+.actions {
     text-align: center;
-    margin-top: 20px;
+    margin: 20px;
 }
 
 button {
@@ -29,24 +31,33 @@ button {
     border: none;
     background: #800000;
     color: white;
-    cursor: pointer;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 button:hover {
     background: #a00000;
 }
 
-table {
+/* CARD TABLE */
+.card {
     width: 90%;
-    margin: 20px auto;
-    border-collapse: collapse;
+    margin: auto;
     background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
     text-align: center;
 }
 
@@ -63,7 +74,7 @@ th {
     <h2>Admin Dashboard</h2>
 </div>
 
-<div class="container">
+<div class="actions">
     <button onclick="showTeachers()">Show Teachers</button>
     <button onclick="showStudents()">Show Students</button>
     <button onclick="registerTeacher()">Add Teacher</button>
@@ -71,11 +82,13 @@ th {
     <button onclick="logout()">Logout</button>
 </div>
 
-<table id="table"></table>
+<div class="card">
+    <table id="table"></table>
+</div>
 
 <script>
 
-// -------- GET DATA (Always fresh) --------
+// -------- GET DATA --------
 function getTeachers(){
     return JSON.parse(localStorage.getItem('teachers')) || [];
 }
@@ -134,45 +147,45 @@ function showStudents(){
     document.getElementById("table").innerHTML = html;
 }
 
-// -------- ADD TEACHER --------
+// -------- REGISTER TEACHER --------
 function registerTeacher(){
     let teachers = getTeachers();
 
-    let name = prompt("Enter Teacher Name:");
-    let email = prompt("Enter Email:");
-    let id = prompt("Enter Teacher ID:");
-    let password = prompt("Enter Password:");
+    let name = prompt("Teacher Name:");
+    let email = prompt("Email:");
+    let id = prompt("Teacher ID:");
+    let password = prompt("Password:");
 
     if(!name || !email || !id || !password){
         alert("All fields required!");
         return;
     }
 
-    teachers.push({name, email, teacherID:id, password});
+    teachers.push({name,email,teacherID:id,password});
     localStorage.setItem('teachers', JSON.stringify(teachers));
 
-    alert("Teacher Added Successfully");
+    alert("Teacher Added");
     showTeachers();
 }
 
-// -------- ADD STUDENT --------
+// -------- REGISTER STUDENT --------
 function registerStudent(){
     let students = getStudents();
 
-    let name = prompt("Enter Student Name:");
-    let email = prompt("Enter Email:");
-    let id = prompt("Enter Student ID:");
-    let password = prompt("Enter Password:");
+    let name = prompt("Student Name:");
+    let email = prompt("Email:");
+    let id = prompt("Student ID:");
+    let password = prompt("Password:");
 
     if(!name || !email || !id || !password){
         alert("All fields required!");
         return;
     }
 
-    students.push({name, email, studentID:id, password});
+    students.push({name,email,studentID:id,password});
     localStorage.setItem('students', JSON.stringify(students));
 
-    alert("Student Added Successfully");
+    alert("Student Added");
     showStudents();
 }
 
