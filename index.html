@@ -31,10 +31,11 @@
 </div>
 
 <script>
-    // Hard-coded credentials inside index.html
+    // Hard-coded credentials
     const credentials = [
-        { email: "admin@adue.com", password: "12345678", redirect: "admin_dashboard.html" },
-        { email: "phemmyallen1@gmail.com", password: "12345678", redirect: "teacher_dashboard.html" }
+        { email: "admin@adue.com", password: "12345678", redirect: "admin_dashboard.html", role: "admin" },
+        { email: "phemmyallen1@gmail.com", password: "12345678", redirect: "teacher_dashboard.html", role: "teacher" }
+        // You can add student credentials later
     ];
 
     const loginForm = document.getElementById("loginForm");
@@ -48,6 +49,9 @@
         const user = credentials.find(c => c.email === userId && c.password === password);
 
         if(user) {
+            // Save login session
+            localStorage.setItem('currentUser', JSON.stringify(user));
+
             alert("Login successful!");
             window.location.href = user.redirect;
         } else {
