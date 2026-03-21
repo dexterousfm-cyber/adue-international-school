@@ -14,110 +14,109 @@ body {
 
 /* Header */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background: #800000;
-    color: white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 30px;
+    background:#800000;
+    color:white;
 }
 
 /* Logo */
 .logo-section img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
+    width:50px;
+    height:50px;
+    object-fit:cover;
 }
 
 /* Admin info + logout */
 .profile-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 .profile-section img.avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid white;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid white;
 }
 
 #headerName {
-    margin: 0;
-    font-size: 20px;
+    font-size:18px;
 }
 
 #logoutBtn {
-    padding: 8px 15px;
-    background: white;
-    color: #800000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+    padding:6px 12px;
+    background:white;
+    color:#800000;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
 }
 
 #logoutBtn:hover {
-    background: #f0f0f0;
+    background:#f0f0f0;
 }
 
 /* Container */
 .container {
-    padding: 20px 40px;
+    padding:20px 40px;
 }
 
 h2 {
-    color: #800000;
-    margin-top: 40px;
+    color:#800000;
+    margin-top:40px;
 }
 
 /* Tables */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
 }
 
 table, th, td {
-    border: 1px solid #ccc;
+    border:1px solid #ccc;
 }
 
 th, td {
-    padding: 12px;
-    text-align: center;
+    padding:12px;
+    text-align:center;
 }
 
 th {
-    background: #800000;
-    color: white;
+    background:#800000;
+    color:white;
 }
 
 img.avatar-small {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
 }
 
 button.action-btn {
-    padding: 5px 10px;
-    background: #800000;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    padding:5px 10px;
+    background:#800000;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
 }
 
 button.action-btn:hover {
-    background: #a00000;
+    background:#a00000;
 }
 
 .register-buttons {
-    margin: 20px 0;
-    display: flex;
-    gap: 15px;
+    margin:20px 0;
+    display:flex;
+    gap:15px;
 }
 </style>
 </head>
@@ -133,7 +132,7 @@ button.action-btn:hover {
     <!-- Right: Admin info + logout -->
     <div class="profile-section">
         <img id="headerAvatar" src="admin.png" class="avatar">
-        <h1 id="headerName">Welcome Admin</h1>
+        <span id="headerName">Welcome Admin</span>
         <button id="logoutBtn">Logout</button>
     </div>
 </div>
