@@ -17,65 +17,81 @@ button.primary:hover { background:#a00000; }
 table { width:100%; border-collapse:collapse; margin-top:20px; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.15); }
 th, td { padding:12px; text-align:center; border:1px solid #ddd; }
 th { background:#800000; color:white; }
-img.avatar-small { width:50px; height:50px; border-radius:50%; object-fit:cover; }
 table tr:hover { background:#fff2f2; }
+img.avatar-small { width:50px; height:50px; border-radius:50%; object-fit:cover; }
 </style>
 </head>
 <body>
 
+<!-- Header -->
 <div class="header">
     <div class="logo"><img src="logo-new.png" alt="Logo"></div>
     <div class="profile">
-        <img src="teacher.png" alt="Teacher">
+        <img src="teacher.png" alt="Teacher" id="teacherPic">
         <span id="teacherName">Welcome Teacher</span>
-        <button id="logoutBtn">Logout</button>
+        <button onclick="logout()">Logout</button>
     </div>
 </div>
 
 <div class="container">
-    <div class="actions">
-        <button class="primary" onclick="alert('Register Student')">Register Student</button>
-        <button class="primary" onclick="showStudents()">View Students</button>
-    </div>
-
+    <h2>Your Students</h2>
     <table id="studentsTable"></table>
 </div>
 
 <script>
-// Sample students data
-let students = [
-    {profilePicture:'student.png', name:'Jane Smith', email:'jane@example.com', studentID:'S001', studentClass:'JSS1', studentYear:'2026'}
-];
+// Load all students and teachers
+let students = JSON.parse(localStorage.getItem('students')) || [];
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 
-function renderStudentsTable(){
+// Get current teacher
+let teacherIndex = localStorage.getItem('currentTeacherIndex');
+if(teacherIndex === null){
+    alert("No teacher logged in!");
+    window.location.href = "index.html";
+}
+let currentTeacher = teachers[teacherIndex];
+
+// Show teacher info
+document.getElementById('teacherName').textContent = "Welcome " + currentTeacher.name;
+document.getElementById('teacherPic').src = currentTeacher.profilePicture || 'teacher.png';
+
+// Render students
+function renderStudents(){
     const table = document.getElementById('studentsTable');
     let html = `<tr>
-        <th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit Result</th>
+        <th>Picture</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Student ID</th>
+        <th>Class</th>
+        <th>Year</th>
     </tr>`;
-    students.forEach((s,i)=>{
+
+    // Optional: filter students assigned to this teacher
+    // let myStudents = students.filter(s => s.teacherID === currentTeacher.teacherID);
+    let myStudents = students; // show all students registered by admin
+
+    myStudents.forEach(s => {
         html += `<tr>
-            <td><img src="${s.profilePicture}" class="avatar-small"></td>
+            <td><img src="${s.profilePicture || 'student.png'}" class="avatar-small"></td>
             <td>${s.name}</td>
             <td>${s.email}</td>
             <td>${s.studentID}</td>
-            <td>${s.studentClass}</td>
-            <td>${s.studentYear}</td>
-            <td><button onclick="editStudentResult(${i})">Edit</button></td>
+            <td>${s.studentClass || '-'}</td>
+            <td>${s.studentYear || '-'}</td>
         </tr>`;
     });
     table.innerHTML = html;
 }
 
-// Edit function
-function editStudentResult(i){ 
-    alert('Edit Result for '+students[i].name); 
+// Logout
+function logout(){
+    localStorage.removeItem('currentTeacherIndex');
+    window.location.href = 'index.html';
 }
 
-// Show students table
-function showStudents(){ renderStudentsTable(); }
-
-// Logout
-document.getElementById('logoutBtn').addEventListener('click', ()=>alert('Logout clicked'));
+// Initial load
+renderStudents();
 </script>
 
 </body>
