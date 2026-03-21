@@ -132,8 +132,12 @@ function showTable(table){
 function editTeacher(i){ alert('Edit Teacher: '+teachers[i].name); }
 function editStudent(i){ alert('Edit Student: '+students[i].name); }
 
-// Logout
-document.getElementById('logoutBtn').addEventListener('click', ()=>alert('Logout clicked'));
+// ---------------- LOGOUT ----------------
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    // Optional: clear session data here
+    // localStorage.removeItem('adminLoggedIn'); 
+    window.location.href = 'login.html'; // redirect to login page
+});
 
 // Teacher Form
 function openTeacherForm(){ document.getElementById('teacherModal').style.display='flex'; }
