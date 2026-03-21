@@ -30,14 +30,14 @@
 </div>
 
 <script>
-// --- Ensure Admin Exists ---
+// ✅ Ensure at least 1 admin exists
 if(!localStorage.getItem('admins')){
     localStorage.setItem('admins', JSON.stringify([
         { email: "admin@adue.com", password: "12345678", name: "Admin", profilePicture: "admin.png" }
     ]));
 }
 
-// --- Load users ---
+// Load users from localStorage
 let admins = JSON.parse(localStorage.getItem('admins')) || [];
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
@@ -47,30 +47,31 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
     const input = document.getElementById("userId").value.trim();
     const password = document.getElementById("password").value;
 
-    // --- ADMIN LOGIN ---
-    const adminIndex = admins.findIndex(a => a.email === input && a.password === password);
+    // Check Admin
+    let adminIndex = admins.findIndex(a => a.email === input && a.password === password);
     if(adminIndex !== -1){
         localStorage.setItem("currentAdminIndex", adminIndex);
         window.location.href = "admin_dashboard.html";
         return;
     }
 
-    // --- TEACHER LOGIN ---
-    const teacherIndex = teachers.findIndex(t => (t.email === input || t.teacherID === input) && t.password === password);
+    // Check Teacher
+    let teacherIndex = teachers.findIndex(t => (t.email === input || t.teacherID === input) && t.password === password);
     if(teacherIndex !== -1){
         localStorage.setItem("currentTeacherIndex", teacherIndex);
         window.location.href = "teacher_dashboard.html";
         return;
     }
 
-    // --- STUDENT LOGIN ---
-    const studentIndex = students.findIndex(s => (s.email === input || s.studentID === input) && s.password === password);
+    // Check Student
+    let studentIndex = students.findIndex(s => (s.email === input || s.studentID === input) && s.password === password);
     if(studentIndex !== -1){
         localStorage.setItem("currentStudentIndex", studentIndex);
         window.location.href = "student_dashboard.html";
         return;
     }
 
+    // If none match
     alert("Invalid login details!");
 });
 </script>
