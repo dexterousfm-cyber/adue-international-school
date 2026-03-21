@@ -5,12 +5,12 @@
 <title>ADUE Admin Dashboard</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-/* Header */
+/* Dashboard Header */
 .header {
     background-color: #722F37; /* wine */
     padding: 20px;
     text-align: center;
-    color: white; /* ADUE Admin Dashboard text in white */
+    color: white; /* White text for visibility */
 }
 .header img {
     height: 50px;
@@ -23,101 +23,112 @@
     vertical-align: middle;
 }
 
-/* Dashboard cards */
+/* Dashboard Cards */
 .dashboard-cards {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 20px;
     margin: 20px 0;
 }
 .card {
-    background-color: #fff;
+    background-color: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     text-align: center;
-    flex: 1;
-    margin: 0 10px;
+    width: 150px;
 }
 .card h2 {
-    margin-bottom: 10px;
+    margin: 0;
+    font-size: 24px;
     color: #722F37;
 }
 .card p {
-    font-size: 28px;
-    font-weight: bold;
+    margin: 5px 0 0;
+    font-size: 16px;
 }
 
-/* Table */
+/* Register Buttons */
+.register-buttons {
+    text-align: center;
+    margin: 20px 0;
+}
+.register-buttons button {
+    background-color: #722F37;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+.register-buttons button:hover {
+    opacity: 0.9;
+}
+
+/* Tables */
 table {
-    width: 100%;
+    width: 90%;
+    margin: 20px auto;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 th, td {
-    padding: 12px;
+    padding: 10px;
     border: 1px solid #ccc;
-    text-align: left;
+    text-align: center;
 }
 th {
     background-color: #722F37;
     color: white;
 }
-td button {
-    margin-right: 5px;
-    padding: 5px 10px;
+
+/* Logout button */
+.logout-btn {
+    position: absolute;
+    right: 20px;
+    top: 25px;
+    background-color: white;
+    color: #722F37;
     border: none;
+    padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
-}
-.delete-btn {
-    background-color: #d9534f;
-    color: white;
-}
-.edit-btn {
-    background-color: #5bc0de;
-    color: white;
-}
-
-/* Logout */
-.logout-btn {
-    background-color: #fff;
-    color: #722F37;
-    border: 1px solid #722F37;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    float: right;
-    margin: 10px;
+    font-weight: bold;
 }
 .logout-btn:hover {
-    background-color: #722F37;
-    color: white;
+    opacity: 0.9;
 }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
     <img src="logo-new.png" alt="Logo">
     <h1>ADUE Admin Dashboard</h1>
     <button class="logout-btn" id="logoutBtn">Logout</button>
 </div>
 
-<!-- Dashboard cards -->
+<!-- Cards -->
 <div class="dashboard-cards">
     <div class="card">
-        <h2>Total Teachers</h2>
-        <p id="totalTeachers">0</p>
+        <h2 id="totalTeachers">0</h2>
+        <p>Total Teachers</p>
     </div>
     <div class="card">
-        <h2>Total Students</h2>
-        <p id="totalStudents">0</p>
+        <h2 id="totalStudents">0</h2>
+        <p>Total Students</p>
     </div>
 </div>
 
+<!-- Register Buttons -->
+<div class="register-buttons">
+    <a href="register_teacher.html"><button>Register Teacher</button></a>
+    <a href="register_student.html"><button>Register Student</button></a>
+</div>
+
 <!-- Teachers Table -->
-<h2 style="color:#722F37; margin-left:20px;">Teachers</h2>
+<h2 style="text-align:center; color:#722F37;">Registered Teachers</h2>
 <table id="teachersTable">
     <thead>
         <tr>
@@ -129,130 +140,121 @@ td button {
         </tr>
     </thead>
     <tbody>
-        <!-- Teacher rows go here -->
+        <!-- Teachers will appear here -->
     </tbody>
 </table>
 
 <!-- Students Table -->
-<h2 style="color:#722F37; margin-left:20px;">Students</h2>
+<h2 style="text-align:center; color:#722F37;">Registered Students</h2>
 <table id="studentsTable">
     <thead>
         <tr>
             <th>Name</th>
             <th>Email</th>
             <th>ID</th>
-            <th>Year/Class</th>
+            <th>Year</th>
+            <th>Class</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        <!-- Student rows go here -->
+        <!-- Students will appear here -->
     </tbody>
 </table>
 
 <script>
-// Fetch stored teachers and students
-let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-let students = JSON.parse(localStorage.getItem('students')) || [];
-
-// Update counts
-function updateCounts() {
-    document.getElementById('totalTeachers').textContent = teachers.length;
-    document.getElementById('totalStudents').textContent = students.length;
-}
-
-// Populate Teachers Table
-function populateTeachers() {
-    const tbody = document.getElementById('teachersTable').querySelector('tbody');
-    tbody.innerHTML = '';
-    teachers.forEach((t, index) => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${t.name}</td>
-                <td>${t.email}</td>
-                <td>${t.teacherID}</td>
-                <td>${t.department}</td>
-                <td>
-                    <button class="edit-btn" onclick="editTeacher(${index})">Edit</button>
-                    <button class="delete-btn" onclick="deleteTeacher(${index})">Delete</button>
-                </td>
-            </tr>
-        `;
-    });
-}
-
-// Populate Students Table
-function populateStudents() {
-    const tbody = document.getElementById('studentsTable').querySelector('tbody');
-    tbody.innerHTML = '';
-    students.forEach((s, index) => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${s.name}</td>
-                <td>${s.email}</td>
-                <td>${s.studentID}</td>
-                <td>${s.year}</td>
-                <td>
-                    <button class="edit-btn" onclick="editStudent(${index})">Edit</button>
-                    <button class="delete-btn" onclick="deleteStudent(${index})">Delete</button>
-                </td>
-            </tr>
-        `;
-    });
-}
-
-// Delete functions
-function deleteTeacher(index) {
-    if(confirm("Delete this teacher?")) {
-        teachers.splice(index,1);
-        localStorage.setItem('teachers', JSON.stringify(teachers));
-        updateCounts();
-        populateTeachers();
-    }
-}
-function deleteStudent(index) {
-    if(confirm("Delete this student?")) {
-        students.splice(index,1);
-        localStorage.setItem('students', JSON.stringify(students));
-        updateCounts();
-        populateStudents();
-    }
-}
-
-// Edit functions
-function editTeacher(index){
-    const t = teachers[index];
-    const newName = prompt("Enter new name:", t.name) || t.name;
-    const newEmail = prompt("Enter new email:", t.email) || t.email;
-    const newID = prompt("Enter new Teacher ID:", t.teacherID) || t.teacherID;
-    const newDept = prompt("Enter new department:", t.department) || t.department;
-
-    teachers[index] = { ...t, name: newName, email: newEmail, teacherID: newID, department: newDept };
-    localStorage.setItem('teachers', JSON.stringify(teachers));
-    populateTeachers();
-}
-
-function editStudent(index){
-    const s = students[index];
-    const newName = prompt("Enter new name:", s.name) || s.name;
-    const newEmail = prompt("Enter new email:", s.email) || s.email;
-    const newID = prompt("Enter new Student ID:", s.studentID) || s.studentID;
-    const newYear = prompt("Enter new Year/Class:", s.year) || s.year;
-
-    students[index] = { ...s, name: newName, email: newEmail, studentID: newID, year: newYear };
-    localStorage.setItem('students', JSON.stringify(students));
-    populateStudents();
-}
-
-// Logout
-document.getElementById('logoutBtn').addEventListener('click', ()=>{
+// Logout functionality
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    alert("Logged out successfully!");
     window.location.href = "index.html";
 });
 
-// Initial population
-updateCounts();
-populateTeachers();
-populateStudents();
+// Fetch stored teachers and students
+let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+let students = JSON.parse(localStorage.getItem("students")) || [];
+
+// Display counts
+document.getElementById("totalTeachers").innerText = teachers.length;
+document.getElementById("totalStudents").innerText = students.length;
+
+// Display teachers table
+const teachersTableBody = document.getElementById("teachersTable").querySelector("tbody");
+teachersTableBody.innerHTML = "";
+teachers.forEach((t, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>${t.name}</td>
+        <td>${t.email}</td>
+        <td>${t.teacherID}</td>
+        <td>${t.department}</td>
+        <td>
+            <button onclick="editTeacher(${index})">Edit</button>
+            <button onclick="deleteTeacher(${index})">Delete</button>
+        </td>
+    `;
+    teachersTableBody.appendChild(row);
+});
+
+// Display students table
+const studentsTableBody = document.getElementById("studentsTable").querySelector("tbody");
+studentsTableBody.innerHTML = "";
+students.forEach((s, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.studentID}</td>
+        <td>${s.year}</td>
+        <td>${s.className}</td>
+        <td>
+            <button onclick="editStudent(${index})">Edit</button>
+            <button onclick="deleteStudent(${index})">Delete</button>
+        </td>
+    `;
+    studentsTableBody.appendChild(row);
+});
+
+// Functions for Edit/Delete Teachers
+function deleteTeacher(index) {
+    if(confirm("Are you sure you want to delete this teacher?")) {
+        teachers.splice(index, 1);
+        localStorage.setItem("teachers", JSON.stringify(teachers));
+        location.reload();
+    }
+}
+function editTeacher(index) {
+    const t = teachers[index];
+    const newName = prompt("Edit Name:", t.name);
+    if(newName) t.name = newName;
+    const newEmail = prompt("Edit Email:", t.email);
+    if(newEmail) t.email = newEmail;
+    const newDepartment = prompt("Edit Department:", t.department);
+    if(newDepartment) t.department = newDepartment;
+    localStorage.setItem("teachers", JSON.stringify(teachers));
+    location.reload();
+}
+
+// Functions for Edit/Delete Students
+function deleteStudent(index) {
+    if(confirm("Are you sure you want to delete this student?")) {
+        students.splice(index, 1);
+        localStorage.setItem("students", JSON.stringify(students));
+        location.reload();
+    }
+}
+function editStudent(index) {
+    const s = students[index];
+    const newName = prompt("Edit Name:", s.name);
+    if(newName) s.name = newName;
+    const newEmail = prompt("Edit Email:", s.email);
+    if(newEmail) s.email = newEmail;
+    const newYear = prompt("Edit Year:", s.year);
+    if(newYear) s.year = newYear;
+    const newClass = prompt("Edit Class:", s.className);
+    if(newClass) s.className = newClass;
+    localStorage.setItem("students", JSON.stringify(students));
+    location.reload();
+}
 </script>
 
 </body>
