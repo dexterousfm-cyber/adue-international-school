@@ -4,46 +4,91 @@
 <meta charset="UTF-8">
 <title>Register Teacher</title>
 <link rel="stylesheet" href="styles.css">
+<style>
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
+.header { background:#800000; color:white; padding:15px; display:flex; align-items:center; }
+.header img { width:60px; margin-right:15px; }
+.container { max-width:500px; margin:30px auto; background:white; padding:25px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+h2 { text-align:center; color:#800000; margin-bottom:20px; }
+form input, form select { width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px; }
+form input[type="file"] { padding:5px; }
+button { width:100%; padding:12px; background:#800000; color:white; border:none; border-radius:5px; font-size:16px; cursor:pointer; margin-top:10px; }
+button:hover { background:#a00000; }
+.profile-preview { display:block; margin:10px auto; width:100px; height:100px; border-radius:50%; object-fit:cover; border:2px solid #800000; }
+</style>
 </head>
 <body>
+
+<div class="header">
+    <img src="logo-new.png" alt="School Logo">
+    <h1>ADUE International School</h1>
+</div>
+
 <div class="container">
     <h2>Register Teacher</h2>
     <form id="teacherForm">
-        <input type="text" id="teacherName" placeholder="Name" required>
+        <input type="text" id="teacherName" placeholder="Full Name" required>
         <input type="email" id="teacherEmail" placeholder="Email" required>
         <input type="text" id="teacherID" placeholder="Teacher ID" required>
         <input type="text" id="department" placeholder="Department" required>
         <input type="password" id="password" placeholder="Password" required>
+
+        <!-- Profile Picture -->
+        <label for="profilePictureInput">Profile Picture (optional):</label>
         <input type="file" id="profilePictureInput" accept="image/*">
-        <button type="submit">Register</button>
+        <img id="profilePreview" class="profile-preview" src="default.png" alt="Profile Preview">
+
+        <button type="submit">Register Teacher</button>
     </form>
 </div>
 
 <script>
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 
+const profileInput = document.getElementById("profilePictureInput");
+const profilePreview = document.getElementById("profilePreview");
+
+// Preview image when selected
+profileInput.addEventListener("change", function(){
+    if(this.files.length>0){
+        const reader = new FileReader();
+        reader.onload = function(){
+            profilePreview.src = reader.result;
+        }
+        reader.readAsDataURL(this.files[0]);
+    } else {
+        profilePreview.src = "default.png";
+    }
+});
+
 document.getElementById("teacherForm").addEventListener("submit", function(e){
     e.preventDefault();
-    const name = document.getElementById("teacherName").value;
-    const email = document.getElementById("teacherEmail").value;
-    const teacherID = document.getElementById("teacherID").value;
-    const department = document.getElementById("department").value;
-    const password = document.getElementById("password").value;
-    const fileInput = document.getElementById("profilePictureInput");
 
-    if(fileInput.files.length>0){
-        const reader = new FileReader();
-        reader.onload = function(){ saveTeacher(reader.result); }
-        reader.readAsDataURL(fileInput.files[0]);
-    } else { saveTeacher(""); }
+    const name = document.getElementById("teacherName").value.trim();
+    const email = document.getElementById("teacherEmail").value.trim();
+    const teacherID = document.getElementById("teacherID").value.trim();
+    const department = document.getElementById("department").value.trim();
+    const password = document.getElementById("password").value;
 
     function saveTeacher(profilePicture){
         teachers.push({ name, email, teacherID, department, password, profilePicture });
         localStorage.setItem("teachers", JSON.stringify(teachers));
         alert("Teacher Registered Successfully!");
         document.getElementById("teacherForm").reset();
+        profilePreview.src = "default.png";
+    }
+
+    if(profileInput.files.length>0){
+        const reader = new FileReader();
+        reader.onload = function(){
+            saveTeacher(reader.result);
+        }
+        reader.readAsDataURL(profileInput.files[0]);
+    } else {
+        saveTeacher("default.png");
     }
 });
 </script>
+
 </body>
 </html>
