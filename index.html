@@ -7,7 +7,6 @@
 </head>
 <body>
 
-<!-- Top header -->
 <div class="header">
     <div class="header-content">
         <img src="logo-new.png" alt="Header Logo" class="logo-header">
@@ -15,18 +14,14 @@
     </div>
 </div>
 
-<!-- Centered login box -->
 <div class="login-wrapper">
     <div class="login-box">
-        <!-- Logo on top of the box -->
         <img src="login-logo.png" alt="Login Box Logo" class="logo-box">
 
         <form id="loginForm">
             <input type="text" id="userId" placeholder="ID" required>
             <input type="password" id="password" placeholder="Password" required>
-
             <button type="submit">Login</button>
-
             <div class="links">
                 <a href="#">Forgot Password?</a>
                 <a href="#">Contact IT Support</a>
@@ -35,6 +30,31 @@
     </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+    // Hard-coded credentials inside index.html
+    const credentials = [
+        { email: "admin@adue.com", password: "12345678", redirect: "admin_dashboard.html" },
+        { email: "phemmyallen1@gmail.com", password: "12345678", redirect: "teacher_dashboard.html" }
+    ];
+
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const userId = document.getElementById("userId").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        const user = credentials.find(c => c.email === userId && c.password === password);
+
+        if(user) {
+            alert("Login successful!");
+            window.location.href = user.redirect;
+        } else {
+            alert("Invalid login credentials!");
+        }
+    });
+</script>
+
 </body>
 </html>
