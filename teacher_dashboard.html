@@ -64,7 +64,7 @@ button.delete:hover { background:#a00000; }
 </div>
 
 <script>
-// Load data from localStorage
+// ---------- LOAD DATA ----------
 let students = JSON.parse(localStorage.getItem('students')) || [];
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let currentTeacherIndex = parseInt(localStorage.getItem('currentTeacherIndex')) || 0;
@@ -75,7 +75,9 @@ let editIndex = null;
 
 // ---------- STUDENT FUNCTIONS ----------
 function renderStudentsTable() {
-    students = JSON.parse(localStorage.getItem('students')) || []; // always fetch latest
+    // ALWAYS fetch latest from localStorage
+    students = JSON.parse(localStorage.getItem('students')) || []; 
+
     const table = document.getElementById('studentsTable');
     let html = `<tr>
         <th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit</th>
@@ -102,7 +104,7 @@ function openStudentForm() {
     let password = prompt("Password:");
 
     students.push({name,email,studentID:id,studentClass,studentYear,password});
-    localStorage.setItem('students', JSON.stringify(students)); // shared
+    localStorage.setItem('students', JSON.stringify(students)); // shared with admin
     renderStudentsTable();
 }
 
@@ -144,10 +146,10 @@ function deleteRecord() {
     }
 }
 
-// Logout
+// ---------- LOGOUT ----------
 function logout(){ window.location.href='index.html'; }
 
-// Load on start
+// ---------- INITIAL LOAD ----------
 renderStudentsTable();
 </script>
 </body>
