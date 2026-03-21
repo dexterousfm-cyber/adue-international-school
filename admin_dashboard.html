@@ -60,18 +60,17 @@ button.edit-btn:hover, button.delete-btn:hover { opacity:0.9; }
 </table>
 
 <script>
-// --- Get stored teachers & students ---
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
 
-// --- Populate counters ---
+// Counters
 document.getElementById('totalTeachers').innerText = teachers.length;
 document.getElementById('totalStudents').innerText = students.length;
 
-// --- Populate teachers table ---
+// Populate teachers table
 let tBody = document.querySelector('#teachersTable tbody');
 tBody.innerHTML = '';
-teachers.forEach((t, index) => {
+teachers.forEach((t,index)=>{
     tBody.innerHTML += `
     <tr>
         <td><img src="${t.profilePicture || 'default-teacher.png'}" width="70" height="70"></td>
@@ -86,10 +85,10 @@ teachers.forEach((t, index) => {
     </tr>`;
 });
 
-// --- Populate students table ---
+// Populate students table
 let sBody = document.querySelector('#studentsTable tbody');
 sBody.innerHTML = '';
-students.forEach((s, index) => {
+students.forEach((s,index)=>{
     sBody.innerHTML += `
     <tr>
         <td><img src="${s.profilePicture || 'default-student.png'}" width="70" height="70"></td>
@@ -105,58 +104,35 @@ students.forEach((s, index) => {
     </tr>`;
 });
 
-// --- Functions ---
-function logout(){
-    localStorage.removeItem('currentAdminEmail');
-    window.location.href = "index.html";
-}
+// Functions
+function logout(){ localStorage.removeItem('currentAdminEmail'); window.location.href="index.html"; }
 
-// Edit Teacher
 function editTeacher(index){
     let t = teachers[index];
-    let newName = prompt("Edit Name:", t.name);
-    if(newName) t.name = newName;
-    let newEmail = prompt("Edit Email:", t.email);
-    if(newEmail) t.email = newEmail;
-    let newDept = prompt("Edit Department:", t.department);
-    if(newDept) t.department = newDept;
+    let newName = prompt("Edit Name:", t.name); if(newName) t.name=newName;
+    let newEmail = prompt("Edit Email:", t.email); if(newEmail) t.email=newEmail;
+    let newDept = prompt("Edit Department:", t.department); if(newDept) t.department=newDept;
     localStorage.setItem('teachers', JSON.stringify(teachers));
     location.reload();
 }
 
-// Delete Teacher
 function deleteTeacher(index){
-    if(confirm("Are you sure you want to delete this teacher?")){
-        teachers.splice(index,1);
-        localStorage.setItem('teachers', JSON.stringify(teachers));
-        location.reload();
-    }
+    if(confirm("Delete this teacher?")){ teachers.splice(index,1); localStorage.setItem('teachers', JSON.stringify(teachers)); location.reload();}
 }
 
-// Edit Student
 function editStudent(index){
     let s = students[index];
-    let newName = prompt("Edit Name:", s.name);
-    if(newName) s.name = newName;
-    let newEmail = prompt("Edit Email:", s.email);
-    if(newEmail) s.email = newEmail;
-    let newClass = prompt("Edit Class:", s.studentClass);
-    if(newClass) s.studentClass = newClass;
-    let newYear = prompt("Edit Year:", s.studentYear);
-    if(newYear) s.studentYear = newYear;
+    let newName = prompt("Edit Name:", s.name); if(newName)s.name=newName;
+    let newEmail = prompt("Edit Email:", s.email); if(newEmail)s.email=newEmail;
+    let newClass = prompt("Edit Class:", s.studentClass); if(newClass)s.studentClass=newClass;
+    let newYear = prompt("Edit Year:", s.studentYear); if(newYear)s.studentYear=newYear;
     localStorage.setItem('students', JSON.stringify(students));
     location.reload();
 }
 
-// Delete Student
 function deleteStudent(index){
-    if(confirm("Are you sure you want to delete this student?")){
-        students.splice(index,1);
-        localStorage.setItem('students', JSON.stringify(students));
-        location.reload();
-    }
+    if(confirm("Delete this student?")){ students.splice(index,1); localStorage.setItem('students', JSON.stringify(students)); location.reload();}
 }
 </script>
-
 </body>
 </html>
