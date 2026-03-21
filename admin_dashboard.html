@@ -2,139 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Dashboard - ADUE Portal</title>
+<title>Admin Dashboard</title>
 <link rel="stylesheet" href="styles.css">
-<style>
-.header { background:#722F37; padding:20px; color:white; display:flex; justify-content:space-between; align-items:center; }
-.header img { width:120px; height:120px; border-radius:50%; border:3px solid white; margin-right:20px; }
-#welcomeAdmin { font-size:24px; margin:0; }
-.logout-btn { background:white; color:#722F37; padding:8px 16px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
-.logout-btn:hover { opacity:0.9; }
-
-.dashboard-buttons { margin:20px 0; }
-.dashboard-buttons button { padding:10px 20px; margin-right:10px; border:none; background:#722F37; color:white; border-radius:6px; cursor:pointer; font-size:16px; }
-.dashboard-buttons button:hover { opacity:0.9; }
-
-table { width:100%; border-collapse:collapse; margin-top:20px; }
-th, td { border:1px solid #ccc; padding:10px; text-align:center; }
-th { background:#eee; }
-img { border-radius:50%; }
-button.action-btn { padding:5px 10px; border:none; border-radius:5px; margin:2px; cursor:pointer; }
-button.edit-btn { background:#722F37; color:white; }
-</style>
 </head>
 <body>
+<h1>Welcome, <span id="adminName"></span></h1>
+<img id="adminPic" src="admin.png" width="100" style="border-radius:50%">
 
-<div class="header">
-    <div style="display:flex; align-items:center;">
-        <img id="adminPic" src="admin.png" alt="Admin Picture">
-        <div>
-            <h1 id="welcomeAdmin">Welcome, Admin</h1>
-        </div>
-    </div>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-</div>
+<button onclick="window.location.href='register_teacher.html'">Register Teacher</button>
+<button onclick="window.location.href='register_student.html'">Register Student</button>
 
-<form id="adminPicForm">
-    <label>Change Admin Picture:</label>
-    <input type="file" id="adminPictureInput" accept="image/*">
-    <button type="submit">Save Picture</button>
-</form>
-
-<div class="dashboard-buttons">
-    <button onclick="window.location.href='register_teacher.html'">Register Teacher</button>
-    <button onclick="window.location.href='register_student.html'">Register Student</button>
-</div>
-
-<h2>Teachers</h2>
-<table id="teachersTable">
-<thead>
-<tr>
-<th>Picture</th><th>Name</th><th>Email</th><th>Teacher ID</th><th>Department</th><th>Edit</th>
-</tr>
-</thead>
-<tbody></tbody>
+<h2>Teachers List</h2>
+<table border="1" id="teachersTable">
+<tr><th>Picture</th><th>Name</th><th>Email</th><th>ID</th><th>Department</th><th>Edit</th></tr>
 </table>
 
-<h2>Students</h2>
-<table id="studentsTable">
-<thead>
-<tr>
-<th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Result</th><th>Edit</th>
-</tr>
-</thead>
-<tbody></tbody>
+<h2>Students List</h2>
+<table border="1" id="studentsTable">
+<tr><th>Picture</th><th>Name</th><th>Email</th><th>ID</th><th>Class</th><th>Year</th><th>Edit</th></tr>
 </table>
 
 <script>
-// Fetch data
+let admins = JSON.parse(localStorage.getItem('admins')) || [];
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
+let currentAdminIndex = parseInt(localStorage.getItem("currentAdminIndex"));
 
-// Render tables
-function renderTeachers(){
-    let tbody = document.querySelector("#teachersTable tbody");
-    tbody.innerHTML = "";
-    teachers.forEach((t,index)=>{
-        tbody.innerHTML += `<tr>
-            <td><img src="${t.profilePicture || 'default-teacher.png'}" width="70" height="70"></td>
-            <td>${t.name}</td>
-            <td>${t.email}</td>
-            <td>${t.teacherID}</td>
-            <td>${t.department}</td>
-            <td><button class="action-btn edit-btn" onclick="window.location.href='edit_teacher.html?index=${index}'">Edit</button></td>
-        </tr>`;
-    });
-}
+// Display admin info
+document.getElementById("adminName").innerText = admins[currentAdminIndex].name;
+document.getElementById("adminPic").src = admins[currentAdminIndex].profilePicture || 'admin.png';
 
-function renderStudents(){
-    let tbody = document.querySelector("#studentsTable tbody");
-    tbody.innerHTML = "";
-    students.forEach((s,index)=>{
-        tbody.innerHTML += `<tr>
-            <td><img src="${s.profilePicture || 'default-student.png'}" width="70" height="70"></td>
-            <td>${s.name}</td>
-            <td>${s.email}</td>
-            <td>${s.studentID}</td>
-            <td>${s.studentClass}</td>
-            <td>${s.studentYear}</td>
-            <td>${s.result || ''}</td>
-            <td><button class="action-btn edit-btn" onclick="window.location.href='edit_student.html?index=${index}'">Edit</button></td>
-        </tr>`;
-    });
-}
-
-// Initial render
-renderTeachers();
-renderStudents();
-
-// Logout
-function logout(){
-    window.location.href="index.html";
-}
-
-// Admin picture upload
-const adminPicInput = document.getElementById('adminPictureInput');
-const adminPicForm = document.getElementById('adminPicForm');
-
-adminPicForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    const file = adminPicInput.files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = function(){
-            localStorage.setItem('adminPic', reader.result);
-            document.getElementById('adminPic').src = reader.result;
-            alert("Admin picture updated!");
-        }
-        reader.readAsDataURL(file);
-    }
+// Populate Teachers Table
+const teachersTable = document.getElementById("teachersTable");
+teachers.forEach((t,i)=>{
+    let row = teachersTable.insertRow();
+    row.innerHTML = `
+        <td><img src="${t.profilePicture || 'default.png'}" width="50" style="border-radius:50%"></td>
+        <td>${t.name}</td>
+        <td>${t.email}</td>
+        <td>${t.teacherID}</td>
+        <td>${t.department}</td>
+        <td><button onclick="editTeacher(${i})">Edit</button></td>
+    `;
 });
 
-// Load saved admin picture
-let savedPic = localStorage.getItem('adminPic');
-if(savedPic){
-    document.getElementById('adminPic').src = savedPic;
+// Populate Students Table
+const studentsTable = document.getElementById("studentsTable");
+students.forEach((s,i)=>{
+    let row = studentsTable.insertRow();
+    row.innerHTML = `
+        <td><img src="${s.profilePicture || 'default.png'}" width="50" style="border-radius:50%"></td>
+        <td>${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.studentID}</td>
+        <td>${s.studentClass}</td>
+        <td>${s.studentYear}</td>
+        <td><button onclick="editStudent(${i})">Edit</button></td>
+    `;
+});
+
+// Edit Functions
+function editTeacher(index){
+    localStorage.setItem("editTeacherIndex", index);
+    window.location.href = "edit_teacher.html";
+}
+function editStudent(index){
+    localStorage.setItem("editStudentIndex", index);
+    window.location.href = "edit_student.html";
 }
 </script>
 </body>
