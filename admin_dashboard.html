@@ -6,10 +6,10 @@
 <link rel="stylesheet" href="styles.css">
 <style>
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background: #f9f9f9;
+    background: #fffafc;
 }
 
 /* Header */
@@ -18,8 +18,9 @@ body {
     justify-content:space-between;
     align-items:center;
     padding:15px 30px;
-    background:#800000;
+    background:#800000; /* wine */
     color:white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 /* Logo */
@@ -33,7 +34,7 @@ body {
 .profile-section {
     display:flex;
     align-items:center;
-    gap:8px;
+    gap:10px;
 }
 
 .profile-section img.avatar {
@@ -46,6 +47,7 @@ body {
 
 #headerName {
     font-size:18px;
+    font-weight:bold;
 }
 
 #logoutBtn {
@@ -64,23 +66,19 @@ body {
 
 /* Container */
 .container {
-    padding:20px 40px;
-}
-
-h2 {
-    color:#800000;
-    margin-top:40px;
+    padding:30px 50px;
 }
 
 /* Buttons */
 button.action-btn {
-    padding:6px 12px;
+    padding:8px 16px;
     background:#800000;
     color:white;
     border:none;
-    border-radius:5px;
+    border-radius:6px;
     cursor:pointer;
     font-weight:bold;
+    transition: 0.3s;
 }
 
 button.action-btn:hover {
@@ -91,7 +89,7 @@ button.action-btn:hover {
 .toggle-buttons {
     margin:20px 0;
     display:flex;
-    gap:10px;
+    gap:15px;
 }
 
 /* Tables */
@@ -99,10 +97,14 @@ table {
     width:100%;
     border-collapse:collapse;
     margin-top:15px;
+    background:white;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 table, th, td {
-    border:1px solid #ccc;
+    border:1px solid #ddd;
 }
 
 th, td {
@@ -111,6 +113,132 @@ th, td {
 }
 
 th {
+    background:#800000;
+    color:white;
+    font-weight:bold;
+}
+
+img.avatar-small {
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+/* Hover effect for table rows */
+table tr:hover {
+    background:#fff2f2;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="logo-section">
+        <img src="logo-new.png" alt="School Logo">
+    </div>
+    <div class="profile-section">
+        <img id="headerAvatar" src="admin.png" class="avatar">
+        <span id="headerName">Welcome Admin</span>
+        <button id="logoutBtn">Logout</button>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Register Buttons -->
+    <div class="register-buttons">
+        <button onclick="window.location.href='register_teacher.html'" class="action-btn">Register Teacher</button>
+        <button onclick="window.location.href='register_student.html'" class="action-btn">Register Student</button>
+    </div>
+
+    <!-- Toggle Buttons -->
+    <div class="toggle-buttons">
+        <button class="action-btn" onclick="showTable('teachers')">Teachers</button>
+        <button class="action-btn" onclick="showTable('students')">Students</button>
+    </div>
+
+    <!-- Teachers Table -->
+    <table id="teachersTable">
+        <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Teacher ID</th>
+            <th>Department</th>
+            <th>Edit</th>
+        </tr>
+    </table>
+
+    <!-- Students Table -->
+    <table id="studentsTable" style="display:none;">
+        <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Student ID</th>
+            <th>Class</th>
+            <th>Year</th>
+            <th>Edit</th>
+        </tr>
+    </table>
+
+</div>
+
+<script>
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', function(){
+    localStorage.removeItem('currentAdminIndex');
+    window.location.href='index.html';
+});
+
+// Load Admin Profile
+let currentAdminIndex = parseInt(localStorage.getItem('currentAdminIndex')) || 0;
+let admins = JSON.parse(localStorage.getItem('admins')) || [{name:'Admin', profilePicture:'admin.png'}];
+document.getElementById('headerName').innerText = 'Welcome ' + admins[currentAdminIndex].name;
+document.getElementById('headerAvatar').src = admins[currentAdminIndex].profilePicture;
+
+// Load Teachers
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let teachersTable = document.getElementById('teachersTable');
+teachers.forEach((t,i)=>{
+    let row = teachersTable.insertRow();
+    row.insertCell(0).innerHTML = `<img src="${t.profilePicture}" class="avatar-small">`;
+    row.insertCell(1).innerText = t.name;
+    row.insertCell(2).innerText = t.email;
+    row.insertCell(3).innerText = t.teacherID;
+    row.insertCell(4).innerText = t.department;
+    row.insertCell(5).innerHTML = `<button class="action-btn" onclick="editTeacher(${i})">Edit</button>`;
+});
+
+function editTeacher(i){
+    localStorage.setItem('editTeacherIndex', i);
+    window.location.href='edit_teacher.html';
+}
+
+// Load Students
+let students = JSON.parse(localStorage.getItem('students')) || [];
+let studentsTable = document.getElementById('studentsTable');
+students.forEach((s,i)=>{
+    let row = studentsTable.insertRow();
+    row.insertCell(0).innerHTML = `<img src="${s.profilePicture}" class="avatar-small">`;
+    row.insertCell(1).innerText = s.name;
+    row.insertCell(2).innerText = s.email;
+    row.insertCell(3).innerText = s.studentID;
+    row.insertCell(4).innerText = s.studentClass;
+    row.insertCell(5).innerText = s.studentYear;
+    row.insertCell(6).innerHTML = `<button class="action-btn" onclick="editStudent(${i})">Edit</button>`;
+});
+
+function editStudent(i){
+    localStorage.setItem('editStudentIndex', i);
+    window.location.href='edit_student.html';
+}
+
+// Toggle Tables
+function showTable(table) {
+    document.getElementByth {
     background:#800000;
     color:white;
 }
