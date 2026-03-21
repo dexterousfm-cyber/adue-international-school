@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Teacher Dashboard</title>
+<link rel="stylesheet" href="styles.css">
 <style>
-body { margin:0; font-family: Arial, sans-serif; background:#f5f5f5; }
-.header { display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:#800000; color:white; }
+/* Wine theme, clean design */
+body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; }
+.header { display:flex; justify-content:space-between; align-items:center; background:#800000; color:white; padding:15px 30px; }
 .header .logo img { width:120px; }
 .header .profile { display:flex; align-items:center; gap:10px; }
 .header .profile span { font-weight:bold; }
@@ -13,21 +15,10 @@ body { margin:0; font-family: Arial, sans-serif; background:#f5f5f5; }
 button { padding:8px 16px; margin:5px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
 button.primary { background:#800000; color:white; }
 button.primary:hover { background:#a00000; }
-table { width:100%; border-collapse:collapse; margin-top:20px; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.15); }
+table { width:100%; border-collapse:collapse; margin-top:20px; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
 th, td { padding:12px; text-align:center; border:1px solid #ddd; }
 th { background:#800000; color:white; }
 table tr:hover { background:#fff2f2; }
-
-/* Modal styling */
-.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content:center; align-items:center; }
-.modal-content { background:white; padding:20px; border-radius:10px; width:300px; }
-.modal-content h3 { margin-top:0; color:#800000; }
-.modal-content input { width:100%; padding:8px; margin:5px 0; border:1px solid #ccc; border-radius:5px; }
-.modal-content button { width:100%; margin-top:10px; }
-button.cancel { background:#ccc; color:black; }
-button.cancel:hover { background:#999; }
-button.delete { background:#800000; color:white; margin-top:5px; }
-button.delete:hover { background:#a00000; }
 </style>
 </head>
 <body>
@@ -35,7 +26,7 @@ button.delete:hover { background:#a00000; }
 <div class="header">
     <div class="logo"><img src="logo-new.png" alt="Logo"></div>
     <div class="profile">
-        <span id="teacherName">Welcome Teacher</span>
+        <span>Welcome Teacher</span>
         <button onclick="logout()">Logout</button>
     </div>
 </div>
@@ -44,31 +35,16 @@ button.delete:hover { background:#a00000; }
     <button class="primary" onclick="registerStudent()">Register Student</button>
     <button class="primary" onclick="renderStudentsTable()">View Students</button>
 
-    <table id="studentsTable"></table>
+    <table id="table"></table>
 </div>
 
-<!-- Modal for edit/delete -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h3>Edit Student</h3>
-    <input type="text" id="modalName" placeholder="Name">
-    <input type="text" id="modalEmail" placeholder="Email">
-    <input type="text" id="modalID" placeholder="Student ID">
-    <input type="text" id="modalClass" placeholder="Class">
-    <input type="text" id="modalYear" placeholder="Year">
-    <input type="password" id="modalPassword" placeholder="Password">
-    <button onclick="saveRecord()">Save</button>
-    <button class="cancel" onclick="closeModal()">Cancel</button>
-    <button class="delete" onclick="deleteRecord()">Delete</button>
-  </div>
-</div>
 <script>
 // ---------- LOAD DATA ----------
 let students = JSON.parse(localStorage.getItem('students')) || [];
-let currentTeacherIndex = localStorage.getItem('currentTeacherIndex');
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let currentTeacherIndex = localStorage.getItem('currentTeacherIndex');
 
-// ---------- SHOW STUDENTS ----------
+// ---------- RENDER STUDENTS ----------
 function renderStudentsTable() {
     students = JSON.parse(localStorage.getItem('students')) || [];
     let html = `<tr>
@@ -122,94 +98,13 @@ function editStudent(i) {
 }
 
 // ---------- LOGOUT ----------
-function logout() { window.location.href = 'index.html'; }
-
-// ---------- INITIAL LOAD ----------
-renderStudentsTable();
-</script>.name}`;
-
-let editIndex = null;
-
-// ---------- STUDENT FUNCTIONS ----------
-function renderStudentsTable() {
-    // ALWAYS fetch latest students from localStorage
-    students = JSON.parse(localStorage.getItem('students')) || [];
-
-    const table = document.getElementById('studentsTable');
-    let html = `<tr>
-        <th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit</th>
-    </tr>`;
-    students.forEach((s,i)=>{
-        html += `<tr>
-            <td>${s.name}</td>
-            <td>${s.email}</td>
-            <td>${s.studentID}</td>
-            <td>${s.studentClass || ''}</td>
-            <td>${s.studentYear || ''}</td>
-            <td><button onclick="openModal(${i})">Edit/Delete</button></td>
-        </tr>`;
-    });
-    table.innerHTML = html;
+function logout() {
+    window.location.href = 'index.html';
 }
-
-function registerStudent() {
-    let name = prompt("Student Name:");
-    let email = prompt("Email:");
-    let studentID = prompt("Student ID:");
-    let studentClass = prompt("Class:");
-    let studentYear = prompt("Year:");
-    let password = prompt("Password:");
-
-    // Fetch latest before adding
-    students = JSON.parse(localStorage.getItem('students')) || [];
-    students.push({name,email,studentID,studentClass,studentYear,password});
-    localStorage.setItem('students', JSON.stringify(students));
-    renderStudentsTable();
-}
-
-// ---------- MODAL FUNCTIONS ----------
-function openModal(i) {
-    editIndex = i;
-    const s = students[i];
-    document.getElementById('modalName').value = s.name;
-    document.getElementById('modalEmail').value = s.email;
-    document.getElementById('modalID').value = s.studentID;
-    document.getElementById('modalClass').value = s.studentClass || '';
-    document.getElementById('modalYear').value = s.studentYear || '';
-    document.getElementById('modalPassword').value = s.password;
-    document.getElementById('modal').style.display = 'flex';
-}
-
-function closeModal(){ document.getElementById('modal').style.display='none'; }
-
-function saveRecord() {
-    const s = students[editIndex];
-    s.name = document.getElementById('modalName').value;
-    s.email = document.getElementById('modalEmail').value;
-    s.studentID = document.getElementById('modalID').value;
-    s.studentClass = document.getElementById('modalClass').value;
-    s.studentYear = document.getElementById('modalYear').value;
-    s.password = document.getElementById('modalPassword').value;
-
-    localStorage.setItem('students', JSON.stringify(students));
-    closeModal();
-    renderStudentsTable();
-}
-
-function deleteRecord() {
-    if(confirm("Are you sure you want to delete?")){
-        students.splice(editIndex,1);
-        localStorage.setItem('students', JSON.stringify(students));
-        closeModal();
-        renderStudentsTable();
-    }
-}
-
-// ---------- LOGOUT ----------
-function logout(){ window.location.href='index.html'; }
 
 // ---------- INITIAL LOAD ----------
 renderStudentsTable();
 </script>
+
 </body>
 </html>
