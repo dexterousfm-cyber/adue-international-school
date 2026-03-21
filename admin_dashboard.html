@@ -72,28 +72,6 @@ h2 {
     margin-top:40px;
 }
 
-/* Buttons */
-button.action-btn {
-    padding:6px 12px;
-    background:#800000;
-    color:white;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-button.action-btn:hover {
-    background:#a00000;
-}
-
-/* Toggle buttons */
-.toggle-buttons {
-    margin:20px 0;
-    display:flex;
-    gap:10px;
-}
-
 /* Tables */
 table {
     width:100%;
@@ -108,6 +86,143 @@ table, th, td {
 th, td {
     padding:12px;
     text-align:center;
+}
+
+th {
+    background:#800000;
+    color:white;
+}
+
+img.avatar-small {
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+button.action-btn {
+    padding:5px 10px;
+    background:#800000;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button.action-btn:hover {
+    background:#a00000;
+}
+
+.register-buttons {
+    margin:20px 0;
+    display:flex;
+    gap:15px;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <!-- Left: School logo -->
+    <div class="logo-section">
+        <img src="logo-new.png" alt="School Logo">
+    </div>
+
+    <!-- Right: Admin info + logout -->
+    <div class="profile-section">
+        <img id="headerAvatar" src="admin.png" class="avatar">
+        <span id="headerName">Welcome Admin</span>
+        <button id="logoutBtn">Logout</button>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="register-buttons">
+        <button onclick="window.location.href='register_teacher.html'" class="action-btn">Register Teacher</button>
+        <button onclick="window.location.href='register_student.html'" class="action-btn">Register Student</button>
+    </div>
+
+    <h2>Teachers List</h2>
+    <table id="teachersTable">
+        <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Teacher ID</th>
+            <th>Department</th>
+            <th>Edit</th>
+        </tr>
+    </table>
+
+    <h2>Students List</h2>
+    <table id="studentsTable">
+        <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Student ID</th>
+            <th>Class</th>
+            <th>Year</th>
+            <th>Edit</th>
+        </tr>
+    </table>
+</div>
+
+<script>
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', function(){
+    localStorage.removeItem('currentAdminIndex');
+    window.location.href='index.html';
+});
+
+// Load Admin Profile
+let currentAdminIndex = parseInt(localStorage.getItem('currentAdminIndex')) || 0;
+let admins = JSON.parse(localStorage.getItem('admins')) || [{name:'Admin', profilePicture:'admin.png'}];
+document.getElementById('headerName').innerText = 'Welcome ' + admins[currentAdminIndex].name;
+document.getElementById('headerAvatar').src = admins[currentAdminIndex].profilePicture;
+
+// Load Teachers
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let teachersTable = document.getElementById('teachersTable');
+teachers.forEach((t,i)=>{
+    let row = teachersTable.insertRow();
+    row.insertCell(0).innerHTML = `<img src="${t.profilePicture}" class="avatar-small">`;
+    row.insertCell(1).innerText = t.name;
+    row.insertCell(2).innerText = t.email;
+    row.insertCell(3).innerText = t.teacherID;
+    row.insertCell(4).innerText = t.department;
+    row.insertCell(5).innerHTML = `<button class="action-btn" onclick="editTeacher(${i})">Edit</button>`;
+});
+
+function editTeacher(i){
+    localStorage.setItem('editTeacherIndex', i);
+    window.location.href='edit_teacher.html';
+}
+
+// Load Students
+let students = JSON.parse(localStorage.getItem('students')) || [];
+let studentsTable = document.getElementById('studentsTable');
+students.forEach((s,i)=>{
+    let row = studentsTable.insertRow();
+    row.insertCell(0).innerHTML = `<img src="${s.profilePicture}" class="avatar-small">`;
+    row.insertCell(1).innerText = s.name;
+    row.insertCell(2).innerText = s.email;
+    row.insertCell(3).innerText = s.studentID;
+    row.insertCell(4).innerText = s.studentClass;
+    row.insertCell(5).innerText = s.studentYear;
+    row.insertCell(6).innerHTML = `<button class="action-btn" onclick="editStudent(${i})">Edit</button>`;
+});
+
+function editStudent(i){
+    localStorage.setItem('editStudentIndex', i);
+    window.location.href='edit_student.html';
+}
+</script>
+
+</body>
+</html>    text-align:center;
 }
 
 th {
