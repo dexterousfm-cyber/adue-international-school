@@ -3,32 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Register Student</title>
-<style>
-body { font-family: Arial; background:#f4f4f4; }
-.container {
-    max-width:400px;
-    margin:60px auto;
-    background:white;
-    padding:25px;
-    border-radius:10px;
-}
-input, button {
-    width:100%;
-    padding:10px;
-    margin:10px 0;
-}
-button {
-    background:#722F37;
-    color:white;
-    border:none;
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
 <div class="container">
     <h2>Register Student</h2>
-
     <form id="studentForm">
         <input type="text" id="studentName" placeholder="Name" required>
         <input type="email" id="studentEmail" placeholder="Email" required>
@@ -36,6 +15,7 @@ button {
         <input type="text" id="studentClass" placeholder="Class" required>
         <input type="text" id="studentYear" placeholder="Year" required>
         <input type="password" id="password" placeholder="Password" required>
+        <input type="file" id="profilePictureInput" accept="image/*">
         <button type="submit">Register</button>
     </form>
 </div>
@@ -45,34 +25,27 @@ let students = JSON.parse(localStorage.getItem('students')) || [];
 
 document.getElementById("studentForm").addEventListener("submit", function(e){
     e.preventDefault();
-
-    // ✅ GET VALUES CORRECTLY
     const name = document.getElementById("studentName").value;
     const email = document.getElementById("studentEmail").value;
     const studentID = document.getElementById("studentID").value;
     const studentClass = document.getElementById("studentClass").value;
     const studentYear = document.getElementById("studentYear").value;
     const password = document.getElementById("password").value;
+    const fileInput = document.getElementById("profilePictureInput");
 
-    // ✅ SAVE DATA
-    students.push({
-        name: name,
-        email: email,
-        studentID: studentID,
-        studentClass: studentClass,
-        studentYear: studentYear,
-        password: password,
-        result: "",
-        profilePicture: ""
-    });
+    if(fileInput.files.length>0){
+        const reader = new FileReader();
+        reader.onload = function(){ saveStudent(reader.result); }
+        reader.readAsDataURL(fileInput.files[0]);
+    } else { saveStudent(""); }
 
-    localStorage.setItem("students", JSON.stringify(students));
-
-    alert("Student Registered Successfully!");
-
-    document.getElementById("studentForm").reset();
+    function saveStudent(profilePicture){
+        students.push({ name, email, studentID, studentClass, studentYear, password, result:"", profilePicture });
+        localStorage.setItem("students", JSON.stringify(students));
+        alert("Student Registered Successfully!");
+        document.getElementById("studentForm").reset();
+    }
 });
 </script>
-
 </body>
 </html>
