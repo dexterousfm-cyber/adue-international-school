@@ -1,57 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Register Student - ADUE Portal</title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-<div class="header">
-    <img src="logo-new.png" alt="Logo">
-    <h1>Register Student</h1>
-</div>
-
-<div class="registration-wrapper">
-    <h2>Student Information</h2>
-    <form id="studentForm">
-        <input type="text" id="studentName" placeholder="Full Name" required>
-        <input type="email" id="studentEmail" placeholder="Email" required>
-        <input type="text" id="studentID" placeholder="Student ID" required>
-        <input type="text" id="studentClass" placeholder="Class" required>
-        <input type="text" id="studentYear" placeholder="Year" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-        <input type="text" id="studentPicture" placeholder="Picture URL (optional)">
-        <button type="submit">Register Student</button>
-    </form>
-    <div class="links">
-        <a href="admin_dashboard.html">Back to Dashboard</a>
-    </div>
-</div>
-
-<script>
 let students = JSON.parse(localStorage.getItem('students')) || [];
 
 document.getElementById('studentForm').addEventListener('submit', function(e){
     e.preventDefault();
-    const name = document.getElementById('studentName').value;
-    const email = document.getElementById('studentEmail').value;
-    const studentID = document.getElementById('studentID').value;
-    const studentClass = document.getElementById('studentClass').value;
-    const studentYear = document.getElementById('studentYear').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const profilePicture = document.getElementById('studentPicture').value;
 
-    if(password !== confirmPassword){ alert("Passwords do not match!"); return; }
+    const name = studentName.value;
+    const email = studentEmail.value;
+    const studentID = studentID.value;
+    const studentClass = studentClass.value;
+    const studentYear = studentYear.value;
+    const password = password.value;
 
-    students.push({name,email,studentID,studentClass,studentYear,password,profilePicture,result:'',subjects:[]});
+    students.push({
+        name,
+        email,
+        studentID,
+        studentClass,
+        studentYear,
+        password,
+        result: '',
+        profilePicture: ''
+    });
+
     localStorage.setItem('students', JSON.stringify(students));
-    alert("Student registered successfully!");
-    this.reset();
-});
-</script>
 
-</body>
-</html>
+    alert("Student Registered!");
+});
