@@ -1,31 +1,38 @@
-<script>
-  // Login button
-  const loginForm = document.getElementById("loginForm");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADUE International School - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="login-logo.png" alt="ADUE Logo" class="login-logo">
+            <h2>Welcome to ADUE Portal</h2>
+        </div>
 
-  loginForm.addEventListener("submit", function(e) {
-    e.preventDefault();
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
 
-    // List of valid accounts
-    const users = [
-      { email: "admin@adue.com", password: "12345678", role: "admin" },
-      { email: "phemmyallen1@gmail.com", password: "12345678", role: "teacher" }
-    ];
+            <button type="submit" class="login-btn">Login</button>
+        </form>
 
-    // Find matching user
-    const user = users.find(u => u.email === email && u.password === password);
+        <div class="login-footer">
+            <p>© 2026 ADUE International School</p>
+        </div>
+    </div>
 
-    if (user) {
-      // Redirect based on role
-      if (user.role === "admin") {
-        window.location.href = "admin_dashboard.html";
-      } else if (user.role === "teacher") {
-        window.location.href = "teacher_dashboard.html";
-      }
-    } else {
-      alert("Invalid login details");
-    }
-  });
-</script>
+    <script src="script.js"></script>
+</body>
+</html>
