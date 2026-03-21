@@ -24,9 +24,9 @@ body {
 
 /* Logo */
 .logo-section img {
-    width:50px;
-    height:50px;
-    object-fit:cover;
+    width:80px;
+    height:auto;
+    object-fit:contain;
 }
 
 /* Admin info + logout */
@@ -111,6 +111,118 @@ button.action-btn {
 
 button.action-btn:hover {
     background:#a00000;
+}
+
+.register-buttons {
+    margin:20px 0;
+    display:flex;
+    gap:15px;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <!-- Left: School logo -->
+    <div class="logo-section">
+        <img src="logo-new.png" alt="School Logo">
+    </div>
+
+    <!-- Right: Admin info + logout -->
+    <div class="profile-section">
+        <img id="headerAvatar" src="admin.png" class="avatar">
+        <span id="headerName">Welcome Admin</span>
+        <button id="logoutBtn">Logout</button>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="register-buttons">
+        <button onclick="window.location.href='register_teacher.html'" class="action-btn">Register Teacher</button>
+        <button onclick="window.location.href='register_student.html'" class="action-btn">Register Student</button>
+    </div>
+
+    <h2>Teachers List</h2>
+    <table id="teachersTable">
+        <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Teacher ID</th>
+            <th>Department</th>
+            <th>Edit</th>
+        </tr>
+    </table>
+
+    <h2>Students List</h2>
+    <table id="studentsTable">
+        <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Student ID</th>
+            <th>Class</th>
+            <th>Year</th>
+            <th>Edit</th>
+        </tr>
+    </table>
+</div>
+
+<script>
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', function(){
+    localStorage.removeItem('currentAdminIndex');
+    window.location.href='index.html';
+});
+
+// Load Admin Profile
+let currentAdminIndex = parseInt(localStorage.getItem('currentAdminIndex')) || 0;
+let admins = JSON.parse(localStorage.getItem('admins')) || [{name:'Admin', profilePicture:'admin.png'}];
+document.getElementById('headerName').innerText = 'Welcome ' + admins[currentAdminIndex].name;
+document.getElementById('headerAvatar').src = admins[currentAdminIndex].profilePicture;
+
+// Load Teachers
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let teachersTable = document.getElementById('teachersTable');
+teachers.forEach((t,i)=>{
+    let row = teachersTable.insertRow();
+    row.insertCell(0).innerHTML = `<img src="${t.profilePicture}" class="avatar-small">`;
+    row.insertCell(1).innerText = t.name;
+    row.insertCell(2).innerText = t.email;
+    row.insertCell(3).innerText = t.teacherID;
+    row.insertCell(4).innerText = t.department;
+    row.insertCell(5).innerHTML = `<button class="action-btn" onclick="editTeacher(${i})">Edit</button>`;
+});
+
+function editTeacher(i){
+    localStorage.setItem('editTeacherIndex', i);
+    window.location.href='edit_teacher.html';
+}
+
+// Load Students
+let students = JSON.parse(localStorage.getItem('students')) || [];
+let studentsTable = document.getElementById('studentsTable');
+students.forEach((s,i)=>{
+    let row = studentsTable.insertRow();
+    row.insertCell(0).innerHTML = `<img src="${s.profilePicture}" class="avatar-small">`;
+    row.insertCell(1).innerText = s.name;
+    row.insertCell(2).innerText = s.email;
+    row.insertCell(3).innerText = s.studentID;
+    row.insertCell(4).innerText = s.studentClass;
+    row.insertCell(5).innerText = s.studentYear;
+    row.insertCell(6).innerHTML = `<button class="action-btn" onclick="editStudent(${i})">Edit</button>`;
+});
+
+function editStudent(i){
+    localStorage.setItem('editStudentIndex', i);
+    window.location.href='edit_student.html';
+}
+</script>
+
+</body>
+</html>    background:#a00000;
 }
 
 .register-buttons {
