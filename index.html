@@ -31,24 +31,19 @@
 </div>
 
 <script>
-// --- Stored users ---
+// Stored users
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 let students = JSON.parse(localStorage.getItem('students')) || [];
-
-// Hard-coded admin
-const admins = [
-    { email: "admin@adue.com", password: "12345678" }
-];
+const admins = [{ email: "admin@adue.com", password: "12345678" }];
 
 const loginForm = document.getElementById("loginForm");
-
 loginForm.addEventListener("submit", function(e){
     e.preventDefault();
 
     const userId = document.getElementById("userId").value.trim();
     const password = document.getElementById("password").value.trim();
 
-    // 1️⃣ Check admin
+    // Admin
     let admin = admins.find(a => a.email === userId && a.password === password);
     if(admin){
         localStorage.setItem('currentAdminEmail', admin.email);
@@ -56,7 +51,7 @@ loginForm.addEventListener("submit", function(e){
         return;
     }
 
-    // 2️⃣ Check teacher
+    // Teacher
     let teacher = teachers.find(t => t.email === userId && t.password === password);
     if(teacher){
         localStorage.setItem('currentTeacherEmail', teacher.email);
@@ -64,7 +59,7 @@ loginForm.addEventListener("submit", function(e){
         return;
     }
 
-    // 3️⃣ Check student
+    // Student
     let student = students.find(s => s.email === userId && s.password === password);
     if(student){
         localStorage.setItem('currentStudentEmail', student.email);
