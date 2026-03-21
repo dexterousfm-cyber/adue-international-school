@@ -32,11 +32,9 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-
-/* Form styling */
 .registration-wrapper h2 {
     text-align: center;
-    color: #722F37; /* wine heading */
+    color: #722F37;
     margin-bottom: 25px;
 }
 .registration-wrapper input {
@@ -51,8 +49,6 @@
     border-color: #722F37;
     outline: none;
 }
-
-/* Submit button */
 .registration-wrapper button {
     width: 100%;
     padding: 14px;
@@ -67,8 +63,6 @@
 .registration-wrapper button:hover {
     opacity: 0.9;
 }
-
-/* Optional links */
 .registration-wrapper .links {
     text-align: center;
     margin-top: 20px;
@@ -85,13 +79,11 @@
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
     <img src="logo-new.png" alt="Logo">
     <h1>Register Teacher</h1>
 </div>
 
-<!-- Registration Form -->
 <div class="registration-wrapper">
     <h2>Teacher Information</h2>
     <form id="teacherForm">
@@ -101,6 +93,7 @@
         <input type="text" id="department" placeholder="Department (e.g., Science)" required>
         <input type="password" id="password" placeholder="Password" required>
         <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <input type="file" id="teacherPicture" accept="image/*">
         <button type="submit">Register Teacher</button>
     </form>
     <div class="links">
@@ -109,39 +102,43 @@
 </div>
 
 <script>
-// Fetch stored teachers or initialize
 let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
 
-// Handle form submission
-document.getElementById('teacherForm').addEventListener('submit', function(e) {
+document.getElementById('teacherForm').addEventListener('submit', function(e){
     e.preventDefault();
 
-    // Collect teacher data
-    const name = document.getElementById('teacherName').value;
-    const email = document.getElementById('teacherEmail').value;
-    const teacherID = document.getElementById('teacherID').value;
-    const department = document.getElementById('department').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const name = document.getElementById('teacherName').value.trim();
+    const email = document.getElementById('teacherEmail').value.trim();
+    const teacherID = document.getElementById('teacherID').value.trim();
+    const department = document.getElementById('department').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    const fileInput = document.getElementById('teacherPicture');
 
     if(password !== confirmPassword){
         alert("Passwords do not match!");
         return;
     }
 
-    // Add new teacher to array
-    teachers.push({name, email, teacherID, department, password});
+    let profilePicture = 'default-teacher.png';
 
-    // Save to localStorage
-    localStorage.setItem('teachers', JSON.stringify(teachers));
+    if(fileInput.files.length > 0){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            profilePicture = e.target.result;
+            saveTeacher();
+        }
+        reader.readAsDataURL(fileInput.files[0]);
+    } else {
+        saveTeacher();
+    }
 
-    // Update total teachers on admin dashboard
-    let totalTeachers = parseInt(localStorage.getItem('totalTeachers')) || 0;
-    totalTeachers++;
-    localStorage.setItem('totalTeachers', totalTeachers);
-
-    alert("Teacher Registered Successfully!");
-    this.reset(); // Clear form
+    function saveTeacher(){
+        teachers.push({name, email, teacherID, department, password, profilePicture});
+        localStorage.setItem('teachers', JSON.stringify(teachers));
+        alert("Teacher Registered Successfully!");
+        document.getElementById('teacherForm').reset();
+    }
 });
 </script>
 
