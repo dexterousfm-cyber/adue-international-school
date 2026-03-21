@@ -34,7 +34,7 @@ table tr:hover { background:#fff2f2; }
     <div class="profile">
         <img src="admin.png" alt="Admin">
         <span id="adminName">Welcome Admin</span>
-        <button id="logoutBtn">Logout</button>
+        <button id="logoutBtn" onclick="logout()">Logout</button>
     </div>
 </div>
 
@@ -89,7 +89,7 @@ table tr:hover { background:#fff2f2; }
 let teachers = [];
 let students = [];
 
-// ----------------- RENDER TABLES -----------------
+// Render Functions
 function renderTeachersTable(){
     const table = document.getElementById('teachersTable');
     let html = `<tr>
@@ -132,26 +132,22 @@ function renderStudentsTable(){
     table.innerHTML = html;
 }
 
-// ----------------- SHOW TABLES -----------------
+// Show/Hide Tables
 function showTable(table){
     document.getElementById('teachersTable').style.display = (table==='teachers')?'':'none';
     document.getElementById('studentsTable').style.display = (table==='students')?'':'none';
 }
 
-// ----------------- EDIT PLACEHOLDERS -----------------
+// Edit placeholders
 function editTeacher(i){ alert('Edit Teacher: '+teachers[i].name); }
 function editStudent(i){ alert('Edit Student: '+students[i].name); }
 
-// ----------------- LOGOUT -----------------
-document.getElementById('logoutBtn').addEventListener('click', function() {
-    // Optional: clear localStorage/sessionStorage
-    // localStorage.clear();
+// ---------------- LOGOUT ----------------
+function logout() {
+    window.location.href = 'index.html'; // replace 'index.html' with your actual login page
+}
 
-    // Force redirect to login page
-    window.location.assign('index.html'); // Replace with your actual login page
-});
-
-// ----------------- TEACHER FORM -----------------
+// Teacher Form
 function openTeacherForm(){ document.getElementById('teacherModal').style.display='flex'; }
 function closeTeacherForm(){ document.getElementById('teacherModal').style.display='none'; }
 function registerTeacher(){
@@ -179,7 +175,7 @@ function registerTeacher(){
     }
 }
 
-// ----------------- STUDENT FORM -----------------
+// Student Form
 function openStudentForm(){ document.getElementById('studentModal').style.display='flex'; }
 function closeStudentForm(){ document.getElementById('studentModal').style.display='none'; }
 function registerStudent(){
@@ -207,7 +203,7 @@ function registerStudent(){
     }
 }
 
-// ----------------- INITIAL LOAD -----------------
+// Initial load
 renderTeachersTable();
 renderStudentsTable();
 showTable('teachers');
