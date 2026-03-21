@@ -34,7 +34,7 @@ table tr:hover { background:#fff2f2; }
     <div class="profile">
         <img src="admin.png" alt="Admin">
         <span id="adminName">Welcome Admin</span>
-        <button id="logoutBtn">Logout</button>
+        <button id="logoutBtn" onclick="logout()">Logout</button>
     </div>
 </div>
 
@@ -133,11 +133,11 @@ function editTeacher(i){ alert('Edit Teacher: '+teachers[i].name); }
 function editStudent(i){ alert('Edit Student: '+students[i].name); }
 
 // ---------------- LOGOUT ----------------
-document.getElementById('logoutBtn').addEventListener('click', ()=>{
+function logout() {
     // Optional: clear session data here
     // localStorage.removeItem('adminLoggedIn'); 
     window.location.href = 'login.html'; // redirect to login page
-});
+}
 
 // Teacher Form
 function openTeacherForm(){ document.getElementById('teacherModal').style.display='flex'; }
