@@ -1,15 +1,10 @@
-<div class="register-buttons">
-    <button class="action-btn" onclick="window.location.href='register_teacher.html'">Register Teacher</button>
-    <button class="action-btn" onclick="window.location.href='register_student.html'">Register Student</button>
-</div>
-
 <!-- Toggle Buttons -->
 <div class="toggle-buttons" style="margin:20px 0;">
     <button class="action-btn" onclick="showTable('teachers')">Teachers</button>
     <button class="action-btn" onclick="showTable('students')">Students</button>
 </div>
 
-<!-- Tables -->
+<!-- Only TWO tables, no extra copies -->
 <table id="teachersTable">
     <tr>
         <th>Picture</th>
@@ -34,7 +29,6 @@
 </table>
 
 <script>
-// Toggle between tables
 function showTable(table) {
     document.getElementById('teachersTable').style.display = (table === 'teachers') ? '' : 'none';
     document.getElementById('studentsTable').style.display = (table === 'students') ? '' : 'none';
