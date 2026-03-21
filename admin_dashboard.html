@@ -1,69 +1,69 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    margin: 0;
-    padding: 0;
-}
-
-/* Header */
-.header {
-    background-color: #722F37; /* Wine background */
-    padding: 20px;
-    text-align: center;
-}
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ADUE Admin Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Only added this to fix the header color */
 .dashboard-header {
-    color: white; /* Make text visible */
-    font-size: 2rem;
-    font-weight: bold;
+    color: white; /* ADUE Admin Dashboard text in white */
+}
+</style>
+</head>
+<body>
+
+<!-- Top header -->
+<div class="header">
+    <div class="header-content">
+        <img src="logo-new.png" alt="Header Logo" class="logo-header">
+        <h1 class="dashboard-header">ADUE Admin Dashboard</h1>
+    </div>
+</div>
+
+<!-- Dashboard stats -->
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h2>Total Teachers</h2>
+        <p id="totalTeachers">0</p>
+    </div>
+    <div class="stat-card">
+        <h2>Total Students</h2>
+        <p id="totalStudents">0</p>
+    </div>
+</div>
+
+<!-- Quick links -->
+<div class="dashboard-actions">
+    <button onclick="location.href='register_teacher.html'">Register Teacher</button>
+    <button onclick="location.href='register_student.html'">Register Student</button>
+</div>
+
+<script>
+// Initialize totals (start at 0)
+let totalTeachers = 0;
+let totalStudents = 0;
+
+// Function to update totals in the dashboard
+function updateDashboard() {
+    document.getElementById('totalTeachers').innerText = totalTeachers;
+    document.getElementById('totalStudents').innerText = totalStudents;
 }
 
-/* Summary Cards */
-.summary-cards {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px;
+// Example functions to increment counts when a teacher/student is registered
+function addTeacher() {
+    totalTeachers++;
+    updateDashboard();
 }
 
-.card {
-    background-color: white;
-    padding: 20px;
-    width: 45%;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+function addStudent() {
+    totalStudents++;
+    updateDashboard();
 }
 
-.staff-card h2, .student-card h2 {
-    color: #722F37; /* Wine for titles */
-    margin-bottom: 10px;
-}
+// Initial render
+updateDashboard();
+</script>
 
-.staff-card p, .student-card p {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333; /* Dark for numbers */
-}
-
-/* Staff List */
-.staff-list {
-    margin: 20px;
-}
-
-.staff-list h2 {
-    color: #722F37;
-    margin-bottom: 10px;
-}
-
-.staff-list ul {
-    list-style: none;
-    padding: 0;
-}
-
-.staff-list li {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+</body>
+</html>
