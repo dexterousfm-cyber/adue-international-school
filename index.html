@@ -4,89 +4,62 @@
 <meta charset="UTF-8">
 <title>ADUE Portal Login</title>
 <link rel="stylesheet" href="styles.css">
-<style>
-/* Temporary inline CSS for layout; keep your styles.css for full styling */
-body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; }
-.header { display:flex; align-items:center; padding:20px; background:#800000; color:white; }
-.header img { height:60px; margin-right:15px; }
-.login-wrapper { display:flex; justify-content:center; align-items:center; height:calc(100vh - 100px); }
-.login-box { background:white; padding:30px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.2); text-align:center; width:350px; }
-.login-box img.logo-box { width:80px; margin-bottom:15px; }
-.login-box input { width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:5px; }
-.login-box button { width:100%; padding:10px; background:#800000; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
-.login-box button:hover { background:#a00000; }
-.links { margin-top:10px; }
-.links a { text-decoration:none; color:#800000; font-size:0.9em; }
-</style>
 </head>
 <body>
 
-<div class="header">
-    <img src="logo-new.png" alt="Logo">
-    <h1>ADUE International School</h1>
-</div>
-
-<div class="login-wrapper">
-    <div class="login-box">
-        <img src="login-logo.png" class="logo-box" alt="Login Logo">
-        <form id="loginForm">
-            <input type="text" id="userId" placeholder="Email or ID" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-            <div class="links">
-                <a href="forgot_password.html">Forgot Password?</a>
-            </div>
-        </form>
-    </div>
+<div class="container">
+  <h2>ADUE Portal Login</h2>
+  <form id="loginForm">
+    <input type="text" id="userId" placeholder="Email or ID" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
 </div>
 
 <script>
-// Initialize admins once
+// Create default admin if not exists
 if(!localStorage.getItem('admins')){
-    const defaultAdmins = [
+    localStorage.setItem('admins', JSON.stringify([
         { email: "admin@adue.com", password: "12345678", name: "Admin", profilePicture: "admin.png" }
-    ];
-    localStorage.setItem('admins', JSON.stringify(defaultAdmins));
+    ]));
 }
 
-// Load arrays dynamically inside function
-function getData() {
-    return {
-        admins: JSON.parse(localStorage.getItem('admins')) || [],
-        teachers: JSON.parse(localStorage.getItem('teachers')) || [],
-        students: JSON.parse(localStorage.getItem('students')) || []
-    };
-}
+// Load arrays
+let admins = JSON.parse(localStorage.getItem('admins')) || [];
+let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+let students = JSON.parse(localStorage.getItem('students')) || [];
 
 document.getElementById("loginForm").addEventListener("submit", function(e){
     e.preventDefault();
+
     const input = document.getElementById("userId").value.trim();
-    const password = document.getElementById("password").value.trim();
+    const password = document.getElementById("password").value;
 
-    const {admins, teachers, students} = getData();
-
-    // --- Admin Login ---
-    const admin = admins.find(a => a.email === input && a.password === password);
-    if(admin){
-        localStorage.setItem('currentAdmin', JSON.stringify(admin));
-        window.location.href = 'admin_dashboard.html';
-        return;
+    // Admin login
+    for(let i=0;i<admins.length;i++){
+        if(admins[i].email === input && admins[i].password === password){
+            localStorage.setItem("currentAdminIndex", i);
+            window.location.href = "admin_dashboard.html";
+            return;
+        }
     }
 
-    // --- Teacher Login ---
-    const teacher = teachers.find(t => (t.email === input || t.teacherID === input) && t.password === password);
-    if(teacher){
-        localStorage.setItem('currentTeacher', JSON.stringify(teacher));
-        window.location.href = 'teacher_dashboard.html';
-        return;
+    // Teacher login
+    for(let i=0;i<teachers.length;i++){
+        if((teachers[i].email === input || teachers[i].teacherID === input) && teachers[i].password === password){
+            localStorage.setItem("currentTeacherIndex", i);
+            window.location.href = "teacher_dashboard.html";
+            return;
+        }
     }
 
-    // --- Student Login ---
-    const student = students.find(s => (s.email === input || s.studentID === input) && s.password === password);
-    if(student){
-        localStorage.setItem('currentStudent', JSON.stringify(student));
-        window.location.href = 'student_dashboard.html';
-        return;
+    // Student login
+    for(let i=0;i<students.length;i++){
+        if((students[i].email === input || students[i].studentID === input) && students[i].password === password){
+            localStorage.setItem("currentStudentIndex", i);
+            window.location.href = "student_dashboard.html";
+            return;
+        }
     }
 
     alert("Invalid login details!");
