@@ -2,147 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Register Teacher - ADUE Portal</title>
+<title>Register Student - ADUE Portal</title>
 <link rel="stylesheet" href="styles.css">
-<style>
-/* Header styling */
-.header {
-    background-color: #722F37; /* wine color */
-    padding: 20px;
-    text-align: center;
-    color: white;
-}
-.header img {
-    height: 50px;
-    vertical-align: middle;
-    margin-right: 15px;
-}
-.header h1 {
-    display: inline;
-    font-size: 24px;
-    vertical-align: middle;
-}
-
-/* Form wrapper */
-.registration-wrapper {
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-/* Form styling */
-.registration-wrapper h2 {
-    text-align: center;
-    color: #722F37; /* wine heading */
-    margin-bottom: 25px;
-}
-.registration-wrapper input {
-    width: 100%;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
-.registration-wrapper input:focus {
-    border-color: #722F37;
-    outline: none;
-}
-
-/* Submit button */
-.registration-wrapper button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 15px;
-    background-color: #722F37;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    cursor: pointer;
-}
-.registration-wrapper button:hover {
-    opacity: 0.9;
-}
-
-/* Optional links */
-.registration-wrapper .links {
-    text-align: center;
-    margin-top: 20px;
-}
-.registration-wrapper .links a {
-    color: #722F37;
-    text-decoration: none;
-    margin: 0 10px;
-}
-.registration-wrapper .links a:hover {
-    text-decoration: underline;
-}
-</style>
 </head>
 <body>
 
-<!-- Header -->
+<!-- Top header -->
 <div class="header">
-    <img src="logo-new.png" alt="Logo">
-    <h1>Register Teacher</h1>
+    <div class="header-content">
+        <img src="logo-new.png" alt="Header Logo" class="logo-header">
+        <h1>ADUE Admin Dashboard</h1>
+    </div>
 </div>
 
-<!-- Registration Form -->
+<!-- Centered registration box -->
 <div class="registration-wrapper">
-    <h2>Teacher Information</h2>
-    <form id="teacherForm">
-        <input type="text" id="teacherName" placeholder="Full Name" required>
-        <input type="email" id="teacherEmail" placeholder="Email" required>
-        <input type="text" id="teacherID" placeholder="Teacher ID" required>
-        <input type="text" id="department" placeholder="Department (e.g., Science)" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-        <button type="submit">Register Teacher</button>
-    </form>
-    <div class="links">
-        <a href="admin_dashboard.html">Back to Dashboard</a>
+    <div class="registration-box">
+        <!-- Box header -->
+        <img src="login-logo.png" alt="Registration Logo" class="logo-box">
+        <h2>Register New Student</h2>
+
+        <form id="registerStudentForm">
+            <!-- Student Full Name -->
+            <input type="text" id="studentName" placeholder="Full Name" required>
+
+            <!-- Student ID -->
+            <input type="text" id="studentID" placeholder="Student ID" required>
+
+            <!-- Email -->
+            <input type="email" id="studentEmail" placeholder="Email Address" required>
+
+            <!-- Year -->
+            <input type="text" id="studentYear" placeholder="Year (e.g., Year 10)" required>
+
+            <!-- Class -->
+            <input type="text" id="studentClass" placeholder="Class (e.g., 10-A)" required>
+
+            <button type="submit">Register Student</button>
+        </form>
+
+        <div id="successMsg" class="success-message" style="display:none;">
+            Student Registered Successfully!
+        </div>
     </div>
 </div>
 
 <script>
-// Fetch stored teachers or initialize
-let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
+    // Register Student Form Handling
+    const registerStudentForm = document.getElementById('registerStudentForm');
+    const successMsg = document.getElementById('successMsg');
 
-// Handle form submission
-document.getElementById('teacherForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+    registerStudentForm.addEventListener('submit', function(e){
+        e.preventDefault();
 
-    // Collect teacher data
-    const name = document.getElementById('teacherName').value;
-    const email = document.getElementById('teacherEmail').value;
-    const teacherID = document.getElementById('teacherID').value;
-    const department = document.getElementById('department').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+        const studentData = {
+            name: document.getElementById('studentName').value,
+            id: document.getElementById('studentID').value,
+            email: document.getElementById('studentEmail').value,
+            year: document.getElementById('studentYear').value,
+            class: document.getElementById('studentClass').value
+        };
 
-    if(password !== confirmPassword){
-        alert("Passwords do not match!");
-        return;
-    }
+        // Save to localStorage (replace with database later)
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        students.push(studentData);
+        localStorage.setItem('students', JSON.stringify(students));
 
-    // Add new teacher to array
-    teachers.push({name, email, teacherID, department, password});
+        // Reset form and show success
+        registerStudentForm.reset();
+        successMsg.style.display = "block";
 
-    // Save to localStorage
-    localStorage.setItem('teachers', JSON.stringify(teachers));
-
-    // Update total teachers on admin dashboard
-    let totalTeachers = parseInt(localStorage.getItem('totalTeachers')) || 0;
-    totalTeachers++;
-    localStorage.setItem('totalTeachers', totalTeachers);
-
-    alert("Teacher Registered Successfully!");
-    this.reset(); // Clear form
-});
+        setTimeout(() => {
+            successMsg.style.display = "none";
+        }, 3000);
+    });
 </script>
 
 </body>
