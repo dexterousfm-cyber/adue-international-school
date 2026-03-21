@@ -3,40 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <title>Teacher Dashboard</title>
-<link rel="stylesheet" href="styles.css">
+<style>
+body { margin:0; font-family: Arial, sans-serif; background:#f5f5f5; }
+.header { display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:#800000; color:white; }
+.header .logo img { width:120px; height:auto; object-fit:contain; }
+.header .profile { display:flex; align-items:center; gap:10px; }
+.header .profile img { width:40px; height:40px; border-radius:50%; border:1px solid white; object-fit:cover; }
+.header .profile span { font-weight:bold; }
+.container { padding:30px; }
+button { padding:8px 16px; margin:5px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
+button.primary { background:#800000; color:white; }
+button.primary:hover { background:#a00000; }
+table { width:100%; border-collapse:collapse; margin-top:20px; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.15); }
+th, td { padding:12px; text-align:center; border:1px solid #ddd; }
+th { background:#800000; color:white; }
+img.avatar-small { width:50px; height:50px; border-radius:50%; object-fit:cover; }
+table tr:hover { background:#fff2f2; }
+</style>
 </head>
 <body>
-<h1>Welcome, <span id="teacherName"></span></h1>
-<img id="teacherPic" src="default.png" width="100" style="border-radius:50%">
 
-<h2>Update Profile Picture</h2>
-<input type="file" id="updatePictureInput" accept="image/*">
+<div class="header">
+    <div class="logo"><img src="logo-new.png" alt="Logo"></div>
+    <div class="profile">
+        <img src="teacher.png" alt="Teacher">
+        <span id="teacherName">Welcome Teacher</span>
+        <button id="logoutBtn">Logout</button>
+    </div>
+</div>
 
-<h2>Register Student</h2>
-<button onclick="window.location.href='register_student.html'">Register Student</button>
+<div class="container">
+    <div class="actions">
+        <button class="primary" onclick="alert('Register Student')">Register Student</button>
+        <button class="primary" onclick="showStudents()">View Students</button>
+    </div>
+
+    <table id="studentsTable"></table>
+</div>
 
 <script>
-let teachers = JSON.parse(localStorage.getItem('teachers')) || [];
-let students = JSON.parse(localStorage.getItem('students')) || [];
-let currentTeacherIndex = parseInt(localStorage.getItem("currentTeacherIndex"));
-let teacher = teachers[currentTeacherIndex];
+// Sample students data
+let students = [
+    {profilePicture:'student.png', name:'Jane Smith', email:'jane@example.com', studentID:'S001', studentClass:'JSS1', studentYear:'2026'}
+];
 
-document.getElementById("teacherName").innerText = teacher.name;
-document.getElementById("teacherPic").src = teacher.profilePicture || 'default.png';
+function renderStudentsTable(){
+    const table = document.getElementById('studentsTable');
+    let html = `<tr>
+        <th>Picture</th><th>Name</th><th>Email</th><th>Student ID</th><th>Class</th><th>Year</th><th>Edit Result</th>
+    </tr>`;
+    students.forEach((s,i)=>{
+        html += `<tr>
+            <td><img src="${s.profilePicture}" class="avatar-small"></td>
+            <td>${s.name}</td>
+            <td>${s.email}</td>
+            <td>${s.studentID}</td>
+            <td>${s.studentClass}</td>
+            <td>${s.studentYear}</td>
+            <td><button onclick="editStudentResult(${i})">Edit</button></td>
+        </tr>`;
+    });
+    table.innerHTML = html;
+}
 
-// Update picture
-document.getElementById("updatePictureInput").addEventListener("change", function(){
-    if(this.files.length>0){
-        const reader = new FileReader();
-        reader.onload = function(){
-            teacher.profilePicture = reader.result;
-            teachers[currentTeacherIndex] = teacher;
-            localStorage.setItem("teachers", JSON.stringify(teachers));
-            document.getElementById("teacherPic").src = reader.result;
-        }
-        reader.readAsDataURL(this.files[0]);
-    }
-});
+// Edit function
+function editStudentResult(i){ 
+    alert('Edit Result for '+students[i].name); 
+}
+
+// Show students table
+function showStudents(){ renderStudentsTable(); }
+
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', ()=>alert('Logout clicked'));
 </script>
+
 </body>
 </html>
