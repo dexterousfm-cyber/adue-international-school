@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADUE - Register Teacher</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+:root {
+    --red: #8B0000;
+    --dark-red: #5C0000;
+    --green: #28a745;
+    --bg: #f5f5f5;
+    --border: #ddd;
+}
+
+body { background:var(--bg); min-height:100vh; }
+
+/* HEADER */
+.header {
+    background:var(--red); color:white;
+    padding:0 1.5rem; display:flex; justify-content:space-between; align-items:center;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2); position:fixed;
+    top:0; left:0; right:0; z-index:100; height:60px;
+}
+.logo { font-weight:bold; font-size:1.1rem; display:flex; align-items:center; gap:8px; }
+.header-actions { display:flex; align-items:center; gap:12px; }
+.welcome-text { font-size:0.9rem; opacity:0.9; }
+.btn-hdr {
+    padding:7px 14px; border:1px solid rgba(255,255,255,0.4); background:rgba(255,255,255,0.15);
+    color:white; border-radius:5px; cursor:pointer; font-size:0.85rem; font-weight:600;
+    transition:background 0.2s; text-decoration:none; display:inline-flex; align-items:center; gap:5px;
+}
+.btn-hdr:hover { background:rgba(255,255,255,0.3); }
+
+/* LAYOUT */
+.container { display:flex; margin-top:60px; min-height:calc(100vh - 60px); }
+
+/* SIDEBAR */
+.sidebar {
+    width:240px; background:var(--red); color:white;
+    padding:1.2rem 0; position:fixed; height:calc(100vh - 60px); overflow-y:auto;
+}
+.nav-item {
+    padding:12px 1.5rem; display:flex; align-items:center; gap:10px;
+    cursor:pointer; transition:all 0.2s; border-left:4px solid transparent;
+    text-decoration:none; color:rgba(255,255,255,0.88); font-size:0.9rem;
+}
+.nav-item:hover { background:rgba(255,255,255,0.12); border-left-color:rgba(255,255,255,0.5); }
+.nav-item.active { background:rgba(255,255,255,0.18); border-left-color:white; font-weight:700; }
+
+/* MAIN */
+.main { flex:1; margin-left:240px; padding:2rem; background:var(--bg); }
+
+.back-link {
+    color:var(--red); text-decoration:none; font-size:0.88rem;
+    display:inline-flex; align-items:center; gap:5px; margin-bottom:8px; font-weight:600;
+}
+.back-link:hover { text-decoration:underline; }
+.page-title { color:var(--red); font-size:1.5rem; margin-bottom:1.5rem; display:flex; align-items:center; gap:10px; }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-bottom:2rem; }
+.stat-card {
+    background:white; border-radius:8px; padding:1.4rem; text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,0.07); border-top:4px solid var(--red); transition:transform 0.2s;
+}
+.stat-card:hover { transform:translateY(-2px); }
+.stat-number { font-size:2.2rem; font-weight:bold; color:var(--red); line-height:1; margin-bottom:6px; }
+.stat-label { color:#666; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.5px; }
+
+/* FORM */
+.form-container {
+    background:white; border-radius:8px; padding:2rem;
+    box-shadow:0 2px 8px rgba(0,0,0,0.07); margin-bottom:2rem; border-top:4px solid var(--red);
+}
+.section-title {
+    color:var(--red); font-size:1.05rem; font-weight:700;
+    margin-bottom:1.3rem; padding-bottom:0.6rem; border-bottom:2px solid #f0f0f0;
+    display:flex; align-items:center; gap:8px;
+}
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-group.full { grid-column:1/-1; }
+.form-group label { font-weight:600; color:#555; font-size:0.88rem; }
+.form-group label .req { color:var(--red); }
+.form-group input, .form-group select, .form-group textarea {
+    padding:11px 13px; border:1px solid var(--border); border-radius:6px;
+    font-size:0.95rem; background:#fafafa; transition:all 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline:none; border-color:var(--red); background:white;
+    box-shadow:0 0 0 3px rgba(139,0,0,0.08);
+}
+.form-group small { color:#888; font-size:0.78rem; }
+.form-group textarea { resize:vertical; min-height:75px; }
+
+.file-upload {
+    border:2px dashed var(--border); border-radius:8px; padding:1.8rem;
+    text-align:center; cursor:pointer; transition:all 0.2s; background:#fafafa;
+}
+.file-upload:hover { border-color:var(--red); background:rgba(139,0,0,0.02); }
+.file-upload input { display:none; }
+.file-name { color:var(--red); font-weight:600; font-size:0.88rem; margin-top:6px; }
+
+.form-actions { display:flex; gap:1rem; margin-top:1.8rem; padding-top:1.3rem; border-top:2px solid #f0f0f0; }
+.btn-primary {
+    background:var(--red); color:white; padding:12px 28px; border:none;
+    border-radius:6px; cursor:pointer; font-size:0.95rem; font-weight:700;
+    display:inline-flex; align-items:center; gap:7px; transition:all 0.3s;
+}
+.btn-primary:hover { background:var(--dark-red); transform:translateY(-1px); box-shadow:0 4px 12px rgba(139,0,0,0.3); }
+.btn-secondary {
+    background:#6c757d; color:white; padding:12px 22px; border:none;
+    border-radius:6px; cursor:pointer; font-size:0.95rem; font-weight:600;
+    display:inline-flex; align-items:center; gap:7px; transition:all 0.2s;
+}
+.btn-secondary:hover { background:#5a6268; }
+
+/* ALERT */
+.alert {
+    padding:12px 16px; border-radius:6px; margin-bottom:1rem;
+    display:none; align-items:center; gap:10px; font-weight:600;
+    border-left:4px solid;
+}
+.alert.show { display:flex; }
+.alert-success { background:#d4edda; color:#155724; border-color:var(--green); }
+.alert-error   { background:#f8d7da; color:#721c24; border-color:#dc3545; }
+
+/* TEACHERS TABLE */
+h3.table-heading { color:var(--red); font-size:1.2rem; margin:1.5rem 0 1rem; }
+.table-container { background:white; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.07); margin-bottom:40px; }
+table { width:100%; border-collapse:collapse; }
+th { background:var(--red); color:white; padding:13px 15px; text-align:left; font-size:12px; text-transform:uppercase; }
+td { padding:13px 15px; border-bottom:1px solid #f0f0f0; font-size:13px; }
+tr:hover td { background:#fff5f5; }
+td img { width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--red); }
+.avatar-ph { width:40px; height:40px; border-radius:50%; background:#f0f0f0; border:2px solid var(--red); display:inline-flex; align-items:center; justify-content:center; font-size:18px; }
+.btn-sm { padding:5px 11px; border:none; border-radius:4px; cursor:pointer; font-size:11px; font-weight:700; margin-right:3px; }
+.btn-edit { background:var(--green); color:white; }
+.btn-del  { background:#dc3545; color:white; }
+.empty-state { text-align:center; padding:50px; color:#999; font-size:14px; }
+
+@media(max-width:768px) {
+    .sidebar { display:none; }
+    .main { margin-left:0; padding:1rem; }
+    .stats-grid { grid-template-columns:1fr; }
+    .form-grid { grid-template-columns:1fr; }
+    .form-group.full { grid-column:1; }
+    .form-actions { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="logo">🏫 ADUE International School</div>
+    <div class="header-actions">
+        <span class="welcome-text" id="adminName">Welcome, Admin</span>
+        <a href="admin_dashboard.html" class="btn-hdr">🏠 Dashboard</a>
+        <button class="btn-hdr" onclick="logout()">🚪 Logout</button>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <a href="admin_dashboard.html" class="nav-item">📊 Dashboard</a>
+        <a href="register_student.html" class="nav-item">👨‍🎓 Students</a>
+        <a href="register_teacher.html" class="nav-item active">👨‍🏫 Teachers</a>
+        <a href="admin_dashboard.html" class="nav-item">📚 Classes</a>
+        <a href="admin_dashboard.html" class="nav-item">📋 Attendance</a>
+        <a href="admin_dashboard.html" class="nav-item">📝 Grades</a>
+        <a href="admin_dashboard.html" class="nav-item">💰 Finance</a>
+        <a href="admin_dashboard.html" class="nav-item">📈 Reports</a>
+        <a href="admin_dashboard.html" class="nav-item">⚙️ Settings</a>
+    </nav>
+
+    <!-- Main -->
+    <main class="main">
+        <div id="alertBox" class="alert"></div>
+
+        <a href="admin_dashboard.html" class="back-link">← Back to Dashboard</a>
+        <h1 class="page-title">👨‍🏫 Register New Teacher</h1>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number" id="totalTeachers">0</div><div class="stat-label">Total Teachers</div></div>
+            <div class="stat-card"><div class="stat-number" id="activeTeachers">0</div><div class="stat-label">Active</div></div>
+            <div class="stat-card"><div class="stat-number" id="newThisMonth">0</div><div class="stat-label">Added This Month</div></div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-container">
+            <div class="section-title">📝 Teacher Information</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>First Name <span class="req">*</span></label>
+                    <input type="text" id="firstName" placeholder="e.g., Chioma">
+                </div>
+                <div class="form-group">
+                    <label>Last Name <span class="req">*</span></label>
+                    <input type="text" id="lastName" placeholder="e.g., Adeyemi">
+                </div>
+                <div class="form-group">
+                    <label>Teacher ID <span class="req">*</span></label>
+                    <input type="text" id="teacherID" placeholder="e.g., TCH001">
+                    <small>Leave blank to auto-generate</small>
+                </div>
+                <div class="form-group">
+                    <label>Email Address <span class="req">*</span></label>
+                    <input type="email" id="email" placeholder="teacher@adueschool.edu">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number <span class="req">*</span></label>
+                    <input type="tel" id="phone" placeholder="+234 800 000 0000">
+                </div>
+                <div class="form-group">
+                    <label>Department <span class="req">*</span></label>
+                    <select id="department">
+                        <option value="">Select Department</option>
+                        <option>Mathematics</option><option>Science</option><option>Languages</option>
+                        <option>Arts</option><option>Social Studies</option>
+                        <option>Physical Education</option><option>ICT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Qualification <span class="req">*</span></label>
+                    <select id="qualification">
+                        <option value="">Select Qualification</option>
+                        <option>B.Ed</option><option>B.Sc</option><option>B.A</option>
+                        <option>M.Ed</option><option>M.Sc</option><option>PhD</option><option>PGDE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Years of Experience</label>
+                    <input type="number" id="experience" placeholder="e.g., 5" min="0" max="50">
+                </div>
+                <div class="form-group">
+                    <label>Role <span class="req">*</span></label>
+                    <select id="role">
+                        <option value="teacher">Teacher</option>
+                        <option value="hod">Head of Department</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Employment Type <span class="req">*</span></label>
+                    <select id="employmentType">
+                        <option value="full-time">Full Time</option>
+                        <option value="part-time">Part Time</option>
+                        <option value="contract">Contract</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="dob">
+                </div>
+                <div class="form-group">
+                    <label>Joining Date <span class="req">*</span></label>
+                    <input type="date" id="joiningDate">
+                </div>
+                <div class="form-group full">
+                    <label>Address</label>
+                    <textarea id="address" placeholder="Residential address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Emergency Contact Name</label>
+                    <input type="text" id="emergencyName" placeholder="Next of kin name">
+                </div>
+                <div class="form-group">
+                    <label>Emergency Contact Phone</label>
+                    <input type="tel" id="emergencyPhone" placeholder="Emergency phone number">
+                </div>
+                <div class="form-group full">
+                    <label>Profile Picture</label>
+                    <div class="file-upload" onclick="document.getElementById('profilePic').click()">
+                        <input type="file" id="profilePic" accept="image/*" onchange="handleFileSelect(this)">
+                        <div>📷 Click to upload teacher photo (optional)</div>
+                        <div class="file-name" id="fileName"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password <span class="req">*</span></label>
+                    <input type="password" id="password" placeholder="Create password" value="teacher123">
+                    <small>Minimum 6 characters</small>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password <span class="req">*</span></label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm password" value="teacher123">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-primary" onclick="registerTeacher()">✓ Register Teacher</button>
+                <button class="btn-secondary" onclick="resetForm()">↺ Reset Form</button>
+            </div>
+        </div>
+
+        <!-- Teachers Table -->
+        <h3 class="table-heading">👩‍🏫 Registered Teachers</h3>
+        <div class="table-container">
+            <table id="teachersTable">
+                <thead>
+                    <tr><th>Photo</th><th>ID</th><th>Name</th><th>Department</th><th>Email</th><th>Role</th><th>Actions</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="emptyState" class="empty-state" style="display:none;">
+                <p>No teachers registered yet. Fill the form above to add one.</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+// ==================== AUTH ====================
+// Support both 'currentUser' (dashboard) and 'currentAdmin' (legacy) keys
+const currentUser = JSON.parse(localStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentAdmin'));
+if (!currentUser) window.location.href = 'index.html';
+
+document.getElementById('adminName').textContent = 'Welcome, ' + (currentUser.name || 'Admin');
+document.getElementById('joiningDate').value = new Date().toISOString().split('T')[0];
+
+// ==================== DATA ====================
+function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
+function saveTeachers(arr) { localStorage.setItem('teachers', JSON.stringify(arr)); }
+
+let selectedFile = null;
+
+// ==================== ALERT ====================
+function showAlert(message, type = 'success') {
+    const box = document.getElementById('alertBox');
+    box.textContent = message;
+    box.className = 'alert alert-' + type + ' show';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => { box.className = 'alert'; }, 4500);
+}
+
+// ==================== FILE SELECT ====================
+function handleFileSelect(input) {
+    selectedFile = input.files[0] || null;
+    document.getElementById('fileName').textContent = selectedFile ? '✅ ' + selectedFile.name : '';
+}
+
+// ==================== STATS ====================
+function updateStats() {
+    const teachers = getTeachers();
+    const now = new Date();
+    const thisMonth = teachers.filter(t => {
+        if (!t.registeredDate) return false;
+        const d = new Date(t.registeredDate);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).length;
+    document.getElementById('totalTeachers').textContent = teachers.length;
+    document.getElementById('activeTeachers').textContent = teachers.filter(t => t.status === 'Active').length;
+    document.getElementById('newThisMonth').textContent = thisMonth;
+}
+
+// ==================== REGISTER ====================
+function registerTeacher() {
+    const firstName   = document.getElementById('firstName').value.trim();
+    const lastName    = document.getElementById('lastName').value.trim();
+    const email       = document.getElementById('email').value.trim();
+    const phone       = document.getElementById('phone').value.trim();
+    const department  = document.getElementById('department').value;
+    const qualification = document.getElementById('qualification').value;
+    const joiningDate = document.getElementById('joiningDate').value;
+    const password    = document.getElementById('password').value;
+    const confirmPass = document.getElementById('confirmPassword').value;
+
+    // Validation
+    if (!firstName || !lastName) { showAlert('First and Last name are required.', 'error'); return; }
+    if (!email)       { showAlert('Email address is required.', 'error'); return; }
+    if (!phone)       { showAlert('Phone number is required.', 'error'); return; }
+    if (!department)  { showAlert('Please select a department.', 'error'); return; }
+    if (!qualification){ showAlert('Please select a qualification.', 'error'); return; }
+    if (!joiningDate) { showAlert('Joining date is required.', 'error'); return; }
+    if (password.length < 6) { showAlert('Password must be at least 6 characters.', 'error'); return; }
+    if (password !== confirmPass) { showAlert('Passwords do not match.', 'error'); return; }
+
+    let teachers = getTeachers();
+
+    // Check duplicate email
+    if (teachers.find(t => t.email && t.email.toLowerCase() === email.toLowerCase())) {
+        showAlert('A teacher with this email already exists.', 'error'); return;
+    }
+
+    // Generate or validate ID
+    let id = document.getElementById('teacherID').value.trim();
+    if (!id) {
+        id = 'TCH' + String(teachers.length + 1).padStart(3, '0');
+        while (teachers.find(t => (t.teacherID || t.id) === id)) {
+            id = 'TCH' + String(parseInt(id.slice(3)) + 1).padStart(3, '0');
+        }
+    } else {
+        if (teachers.find(t => (t.teacherID || t.id).toLowerCase() === id.toLowerCase())) {
+            showAlert('Teacher ID "' + id + '" already exists.', 'error'); return;
+        }
+    }
+
+    const doSave = (pic) => {
+        const teacher = {
+            teacherID: id,
+            id: id,
+            firstName,
+            lastName,
+            name: firstName + ' ' + lastName,
+            email,
+            phone,
+            department,
+            qualification,
+            experience: document.getElementById('experience').value || '0',
+            role: document.getElementById('role').value,
+            employmentType: document.getElementById('employmentType').value,
+            dob: document.getElementById('dob').value,
+            joiningDate,
+            address: document.getElementById('address').value.trim(),
+            emergencyName: document.getElementById('emergencyName').value.trim(),
+            emergencyPhone: document.getElementById('emergencyPhone').value.trim(),
+            profilePicture: pic || null,
+            password,
+            status: 'Active',
+            registeredBy: currentUser.role || 'admin',
+            registeredByName: currentUser.name || 'Admin',
+            registeredDate: new Date().toISOString()
+        };
+
+        teachers.push(teacher);
+        saveTeachers(teachers);
+        resetForm();
+        renderTable();
+        updateStats();
+        showAlert(`Teacher "${teacher.name}" registered successfully! ID: ${id}`);
+    };
+
+    if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = e => doSave(e.target.result);
+        reader.readAsDataURL(selectedFile);
+    } else {
+        doSave(null);
+    }
+}
+
+// ==================== RESET ====================
+function resetForm() {
+    ['firstName','lastName','teacherID','email','phone','experience',
+     'dob','address','emergencyName','emergencyPhone'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.getElementById('department').value = '';
+    document.getElementById('qualification').value = '';
+    document.getElementById('role').value = 'teacher';
+    document.getElementById('employmentType').value = 'full-time';
+    document.getElementById('joiningDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('password').value = 'teacher123';
+    document.getElementById('confirmPassword').value = 'teacher123';
+    document.getElementById('profilePic').value = '';
+    document.getElementById('fileName').textContent = '';
+    selectedFile = null;
+}
+
+// ==================== RENDER TABLE ====================
+function renderTable() {
+    const teachers = getTeachers();
+    const tbody = document.querySelector('#teachersTable tbody');
+    const empty  = document.getElementById('emptyState');
+
+    if (teachers.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = [...teachers].reverse().map(t => {
+        const id   = t.teacherID || t.id || '-';
+        const name = t.name || ((t.firstName || '') + ' ' + (t.lastName || '')).trim();
+        const pic  = t.profilePicture
+            ? `<img src="${t.profilePicture}" alt="${name}">`
+            : `<div class="avatar-ph">👤</div>`;
+        const roleLabel = t.role === 'hod' ? 'HOD' : t.role === 'admin' ? 'Admin' : 'Teacher';
+        return `<tr>
+            <td>${pic}</td>
+            <td>${id}</td>
+            <td><strong>${name}</strong></td>
+            <td>${t.department || '-'}</td>
+            <td>${t.email || '-'}</td>
+            <td>${roleLabel}</td>
+            <td>
+                <button class="btn-sm btn-edit" onclick="editTeacher('${id}')">Edit</button>
+                <button class="btn-sm btn-del" onclick="deleteTeacher('${id}')">Delete</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+// ==================== EDIT ====================
+function editTeacher(id) {
+    const teachers = getTeachers();
+    const t = teachers.find(tc => (tc.teacherID || tc.id) === id);
+    if (!t) return;
+
+    const newFirstName = prompt('First Name:', t.firstName || (t.name || '').split(' ')[0]);
+    if (newFirstName === null) return;
+    const newLastName = prompt('Last Name:', t.lastName || (t.name || '').split(' ').slice(1).join(' '));
+    if (newLastName === null) return;
+    const newDept = prompt('Department:', t.department || '');
+    if (newDept === null) return;
+    const newEmail = prompt('Email:', t.email || '');
+    if (newEmail === null) return;
+    const newPhone = prompt('Phone:', t.phone || '');
+    if (newPhone === null) return;
+
+    const idx = teachers.findIndex(tc => (tc.teacherID || tc.id) === id);
+    teachers[idx].firstName  = newFirstName.trim();
+    teachers[idx].lastName   = newLastName.trim();
+    teachers[idx].name       = (newFirstName + ' ' + newLastName).trim();
+    teachers[idx].department = newDept.trim();
+    teachers[idx].email      = newEmail.trim();
+    teachers[idx].phone      = newPhone.trim();
+
+    saveTeachers(teachers);
+    renderTable();
+    updateStats();
+    showAlert('Teacher updated successfully.');
+}
+
+// ==================== DELETE ====================
+function deleteTeacher(id) {
+    if (!confirm('Delete this teacher? This cannot be undone.')) return;
+    let teachers = getTeachers();
+    teachers = teachers.filter(t => (t.teacherID || t.id) !== id);
+    saveTeachers(teachers);
+    renderTable();
+    updateStats();
+    showAlert('Teacher deleted.');
+}
+
+// ==================== LOGOUT ====================
+function logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentAdmin');
+    window.location.href = 'index.html';
+}
+
+// ==================== INIT ====================
+updateStats();
+renderTable();
+</script>
+</body>
+</html>
